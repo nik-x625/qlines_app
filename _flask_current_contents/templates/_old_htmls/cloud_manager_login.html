@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<head>
+    <link rel="import" href="nav">
+</head>
+<body>
+
+{% extends 'nav.html' %}
+
+
+{% block content %}
+
+<div align="center">
+    <img src="../static/FirstPageImage.png" class="img-responsive center-block" alt="HTML5 Icon"
+         style="width:640px;height:350px">
+</div>
+
+<div class="container" align="center">
+    <h2>Cloud Manager</h2>
+</div>
+
+
+<div class="container" align="center">
+    <br>
+    <p>Please login
+    <p>
+    <form action="" method="post">
+        <input type="text" placeholder="Username" id="username" name="username" value="{{
+          request.form.username }}">
+        <input type="password" placeholder="Password" id="password" name="password" value="{{
+          request.form.password }}">
+        <input class="btn btn-default" type="submit" value="Login">
+    </form>
+    {% if error %}
+    <p class="error"><strong>Error:</strong> {{ error }}
+        {% endif %}
+</div>
+
+
+{% endblock %}
+
+</body>
+</html>
+

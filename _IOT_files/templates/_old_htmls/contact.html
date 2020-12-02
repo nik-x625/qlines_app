@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<head>
+    <link rel="import" href="nav">
+
+
+</head>
+<body>
+
+{% extends 'nav.html' %}
+
+{% block content %}
+
+
+<div>
+
+
+    <div class="container col-lg-7 col-xs-7 col-md-7">
+        <h2>Contact</h2>
+        <p style="padding-bottom: 10px">headvids@gmail.com</p>
+        
+
+        
+        
+        <form action="{{ url_for('contact') }}" method="post">
+
+            <div class="row col-lg-12 form-group">
+                <label for="name">Name:</label>
+                <input type="text" class="form-control" id="name" placeholder="Enter name" name="name">
+            </div>
+
+            <div class="row col-lg-12 form-group">
+                <label for="email">Email:</label>
+                <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
+            </div>
+
+            <div class="row col-lg-12 form-group">
+                <label for="message">Message:</label>
+                <textarea type="textarea" class="form-control" id="message" placeholder="Enter message" name="message"
+                          rows="5"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-default">Submit</button>
+        </form>
+
+        <p style="padding-top: 20px;padding-bottom: 20px">{{result}}</p>
+
+        
+    </div>
+
+
+</div>
+
+{% endblock %}
+
+</body>
+</html>
