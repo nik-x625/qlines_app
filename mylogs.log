@@ -1,0 +1,452 @@
+2020-12-04 10:48:33,039 - platx - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/opt/source/platx.py", line 36, in main_clean
+    return render_template('home.html')
+  File "/usr/local/lib/python3.7/dist-packages/flask/templating.py", line 138, in render_template
+    ctx.app.jinja_env.get_or_select_template(template_name_or_list),
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/environment.py", line 930, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/environment.py", line 883, in get_template
+    return self._load_template(name, self.make_globals(globals))
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/environment.py", line 857, in _load_template
+    template = self.loader.load(self, name, globals)
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/loaders.py", line 115, in load
+    source, filename, uptodate = self.get_source(environment, name)
+  File "/usr/local/lib/python3.7/dist-packages/flask/templating.py", line 60, in get_source
+    return self._get_source_fast(environment, template)
+  File "/usr/local/lib/python3.7/dist-packages/flask/templating.py", line 89, in _get_source_fast
+    raise TemplateNotFound(template)
+TemplateNotFound: home.html
+2020-12-04 10:48:43,380 - platx - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/opt/source/platx.py", line 36, in main_clean
+    return render_template('home.html')
+  File "/usr/local/lib/python3.7/dist-packages/flask/templating.py", line 138, in render_template
+    ctx.app.jinja_env.get_or_select_template(template_name_or_list),
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/environment.py", line 930, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/environment.py", line 883, in get_template
+    return self._load_template(name, self.make_globals(globals))
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/environment.py", line 857, in _load_template
+    template = self.loader.load(self, name, globals)
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/loaders.py", line 115, in load
+    source, filename, uptodate = self.get_source(environment, name)
+  File "/usr/local/lib/python3.7/dist-packages/flask/templating.py", line 60, in get_source
+    return self._get_source_fast(environment, template)
+  File "/usr/local/lib/python3.7/dist-packages/flask/templating.py", line 89, in _get_source_fast
+    raise TemplateNotFound(template)
+TemplateNotFound: home.html
+2020-12-04 10:49:29,401 - platx - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/opt/source/platx.py", line 36, in main_clean
+    return render_template('home.html')
+  File "/usr/local/lib/python3.7/dist-packages/flask/templating.py", line 138, in render_template
+    ctx.app.jinja_env.get_or_select_template(template_name_or_list),
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/environment.py", line 930, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/environment.py", line 883, in get_template
+    return self._load_template(name, self.make_globals(globals))
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/environment.py", line 857, in _load_template
+    template = self.loader.load(self, name, globals)
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/loaders.py", line 115, in load
+    source, filename, uptodate = self.get_source(environment, name)
+  File "/usr/local/lib/python3.7/dist-packages/flask/templating.py", line 60, in get_source
+    return self._get_source_fast(environment, template)
+  File "/usr/local/lib/python3.7/dist-packages/flask/templating.py", line 89, in _get_source_fast
+    raise TemplateNotFound(template)
+TemplateNotFound: home.html
+2020-12-04 10:49:35,528 - platx - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/opt/source/platx.py", line 36, in main_clean
+    return render_template('home.html')
+  File "/usr/local/lib/python3.7/dist-packages/flask/templating.py", line 138, in render_template
+    ctx.app.jinja_env.get_or_select_template(template_name_or_list),
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/environment.py", line 930, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/environment.py", line 883, in get_template
+    return self._load_template(name, self.make_globals(globals))
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/environment.py", line 857, in _load_template
+    template = self.loader.load(self, name, globals)
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/loaders.py", line 115, in load
+    source, filename, uptodate = self.get_source(environment, name)
+  File "/usr/local/lib/python3.7/dist-packages/flask/templating.py", line 60, in get_source
+    return self._get_source_fast(environment, template)
+  File "/usr/local/lib/python3.7/dist-packages/flask/templating.py", line 89, in _get_source_fast
+    raise TemplateNotFound(template)
+TemplateNotFound: home.html
+2020-12-04 10:49:39,076 - platx - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/opt/source/platx.py", line 36, in main_clean
+    return render_template('home.html')
+  File "/usr/local/lib/python3.7/dist-packages/flask/templating.py", line 138, in render_template
+    ctx.app.jinja_env.get_or_select_template(template_name_or_list),
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/environment.py", line 930, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/environment.py", line 883, in get_template
+    return self._load_template(name, self.make_globals(globals))
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/environment.py", line 857, in _load_template
+    template = self.loader.load(self, name, globals)
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/loaders.py", line 115, in load
+    source, filename, uptodate = self.get_source(environment, name)
+  File "/usr/local/lib/python3.7/dist-packages/flask/templating.py", line 60, in get_source
+    return self._get_source_fast(environment, template)
+  File "/usr/local/lib/python3.7/dist-packages/flask/templating.py", line 89, in _get_source_fast
+    raise TemplateNotFound(template)
+TemplateNotFound: home.html
+2020-12-04 10:55:01,867 - platx - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/opt/source/platx.py", line 20, in main_clean
+    return render_template('home.html')
+  File "/usr/local/lib/python3.7/dist-packages/flask/templating.py", line 138, in render_template
+    ctx.app.jinja_env.get_or_select_template(template_name_or_list),
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/environment.py", line 930, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/environment.py", line 883, in get_template
+    return self._load_template(name, self.make_globals(globals))
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/environment.py", line 857, in _load_template
+    template = self.loader.load(self, name, globals)
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/loaders.py", line 115, in load
+    source, filename, uptodate = self.get_source(environment, name)
+  File "/usr/local/lib/python3.7/dist-packages/flask/templating.py", line 60, in get_source
+    return self._get_source_fast(environment, template)
+  File "/usr/local/lib/python3.7/dist-packages/flask/templating.py", line 89, in _get_source_fast
+    raise TemplateNotFound(template)
+TemplateNotFound: home.html
+2020-12-04 10:56:39,156 - platx - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/opt/source/platx.py", line 20, in main_clean
+    return render_template('home.html')
+  File "/usr/local/lib/python3.7/dist-packages/flask/templating.py", line 138, in render_template
+    ctx.app.jinja_env.get_or_select_template(template_name_or_list),
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/environment.py", line 930, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/environment.py", line 883, in get_template
+    return self._load_template(name, self.make_globals(globals))
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/environment.py", line 857, in _load_template
+    template = self.loader.load(self, name, globals)
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/loaders.py", line 115, in load
+    source, filename, uptodate = self.get_source(environment, name)
+  File "/usr/local/lib/python3.7/dist-packages/flask/templating.py", line 60, in get_source
+    return self._get_source_fast(environment, template)
+  File "/usr/local/lib/python3.7/dist-packages/flask/templating.py", line 89, in _get_source_fast
+    raise TemplateNotFound(template)
+TemplateNotFound: home.html
+2020-12-04 10:58:16,287 - platx - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/opt/source/platx.py", line 20, in main_clean
+    return render_template('home.html')
+  File "/usr/local/lib/python3.7/dist-packages/flask/templating.py", line 138, in render_template
+    ctx.app.jinja_env.get_or_select_template(template_name_or_list),
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/environment.py", line 930, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/environment.py", line 883, in get_template
+    return self._load_template(name, self.make_globals(globals))
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/environment.py", line 857, in _load_template
+    template = self.loader.load(self, name, globals)
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/loaders.py", line 115, in load
+    source, filename, uptodate = self.get_source(environment, name)
+  File "/usr/local/lib/python3.7/dist-packages/flask/templating.py", line 60, in get_source
+    return self._get_source_fast(environment, template)
+  File "/usr/local/lib/python3.7/dist-packages/flask/templating.py", line 89, in _get_source_fast
+    raise TemplateNotFound(template)
+TemplateNotFound: home.html
+2020-12-04 10:58:22,905 - platx - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/opt/source/platx.py", line 20, in main_clean
+    return render_template('home.html')
+  File "/usr/local/lib/python3.7/dist-packages/flask/templating.py", line 138, in render_template
+    ctx.app.jinja_env.get_or_select_template(template_name_or_list),
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/environment.py", line 930, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/environment.py", line 883, in get_template
+    return self._load_template(name, self.make_globals(globals))
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/environment.py", line 857, in _load_template
+    template = self.loader.load(self, name, globals)
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/loaders.py", line 115, in load
+    source, filename, uptodate = self.get_source(environment, name)
+  File "/usr/local/lib/python3.7/dist-packages/flask/templating.py", line 60, in get_source
+    return self._get_source_fast(environment, template)
+  File "/usr/local/lib/python3.7/dist-packages/flask/templating.py", line 89, in _get_source_fast
+    raise TemplateNotFound(template)
+TemplateNotFound: home.html
+2020-12-04 10:58:24,759 - platx - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/opt/source/platx.py", line 20, in main_clean
+    return render_template('home.html')
+  File "/usr/local/lib/python3.7/dist-packages/flask/templating.py", line 138, in render_template
+    ctx.app.jinja_env.get_or_select_template(template_name_or_list),
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/environment.py", line 930, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/environment.py", line 883, in get_template
+    return self._load_template(name, self.make_globals(globals))
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/environment.py", line 857, in _load_template
+    template = self.loader.load(self, name, globals)
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/loaders.py", line 115, in load
+    source, filename, uptodate = self.get_source(environment, name)
+  File "/usr/local/lib/python3.7/dist-packages/flask/templating.py", line 60, in get_source
+    return self._get_source_fast(environment, template)
+  File "/usr/local/lib/python3.7/dist-packages/flask/templating.py", line 89, in _get_source_fast
+    raise TemplateNotFound(template)
+TemplateNotFound: home.html
+2020-12-04 10:58:42,960 - platx - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.7/dist-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/opt/source/platx.py", line 20, in main_clean
+    return render_template('home.html')
+  File "/usr/local/lib/python3.7/dist-packages/flask/templating.py", line 138, in render_template
+    ctx.app.jinja_env.get_or_select_template(template_name_or_list),
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/environment.py", line 930, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/environment.py", line 883, in get_template
+    return self._load_template(name, self.make_globals(globals))
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/environment.py", line 857, in _load_template
+    template = self.loader.load(self, name, globals)
+  File "/usr/local/lib/python3.7/dist-packages/jinja2/loaders.py", line 115, in load
+    source, filename, uptodate = self.get_source(environment, name)
+  File "/usr/local/lib/python3.7/dist-packages/flask/templating.py", line 60, in get_source
+    return self._get_source_fast(environment, template)
+  File "/usr/local/lib/python3.7/dist-packages/flask/templating.py", line 89, in _get_source_fast
+    raise TemplateNotFound(template)
+TemplateNotFound: home.html
+2020-12-04 11:12:43,859 - werkzeug - INFO -  * Running on http://0.0.0.0:8080/ (Press CTRL+C to quit)
+2020-12-04 11:13:35,225 - werkzeug - INFO -  * Running on http://0.0.0.0:8080/ (Press CTRL+C to quit)
+2020-12-04 11:13:35,228 - werkzeug - INFO -  * Restarting with stat
+2020-12-04 11:13:35,500 - werkzeug - WARNING -  * Debugger is active!
+2020-12-04 11:13:35,509 - werkzeug - INFO -  * Debugger PIN: 418-933-074
+2020-12-04 11:13:37,903 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:13:37] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:13:38,780 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:13:38] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:13:45,560 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:13:45] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:13:46,123 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:13:46] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:13:52,774 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:13:52] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:13:57,665 - werkzeug - INFO -  * Detected change in '/opt/source/platx.py', reloading
+2020-12-04 11:13:58,002 - werkzeug - INFO -  * Restarting with stat
+2020-12-04 11:13:58,334 - werkzeug - WARNING -  * Debugger is active!
+2020-12-04 11:13:58,336 - werkzeug - INFO -  * Debugger PIN: 418-933-074
+2020-12-04 11:13:59,338 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:13:59] "[35m[1mGET / HTTP/1.1[0m" 500 -
+2020-12-04 11:13:59,381 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:13:59] "[37mGET /?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 200 -
+2020-12-04 11:13:59,397 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:13:59] "[37mGET /?__debugger__=yes&cmd=resource&f=jquery.js HTTP/1.1[0m" 200 -
+2020-12-04 11:13:59,398 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:13:59] "[37mGET /?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 200 -
+2020-12-04 11:13:59,533 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:13:59] "[37mGET /?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 200 -
+2020-12-04 11:13:59,545 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:13:59] "[37mGET /?__debugger__=yes&cmd=resource&f=ubuntu.ttf HTTP/1.1[0m" 200 -
+2020-12-04 11:13:59,579 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:13:59] "[37mGET /?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 200 -
+2020-12-04 11:14:01,365 - werkzeug - INFO -  * Detected change in '/opt/source/platx.py', reloading
+2020-12-04 11:14:01,854 - werkzeug - INFO -  * Restarting with stat
+2020-12-04 11:14:02,269 - werkzeug - WARNING -  * Debugger is active!
+2020-12-04 11:14:02,271 - werkzeug - INFO -  * Debugger PIN: 418-933-074
+2020-12-04 11:14:02,932 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:14:02] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:14:03,624 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:14:03] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:14:04,074 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:14:04] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:15:17,004 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:15:17] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:15:18,670 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:15:18] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:15:41,957 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:15:41] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:16:46,898 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:16:46] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:16:47,578 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:16:47] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:17:43,207 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:17:43] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:20:49,041 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:20:49] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:21:26,708 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:21:26] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:21:27,776 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:21:27] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:21:35,500 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:21:35] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:27:26,752 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:27:26] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:48:03,879 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:48:03] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:50:46,295 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:50:46] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:51:40,032 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:51:40] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:51:40,766 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:51:40] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:51:56,099 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:51:56] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:52:03,442 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:52:03] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:52:04,012 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:52:04] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:52:11,070 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:52:11] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:52:15,933 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:52:15] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:52:16,486 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:52:16] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:52:20,620 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:52:20] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:52:25,676 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:52:25] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:52:26,252 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:52:26] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:52:26,655 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:52:26] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:52:30,551 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:52:30] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:52:38,067 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:52:38] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:52:38,633 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:52:38] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:52:45,561 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:52:45] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:52:46,073 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:52:46] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:52:46,493 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:52:46] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:52:51,536 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:52:51] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:52:56,194 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:52:56] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:54:11,148 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:54:11] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:54:12,444 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:54:12] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:54:28,478 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:54:28] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:54:29,060 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:54:29] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:54:47,779 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:54:47] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:54:48,437 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:54:48] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:54:48,936 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:54:48] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:54:58,657 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:54:58] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:54:59,265 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:54:59] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:55:03,491 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:55:03] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:55:24,834 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:55:24] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:55:27,875 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:55:27] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:55:28,919 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:55:28] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:55:32,396 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:55:32] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:55:32,978 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:55:32] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:55:39,603 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:55:39] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:56:53,694 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:56:53] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:56:54,988 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:56:54] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:57:05,950 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:57:05] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:57:06,543 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:57:06] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:57:20,875 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:57:20] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:57:21,482 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:57:21] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:57:21,994 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:57:21] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:57:22,445 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:57:22] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:57:25,845 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:57:25] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:57:26,347 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:57:26] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 11:57:29,180 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 11:57:29] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 12:42:01,397 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 12:42:01] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 12:42:03,326 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 12:42:03] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 12:42:24,159 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 12:42:24] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 12:42:25,004 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 12:42:25] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 12:42:25,504 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 12:42:25] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 12:43:21,909 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 12:43:21] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 12:43:23,008 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 12:43:23] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 12:43:23,563 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 12:43:23] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 12:43:24,509 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 12:43:24] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 12:43:25,085 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 12:43:25] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 12:43:29,597 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 12:43:29] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 12:43:30,268 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 12:43:30] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 12:43:35,282 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 12:43:35] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 13:03:12,383 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 13:03:12] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 13:03:29,265 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 13:03:29] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 13:03:37,894 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 13:03:37] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 13:03:38,497 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 13:03:38] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 13:03:52,779 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 13:03:52] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 13:04:29,914 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 13:04:29] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 13:04:32,731 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 13:04:32] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 13:04:33,325 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 13:04:33] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 13:04:34,031 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 13:04:34] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 13:04:36,736 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 13:04:36] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 13:04:45,976 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 13:04:45] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 13:04:47,678 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 13:04:47] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 13:04:50,427 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 13:04:50] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 13:23:15,834 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 13:23:15] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 13:23:32,341 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 13:23:32] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 13:23:33,451 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 13:23:33] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 13:23:43,159 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 13:23:43] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 13:23:43,917 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 13:23:43] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 13:23:50,212 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 13:23:50] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 13:24:10,059 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 13:24:10] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 13:24:43,094 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 13:24:43] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 13:24:44,075 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 13:24:44] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 13:24:50,729 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 13:24:50] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 13:24:51,543 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 13:24:51] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 13:24:55,589 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 13:24:55] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 13:25:01,931 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 13:25:01] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 13:25:06,006 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 13:25:06] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 13:25:13,882 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 13:25:13] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 13:32:43,389 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 13:32:43] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 14:22:28,281 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 14:22:28] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 14:28:12,635 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 14:28:12] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-04 14:28:13,508 - werkzeug - INFO - 172.17.0.1 - - [04/Dec/2020 14:28:13] "[37mGET / HTTP/1.1[0m" 200 -
