@@ -1207,3 +1207,66 @@ TemplateNotFound: home.html
 2020-12-07 16:44:35,615 - werkzeug - INFO - 172.17.0.1 - - [07/Dec/2020 16:44:35] "[37mGET / HTTP/1.1[0m" 200 -
 2020-12-07 16:45:10,204 - werkzeug - INFO - 172.17.0.1 - - [07/Dec/2020 16:45:10] "[37mGET / HTTP/1.1[0m" 200 -
 2020-12-07 16:45:12,820 - werkzeug - INFO - 172.17.0.1 - - [07/Dec/2020 16:45:12] "[37mPOST /_add_numbers HTTP/1.1[0m" 200 -
+2020-12-09 14:53:53,898 - werkzeug - INFO -  * Running on http://0.0.0.0:8080/ (Press CTRL+C to quit)
+2020-12-09 14:53:53,902 - werkzeug - INFO -  * Restarting with stat
+2020-12-09 14:53:54,331 - werkzeug - WARNING -  * Debugger is active!
+2020-12-09 14:53:54,340 - werkzeug - INFO -  * Debugger PIN: 418-933-074
+2020-12-09 14:53:55,421 - werkzeug - INFO - 172.17.0.1 - - [09/Dec/2020 14:53:55] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-09 14:53:55,856 - werkzeug - INFO - 172.17.0.1 - - [09/Dec/2020 14:53:55] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2020-12-09 14:53:57,037 - werkzeug - INFO - 172.17.0.1 - - [09/Dec/2020 14:53:57] "[37mPOST /_add_numbers HTTP/1.1[0m" 200 -
+2020-12-09 14:53:59,178 - werkzeug - INFO - 172.17.0.1 - - [09/Dec/2020 14:53:59] "[37mPOST /_add_numbers HTTP/1.1[0m" 200 -
+2020-12-09 14:54:09,340 - werkzeug - INFO - 172.17.0.1 - - [09/Dec/2020 14:54:09] "[37mPOST /_add_numbers HTTP/1.1[0m" 200 -
+2020-12-09 14:55:38,276 - werkzeug - INFO - 172.17.0.1 - - [09/Dec/2020 14:55:38] "[37mPOST /_add_numbers HTTP/1.1[0m" 200 -
+2020-12-09 14:55:47,716 - werkzeug - INFO - 172.17.0.1 - - [09/Dec/2020 14:55:47] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-09 14:55:48,402 - werkzeug - INFO - 172.17.0.1 - - [09/Dec/2020 14:55:48] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-09 14:55:49,112 - werkzeug - INFO - 172.17.0.1 - - [09/Dec/2020 14:55:49] "[37mPOST /_add_numbers HTTP/1.1[0m" 200 -
+2020-12-09 14:55:49,862 - werkzeug - INFO - 172.17.0.1 - - [09/Dec/2020 14:55:49] "[37mPOST /_add_numbers HTTP/1.1[0m" 200 -
+2020-12-13 14:31:27,824 - werkzeug - INFO -  * Running on http://0.0.0.0:8080/ (Press CTRL+C to quit)
+2020-12-13 14:31:27,829 - werkzeug - INFO -  * Restarting with stat
+2020-12-13 14:31:28,251 - werkzeug - WARNING -  * Debugger is active!
+2020-12-13 14:31:28,254 - werkzeug - INFO -  * Debugger PIN: 418-933-074
+2020-12-13 14:31:40,608 - werkzeug - INFO - 172.17.0.1 - - [13/Dec/2020 14:31:40] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-13 14:31:42,514 - werkzeug - INFO - 172.17.0.1 - - [13/Dec/2020 14:31:42] "[37mPOST /_add_numbers HTTP/1.1[0m" 200 -
+2020-12-13 14:31:43,219 - werkzeug - INFO - 172.17.0.1 - - [13/Dec/2020 14:31:43] "[37mPOST /_add_numbers HTTP/1.1[0m" 200 -
+2020-12-13 14:31:43,792 - werkzeug - INFO - 172.17.0.1 - - [13/Dec/2020 14:31:43] "[37mPOST /_add_numbers HTTP/1.1[0m" 200 -
+2020-12-13 14:35:25,773 - werkzeug - INFO - 172.17.0.1 - - [13/Dec/2020 14:35:25] "[37mPOST /_add_numbers HTTP/1.1[0m" 200 -
+2020-12-13 14:35:26,340 - werkzeug - INFO - 172.17.0.1 - - [13/Dec/2020 14:35:26] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-13 14:35:27,380 - werkzeug - INFO - 172.17.0.1 - - [13/Dec/2020 14:35:27] "[37mPOST /_add_numbers HTTP/1.1[0m" 200 -
+2020-12-13 15:54:27,597 - werkzeug - INFO - 172.17.0.1 - - [13/Dec/2020 15:54:27] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-13 15:54:28,754 - werkzeug - INFO - 172.17.0.1 - - [13/Dec/2020 15:54:28] "[37mPOST /_add_numbers HTTP/1.1[0m" 200 -
+2020-12-13 16:21:32,375 - werkzeug - INFO - 172.17.0.1 - - [13/Dec/2020 16:21:32] "[37mPOST /_add_numbers HTTP/1.1[0m" 200 -
+2020-12-13 16:21:33,076 - werkzeug - INFO - 172.17.0.1 - - [13/Dec/2020 16:21:33] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-13 16:21:34,184 - werkzeug - INFO - 172.17.0.1 - - [13/Dec/2020 16:21:34] "[37mPOST /_add_numbers HTTP/1.1[0m" 200 -
+2020-12-13 16:22:29,503 - werkzeug - INFO - 172.17.0.1 - - [13/Dec/2020 16:22:29] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-21 17:20:14,818 - werkzeug - INFO -  * Running on http://0.0.0.0:8080/ (Press CTRL+C to quit)
+2020-12-21 17:20:14,821 - werkzeug - INFO -  * Restarting with stat
+2020-12-21 17:20:15,114 - werkzeug - WARNING -  * Debugger is active!
+2020-12-21 17:20:15,120 - werkzeug - INFO -  * Debugger PIN: 418-933-074
+2020-12-21 17:20:25,782 - werkzeug - INFO - 172.17.0.1 - - [21/Dec/2020 17:20:25] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-21 17:20:26,236 - werkzeug - INFO - 172.17.0.1 - - [21/Dec/2020 17:20:26] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2020-12-21 17:20:27,365 - werkzeug - INFO - 172.17.0.1 - - [21/Dec/2020 17:20:27] "[37mPOST /_add_numbers HTTP/1.1[0m" 200 -
+2020-12-21 17:23:20,196 - werkzeug - INFO - 172.17.0.1 - - [21/Dec/2020 17:23:20] "[37mPOST /_add_numbers HTTP/1.1[0m" 200 -
+2020-12-21 17:23:22,097 - werkzeug - INFO - 172.17.0.1 - - [21/Dec/2020 17:23:22] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-21 17:23:23,262 - werkzeug - INFO - 172.17.0.1 - - [21/Dec/2020 17:23:23] "[37mPOST /_add_numbers HTTP/1.1[0m" 200 -
+2020-12-21 17:25:56,730 - werkzeug - INFO - 172.17.0.1 - - [21/Dec/2020 17:25:56] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-21 17:25:58,274 - werkzeug - INFO - 172.17.0.1 - - [21/Dec/2020 17:25:58] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-21 17:26:13,291 - werkzeug - INFO - 172.17.0.1 - - [21/Dec/2020 17:26:13] "[37mPOST /_add_numbers HTTP/1.1[0m" 200 -
+2020-12-21 17:32:00,317 - werkzeug - INFO - 172.17.0.1 - - [21/Dec/2020 17:32:00] "[37mPOST /_add_numbers HTTP/1.1[0m" 200 -
+2020-12-21 18:07:20,817 - werkzeug - INFO - 172.17.0.1 - - [21/Dec/2020 18:07:20] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-21 18:07:23,086 - werkzeug - INFO - 172.17.0.1 - - [21/Dec/2020 18:07:23] "[37mPOST /_add_numbers HTTP/1.1[0m" 200 -
+2020-12-21 18:07:54,601 - werkzeug - INFO - 172.17.0.1 - - [21/Dec/2020 18:07:54] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-21 18:07:56,447 - werkzeug - INFO - 172.17.0.1 - - [21/Dec/2020 18:07:56] "[37mPOST /_add_numbers HTTP/1.1[0m" 200 -
+2020-12-21 18:08:06,099 - werkzeug - INFO - 172.17.0.1 - - [21/Dec/2020 18:08:06] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-21 18:08:07,165 - werkzeug - INFO - 172.17.0.1 - - [21/Dec/2020 18:08:07] "[37mPOST /_add_numbers HTTP/1.1[0m" 200 -
+2020-12-21 18:08:07,753 - werkzeug - INFO - 172.17.0.1 - - [21/Dec/2020 18:08:07] "[37mPOST /_add_numbers HTTP/1.1[0m" 200 -
+2020-12-21 18:08:53,784 - werkzeug - INFO - 172.17.0.1 - - [21/Dec/2020 18:08:53] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-21 18:08:54,492 - werkzeug - INFO - 172.17.0.1 - - [21/Dec/2020 18:08:54] "[37mPOST /_add_numbers HTTP/1.1[0m" 200 -
+2020-12-21 18:08:55,113 - werkzeug - INFO - 172.17.0.1 - - [21/Dec/2020 18:08:55] "[37mPOST /_add_numbers HTTP/1.1[0m" 200 -
+2020-12-21 18:09:18,610 - werkzeug - INFO -  * Detected change in '/opt/source/platx.py', reloading
+2020-12-21 18:09:18,754 - werkzeug - INFO -  * Restarting with stat
+2020-12-21 18:09:19,059 - werkzeug - WARNING -  * Debugger is active!
+2020-12-21 18:09:19,061 - werkzeug - INFO -  * Debugger PIN: 418-933-074
+2020-12-21 18:09:20,107 - werkzeug - INFO - 172.17.0.1 - - [21/Dec/2020 18:09:20] "[37mGET / HTTP/1.1[0m" 200 -
+2020-12-21 18:09:20,716 - werkzeug - INFO - 172.17.0.1 - - [21/Dec/2020 18:09:20] "[37mPOST /_add_numbers HTTP/1.1[0m" 200 -
+2020-12-21 18:09:43,436 - werkzeug - INFO - 172.17.0.1 - - [21/Dec/2020 18:09:43] "[37mPOST /_add_numbers HTTP/1.1[0m" 200 -
+2020-12-21 18:09:45,332 - werkzeug - INFO - 172.17.0.1 - - [21/Dec/2020 18:09:45] "[37mGET / HTTP/1.1[0m" 200 -

@@ -1,4 +1,4 @@
-# Logging
+#!/usr/bin/python
 import logging
 import logging.config
 import flask
@@ -40,7 +40,7 @@ def add_numbers():
     #headers = {'Content-Type': 'text/html'}
     print('in add_numbers')
 
-    return "<h1>My First Heading</h1><p>My first paragraph.</p>"
+    return "<h1>User ID here</h1><p>Number of followers: 50</p>"
 
 if __name__ == "__main__":
     app.logger.setLevel(logging.DEBUG)
