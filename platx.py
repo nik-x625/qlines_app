@@ -40,7 +40,13 @@ def add_numbers():
     #headers = {'Content-Type': 'text/html'}
     print('in add_numbers')
 
-    return "<h1>User ID here</h1><p>Number of followers: 50</p>"
+    return "<div style='border: solid blue'><h4>from flask 1</h4><p>from flask 2</p></div>"
+
+
+@app.route('/dashboard', methods=['GET', 'POST'])
+def dashboard():
+    return render_template('dashboard.html')
+
 
 if __name__ == "__main__":
     app.logger.setLevel(logging.DEBUG)

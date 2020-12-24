@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+
+</head>
+<style>
+    body{
+        margin: auto;
+        width:300px;
+
+    }
+
+    automargin{
+        margin: 100px;
+    }
+
+</style>
+
+<body>
+
+
+
+    <h3 class="automargin">Enter username</h3>
+    <form value="Username"></form>
+
+    <button type="button" class="btn btn-success" onclick="loadDoc()">Load</button>
+
+    <br><br>
+
+
+    <script>
+        function loadDoc() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    myFunction(this);
+                }
+            };
+            xhttp.open("POST", "_add_numbers", true);
+            xhttp.send();
+        }
+        function myFunction(xml) {
+            //var i;
+            var xmlDoc = xml.response;
+            //var table = "<tr><th>Artist</th><th>Title</th></tr>";
+            //var x = xmlDoc.getElementsByTagName("CD");
+            //for (i = 0; i < x.length; i++) {
+            //    table += "<tr><td>" + x[i].getElementsByTagName("ARTIST")[0].childNodes[0].nodeValue + "</td><td>" + x[i].getElementsByTagName("TITLE")[0].childNodes[0].nodeValue + "</td></tr>";
+            //}
+            document.getElementById("px").innerHTML = xmlDoc //"<h1>My First Heading</h1><p>My first paragraph.</p>";
+        }
+    </script>
+
+    <div>
+        <p id="px" class="myx"></p>
+    </div>
+
+
+</body>
+
+</html>

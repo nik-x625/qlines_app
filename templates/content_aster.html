@@ -1,0 +1,58 @@
+<div id="content">
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+
+      <div class="navbar-header">
+        <button type="button" id="sidebarCollapse" class="btn btn-info navbar-btn">
+          <i class="glyphicon glyphicon-align-left"></i>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <form>
+    <a href=# id=process_on><button class='btn btn-default'>On</button></a>
+    <a href=# id=process_off><button class='btn btn-default'>Off</button></a>
+    <a href=# id=process_status><button class='btn btn-default'>Check</button></a>
+  </form>
+  <p></p>
+  <p id=result></p>
+
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type=text/javascript>
+
+    $(function() {
+      $('a#process_status').bind('click', function() {
+        $.getJSON('/switch_asterisk', {
+          request_type: 'check_status',
+        }, function(data) {
+          $("#result").text(data.result);
+        });
+        return false;
+      });
+
+
+      $('a#process_on').bind('click', function() {
+        $.getJSON('/switch_asterisk', {
+          request_type: 'switch_on',
+        }, function(data) {
+          $("#result").text(data.result);
+        });
+        return false;
+      });
+
+
+      $('a#process_off').bind('click', function() {
+        $.getJSON('/switch_asterisk', {
+          request_type: 'switch_off',
+        }, function(data) {
+          $("#result").text(data.result);
+        });
+        return false;
+      });
+
+    });
+</script>
