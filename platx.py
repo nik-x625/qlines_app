@@ -9,6 +9,7 @@ from datetime import datetime
 from email_module import *
 from flask import render_template, make_response
 
+
 app = Flask(__name__)
 app.secret_key = 'somekey'
 
@@ -16,31 +17,23 @@ logging.config.fileConfig(fname='logging_config.ini',
                           disable_existing_loggers=False)
 logger = logging.getLogger(__name__)
 
+
 @app.route('/', methods=['GET', 'POST'])
 def main_clean():
-    return render_template('index_basic.html')
+    return render_template('index.html')
 
 
-@app.route('/search', methods=['GET', 'POST'])
-def search():
-    logger.debug('# in search method ' + str())
-    
-    if flask.request.method == 'POST':
-        logger.debug('# in search method, the POST is sent')
-        print('name is: ', flask.request.form['the_input'])
-
-    return render_template('index_basic.html')
-
-
-@app.route('/_add_numbers', methods=['GET', 'POST'])
+@app.route('/search_backend', methods=['GET', 'POST'])
 def add_numbers():
     #a = request.args.get('a', 0, type=int)
     #b = request.args.get('b', 0, type=int)
-
     #headers = {'Content-Type': 'text/html'}
-    print('in add_numbers')
+    print('in search_backend')
 
-    return "<div style='border: solid blue'><h4>from flask 1</h4><p>from flask 2</p></div>"
+    results = "some result here"
+    return render_template('search_result.html', results=results)
+
+    # return "<div style='border: solid blue'><h4>from flask 1</h4><p>from flask 2</p></div>"
 
 
 @app.route('/dashboard', methods=['GET', 'POST'])
