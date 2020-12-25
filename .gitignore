@@ -1,0 +1,7 @@
+*.pyc
+.vscode
+*.log
+.*.swp
+__py*
+.DS_Store
+mylogs.log
