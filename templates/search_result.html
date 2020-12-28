@@ -1,112 +1,103 @@
 {% block page_content %}
 
-<div class="single-result verified col-sm-3 bg-light rounded">
-    <div class="result-top flexed flexed--top">
-        <div class="result-img">
-            <img class="profileimg white" src="https://instagram.fmuc4-1.fna.fbcdn.net/v/t51.2885-19/s150x150/81923292_219365955758194_6475852754337136640_n.jpg?_nc_ht=instagram.fmuc4-1.fna.fbcdn.net&_nc_ohc=i3K1K2UsQ8EAX8m6ato&tp=1&oh=ae70ab04310aff22703c718e5ba72356&oe=6011054D"
-                alt="" />
-        </div>
-        <div class="result-names">
-            <div class="result-profile">@saharghoreyshiofficialpage</div>
-            <div class="result-name">سحر قريشى Sahar Ghoreyshi</div>
-        </div>
-    </div>
-    <div class="result-numbers flexed">
-        <div class="result-followers">
-            <span>8.5M</span> Followers
-        </div>
-        <div class="result-engagement">
-            <span>2.2%</span> Engagement
-        </div>
-    </div>
-    <div class="result-contacts" style="display: none">
-        <div class="result-contact">
-            <i class="fa fa-map-marker" aria-hidden="true"></i>
-            <span>Iran, Islamic Republic of </span>
-        </div>
-    </div>
-    <div class="result-total-posts results-number-style">
-        Number of Posts:
-        <span><i class="fa fa-eye-slash" aria-hidden="true"></i></span>
-    </div>
-    <div class="results-weeks-posts results-number-style">
-        Posts per Week:
-        <span><i class="fa fa-eye-slash" aria-hidden="true"></i></span>
-    </div>
-    <div class="result-likes results-number-style">
-        Avg. Likes Per Post:
-        <span><i class="fa fa-eye-slash" aria-hidden="true"></i></span>
-    </div>
+<style>
+    .profileimg {
+        display: block;
+        border-radius: 50%;
+        border: 3px solid transparent;
+        width: 70px;
+        height: 70px;
+        margin-left: auto;
+        margin-right: auto;
+        padding-top: 3px;
+    }
+    
+    .insta-card {
+        background-color: white;
+        border: solid white;
+        margin-left: 15px;
+        margin-top: 15px;
+        height: 260px;
+        width: 250px;
+        box-shadow: 10px 10px 120px 0px rgb(201, 201, 201);
+        border-radius: 10px;
+        position: relative;
+        border-color: white;
+    }
+    
+    .card-actions {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 200px;
+        margin-left: 5px;
+    }
+    
+    mypagination {
+        position: absolute;
+        right: 0px;
+        width: 300px;
+        padding: 10px;
+    }
+</style>
+<div class="row">
+    {% for dic in results %}
+    <div class="col-sm-2 insta-card">
+        <div class="row">
 
-    <div class="result-cost results-number-style">
-        Est. Cost Per Post:
-        <span><i class="fa fa-eye-slash" aria-hidden="true"></i></span>
-    </div>
+            <div class="col-sm-6">
+                <img class="profileimg" src="{{dic.img}}" alt=" ">
+            </div>
+            <div class="col-sm-6 ">
+                <h5>Followers:</h5>
+                <h3 style="line-height: 20% ">{{dic.followers}}</h3>
+            </div>
+        </div>
 
-    <div class="result-add-to-list fake-filter">
-        <div class="list-add-label"></div>
-        <div class="filter-details-link">
-            In order to use this Feature,
-            <a href="https://google.com">Upgrade Now</a
-      >
+        <div class="row " style="margin-bottom:0px ">
+
+            <div style="margin: 5px;text-align: left;line-height: 70% ">
+                <br>
+                <br>
+                <p style="float:left ">Name:</p>
+                <p style="text-align: right;font-weight: bold; ">{{dic.name}}</p>
+
+                <p style="float:left ">Posts per week:</p>
+                <p style="text-align: right;font-weight: bold; ">{{dic.postspw}}</p>
+
+                <p style="float:left ">Averages likes per post:</p>
+                <p style="text-align: right;font-weight: bold; ">{{dic.avglikesppost}}</p>
+            </div>
+        </div>
+
+        <div class="row " style="margin-bottom:0px ">
+            <div class="card-actions " style="margin: 5px;text-align: left;line-height: 140% ">
+                <br>
+                <br>
+                <a href=#>Add to favourites</a>
+                <br>
+                <a href=#>Add to campaign</a>
+                <br>
+                <a href=#>Send message (DM)</a>
+                <br>
+                <a href=#>Remove from the searches</a>
+            </div>
+        </div>
     </div>
-  </div>
+    {% endfor %}
 </div>
 
+<div class="row">
+    <div class="container ">
+        <ul class="pagination mypagination pull-right">
+            <li><a href="#" onclick="loadDoc()">1</a></li>
+            <li class="active" onclick="loadDoc()"><a href="#">2</a></li>
+            <li><a href="#" onclick="loadDoc()">3</a></li>
+            <li><a href="#" onclick="loadDoc()">4</a></li>
+            <li><a href="#" onclick="loadDoc()">5</a></li>
 
-
-
-
-<div class="single-result verified  col-sm-3">
-  <div class="result-top flexed flexed--top">
-      <div class="result-img">
-          <img class="profileimg white" src="https://instagram.fmuc4-1.fna.fbcdn.net/v/t51.2885-19/s150x150/81923292_219365955758194_6475852754337136640_n.jpg?_nc_ht=instagram.fmuc4-1.fna.fbcdn.net&_nc_ohc=i3K1K2UsQ8EAX8m6ato&tp=1&oh=ae70ab04310aff22703c718e5ba72356&oe=6011054D"
-              alt="" />
-      </div>
-      <div class="result-names">
-          <div class="result-profile">@saharghoreyshiofficialpage</div>
-          <div class="result-name">سحر قريشى Sahar Ghoreyshi</div>
-      </div>
-  </div>
-  <div class="result-numbers flexed">
-      <div class="result-followers">
-          <span>8.5M</span> Followers
-      </div>
-      <div class="result-engagement">
-          <span>2.2%</span> Engagement
-      </div>
-  </div>
-  <div class="result-contacts" style="display: none">
-      <div class="result-contact">
-          <i class="fa fa-map-marker" aria-hidden="true"></i>
-          <span>Iran, Islamic Republic of </span>
-      </div>
-  </div>
-  <div class="result-total-posts results-number-style">
-      Number of Posts:
-      <span><i class="fa fa-eye-slash" aria-hidden="true"></i></span>
-  </div>
-  <div class="results-weeks-posts results-number-style">
-      Posts per Week:
-      <span><i class="fa fa-eye-slash" aria-hidden="true"></i></span>
-  </div>
-  <div class="result-likes results-number-style">
-      Avg. Likes Per Post:
-      <span><i class="fa fa-eye-slash" aria-hidden="true"></i></span>
-  </div>
-
-  <div class="result-cost results-number-style">
-      Est. Cost Per Post:
-      <span><i class="fa fa-eye-slash" aria-hidden="true"></i></span>
-  </div>
-
-  <div class="result-add-to-list fake-filter">
-      <div class="list-add-label"></div>
-      <div class="filter-details-link">
-          In order to use this Feature,
-          <a href="https://google.com">Upgrade Now</a>
-        </div>
+        </ul>
     </div>
-</div>
 
+</div>
 {% endblock page_content %}
