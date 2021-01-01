@@ -14,30 +14,34 @@
 
     <style>
         /* Set height of the grid so .sidenav can be 100% (adjust if needed) */
-        
+
         .row.content {
             height: 1500px
         }
+
         /* Set gray background color and 100% height */
-        
+
         .sidenav {
             background-color: #f1f1f1;
             height: 100%;
         }
+
         /* Set black background color, white text and some padding */
-        
+
         footer {
             background-color: #555;
             color: white;
             padding: 15px;
         }
+
         /* On small screens, set height to 'auto' for sidenav and grid */
-        
+
         @media screen and(max-width: 767px) {
             .sidenav {
                 height: auto;
                 padding: 15px;
             }
+
             .row.content {
                 height: auto;
             }
@@ -45,16 +49,17 @@
     </style>
 
     <script>
-        function loadDoc() {
+        function loadDoc(val) {
             var xhttp = new XMLHttpRequest();
             var data = new FormData();
-            xhttp.onreadystatechange = function() {
+            xhttp.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
                     myFunction(this);
                 }
             };
 
             data.append("search_keyword", document.querySelector('#search_keyword').value)
+            data.append("page", val)
             xhttp.open("POST", "search_backend", true);
 
             xhttp.send(data);

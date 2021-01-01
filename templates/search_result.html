@@ -11,7 +11,7 @@
         margin-right: auto;
         padding-top: 3px;
     }
-    
+
     .insta-card {
         background-color: white;
         border: solid white;
@@ -24,7 +24,7 @@
         position: relative;
         border-color: white;
     }
-    
+
     .card-actions {
         position: absolute;
         bottom: 0;
@@ -32,7 +32,7 @@
         width: 200px;
         margin-left: 5px;
     }
-    
+
     mypagination {
         position: absolute;
         right: 0px;
@@ -87,17 +87,20 @@
     {% endfor %}
 </div>
 
-<div class="row">
-    <div class="container ">
-        <ul class="pagination mypagination pull-right">
-            <li><a href="#" onclick="loadDoc()">1</a></li>
-            <li class="active" onclick="loadDoc()"><a href="#">2</a></li>
-            <li><a href="#" onclick="loadDoc()">3</a></li>
-            <li><a href="#" onclick="loadDoc()">4</a></li>
-            <li><a href="#" onclick="loadDoc()">5</a></li>
 
-        </ul>
-    </div>
+<nav aria-label="Page navigation example pull-right">
+    <ul class="pagination pull-right" style="padding-right:20px">
+        {% for p in pages %}
+        <li class="page-item {{ p['class'] }}">
+            <a href="#" onclick="loadDoc({{ p['href'] }})" class="page-link" aria-label={{p['page']}}>
 
-</div>
+                <span aria-hidden="true">{{ p['page_label'] | safe }}</span>
+                <span class="sr-only">{{ p['page_label'] | safe }}</span>
+
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</nav>
+
 {% endblock page_content %}
