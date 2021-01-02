@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def main_clean():
-    return render_template('index.html')
+    return render_template('dashboard.html')
 
 
 @app.route('/search_backend', methods=['GET', 'POST'])
