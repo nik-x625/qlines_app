@@ -23,9 +23,11 @@ logging.config.fileConfig(fname='logging_config.ini',
 logger = logging.getLogger(__name__)
 
 
-@app.route('/', methods=['GET', 'POST'])
-def main_clean():
-    return render_template('dashboard.html')
+# for long running jobs
+import redis
+from rq import Queue
+r = redis.Redis()
+q = Queue('insta', connection=r)
 
 
 @app.route('/search_backend', methods=['GET', 'POST'])
@@ -163,6 +165,53 @@ def search_backend():
 @app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
     return render_template('dashboard.html')
+
+
+@app.route('/', methods=['GET', 'POST'])
+def homepage_index():
+    return render_template('index.html')
+
+
+@app.route('/dashboard', methods=['GET', 'POST'])
+def main_clean():
+    return render_template('dashboard.html')
+
+
+# Used to show the contact page and also POST method to submit the message
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    result = ''
+    logger.debug('in contact function 1')
+    if request.method == 'POST':
+
+        fname = request.form['fname']
+        lname = request.form['lname']
+        subject = request.form['subject']
+        email = request.form['email']
+        message = request.form['message']
+
+        message_dict = {
+               'first_name': fname,
+               'last_name': lname,
+               'email': email,
+               'subject': subject,
+               'message': message,
+               'datetime': datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+
+        email_result = None
+        try:
+            email_result = q.enqueue(send_email, message_dict)
+        except Exception as e:
+            #logger.debug('# email enqueue error: '+str(e))
+            print('# email enqueue error: '+str(e))
+
+        print('# email_result - voip: ' + str(email_result))
+
+        if email_result:
+            result = 'Your message sent successfully. Thank you!'
+
+    return render_template('contact.html', result=result)
+
 
 
 if __name__ == "__main__":

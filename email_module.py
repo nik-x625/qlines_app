@@ -10,13 +10,13 @@ password = 'spring64'
 
 logger = logging.getLogger(__name__)
 
-def send_email(message_dict,toaddr=None):
+
+def send_email(message_dict, toaddr=None):
     if not toaddr:
         toaddr = default_address
 
-
     msg = MIMEMultipart()
-    msg['From'] = "SayaNetworks contact form"
+    msg['From'] = "FLUENCE24"
     msg['To'] = toaddr
     msg['Subject'] = message_dict['subject']
 
@@ -30,16 +30,19 @@ def send_email(message_dict,toaddr=None):
 
     Message: 
     {}
-    '''.format( "SayaNetworks contact form",
-                message_dict['subject'],
-                message_dict['first_name'],
-                message_dict['last_name'],
-                message_dict['email'],
-                message_dict['datetime'],
-                message_dict['message']
-                )
+    '''.format("FLUENCE24 contact form",
+               message_dict.get('subject', ''),
+               message_dict.get('first_name', ''),
+               message_dict.get('last_name', ''),
+               message_dict.get('email', ''),
+               message_dict.get('datetime', ''),
+               message_dict.get('message', '')
+               )
 
-    msg.attach(MIMEText(message_html, 'plain')) #'message_dict['message'], 'plain'))
+    print('# sending email with data: '+str(message_html))
+
+    # 'message_dict['message'], 'plain'))
+    msg.attach(MIMEText(message_html, 'plain'))
 
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.starttls()
@@ -49,6 +52,7 @@ def send_email(message_dict,toaddr=None):
     server.quit()
 
     return True
+
 
 def submit_email_for_newsletter(message_dict):
     msg = MIMEMultipart()
@@ -67,4 +71,7 @@ def submit_email_for_newsletter(message_dict):
 
 
 if __name__ == "__main__":
-    send_email('test_subj2','test_body2')
+    #send_email({'subject':'test_subject', 'From':'test_from', 'To':'test_to'},'mabolfathi@gmail.com')
+
+    send_email({'subject': 'test_subject', 'From': 'test_from',
+                'To': 'test_to'}, 'mabolfathi@gmail.com')
