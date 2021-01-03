@@ -213,6 +213,14 @@ def contact():
     return render_template('contact.html', result=result)
 
 
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    return render_template('signup.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    return render_template('login.html')
+
 
 if __name__ == "__main__":
     app.logger.setLevel(logging.DEBUG)
