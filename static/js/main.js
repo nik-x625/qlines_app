@@ -252,9 +252,7 @@
 
 	};
 
-	var bgVideo = function() {
-		$('.player').mb_YTPlayer();
-	};
+
 
 	
 	$(function(){
@@ -269,7 +267,6 @@
 		counter();
 		counterWayPoint();
 		owlCrouselFeatureSlide();
-		bgVideo();
 	});
 
 

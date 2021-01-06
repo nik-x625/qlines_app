@@ -1,11 +1,14 @@
 #!/usr/bin/python
+from rq import Queue
+import redis
 import logging
 import logging.config
 import time
 import os
 
-from flask import Flask, render_template, json, jsonify, request, make_response, current_app
-from flask import abort, render_template, make_response, Flask, render_template, request, current_app
+from flask import *
+from flask import Flask, session, json, jsonify, request, make_response, current_app, abort, render_template
+from flask import redirect
 from flask_pager import Pager
 
 from mongodb_module import *
@@ -24,10 +27,28 @@ logger = logging.getLogger(__name__)
 
 
 # for long running jobs
-import redis
-from rq import Queue
 r = redis.Redis()
 q = Queue('insta', connection=r)
+
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    return render_template('signup.html')
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    return render_template('login.html')
+
+
+@app.route('/dashboard', methods=['GET', 'POST'])
+def dashboard():
+    return render_template('dashboard.html')
+
+
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    return render_template('index.html')
 
 
 @app.route('/search_backend', methods=['GET', 'POST'])
@@ -162,21 +183,6 @@ def search_backend():
     return render_template('search_result.html', results=data_to_show, pages=pages)
 
 
-@app.route('/dashboard', methods=['GET', 'POST'])
-def dashboard():
-    return render_template('dashboard.html')
-
-
-@app.route('/', methods=['GET', 'POST'])
-def homepage_index():
-    return render_template('index.html')
-
-
-@app.route('/dashboard', methods=['GET', 'POST'])
-def main_clean():
-    return render_template('dashboard.html')
-
-
 # Used to show the contact page and also POST method to submit the message
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
@@ -191,18 +197,18 @@ def contact():
         message = request.form['message']
 
         message_dict = {
-               'first_name': fname,
-               'last_name': lname,
-               'email': email,
-               'subject': subject,
-               'message': message,
-               'datetime': datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+            'first_name': fname,
+            'last_name': lname,
+            'email': email,
+            'subject': subject,
+            'message': message,
+            'datetime': datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 
         email_result = None
         try:
             email_result = q.enqueue(send_email, message_dict)
         except Exception as e:
-            #logger.debug('# email enqueue error: '+str(e))
+            # logger.debug('# email enqueue error: '+str(e))
             print('# email enqueue error: '+str(e))
 
         print('# email_result - voip: ' + str(email_result))
@@ -213,13 +219,51 @@ def contact():
     return render_template('contact.html', result=result)
 
 
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
-    return render_template('signup.html')
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    return render_template('login.html')
+
+
+
+
+# Set the secret key to some random bytes. Keep this really secret!
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
+
+@app.route('/x')
+def indexx():
+    if 'username' in session:
+        return 'Logged in as %s' % escape(session['username'])
+    return 'You are not logged in'
+
+@app.route('/loginx', methods=['GET', 'POST'])
+def loginx():
+    if request.method == 'POST':
+        session['username'] = request.form['username']
+        return redirect(url_for('index'))
+    return '''
+        <form method="post">
+            <p><input type=text name=username>
+            <p><input type=submit value=Login>
+        </form>
+    '''
+
+@app.route('/logoutx')
+def logoutx():
+    # remove the username from the session if it's there
+    session.pop('username', None)
+    return redirect(url_for('index'))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 if __name__ == "__main__":
