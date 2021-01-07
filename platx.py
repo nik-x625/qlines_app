@@ -1,19 +1,24 @@
 #!/usr/bin/python
-from rq import Queue
-import redis
 import logging
 import logging.config
-import time
 import os
-
-from flask import *
-from flask import Flask, session, json, jsonify, request, make_response, current_app, abort, render_template
-from flask import redirect
-from flask_pager import Pager
-
-from mongodb_module import *
+import time
 from datetime import datetime
+
+import flask
+import flask_login
+import redis
+from flask import *
+from flask import (Flask, Response, abort, current_app, json, jsonify,
+                   make_response, redirect, render_template, request, session,
+                   url_for)
+from flask_login import (LoginManager, UserMixin, login_required, login_user,
+                         logout_user)
+from rq import Queue
+
 from email_module import *
+from flask_pager import Pager
+from mongodb_module import *
 
 app = Flask(__name__)
 app.secret_key = os.urandom(42)
@@ -31,17 +36,97 @@ r = redis.Redis()
 q = Queue('insta', connection=r)
 
 
+
+
+
+
+
+# initialise the flask_login
+login_manager = flask_login.LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"
+
+# silly user model
+class User(UserMixin):
+
+    def __init__(self, id):
+        self.id = id
+        self.name = "user" + str(id)
+        self.password = self.name + "_secret"
+        
+    def __repr__(self):
+        return "%d/%s/%s" % (self.id, self.name, self.password)
+
+# create some users with ids 1 to 5
+users = [User(id) for id in range(1, 5)]
+
+
+
+# somewhere to login
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    print()
+    print('# request.form: '+str(request.form))
+    print('# request.args: '+str(request.args))
+    print('# request.args.get("next"): '+str(request.args.get("next")))
+    if request.method == 'POST':
+            email = request.form.get('email_holder',None)
+            password = request.form.get('password_holder',None)
+            keepsignedin = request.form.get('keepsignedin_holder',None)
+
+            
+            if keepsignedin == "on":
+                remember_me_flag = True
+            else:
+                remember_me_flag = False
+
+            # do user/pass verification here
+            if 1: # if verification passed
+
+                next = request.args.get('next')
+
+                login_user(User(2), remember=remember_me_flag)
+                return redirect(next or url_for('dashboard')) #
+            else:
+                return abort(401)
+    else:
+
+        return render_template('login.html')
+
+
+
+# somewhere to logout
+@app.route("/logout")
+def logout():
+    logout_user()
+    return render_template('index.html')
+
+
+# handle login failed
+@app.errorhandler(401)
+def page_not_found(e):
+    return Response('<p>Login failed</p>')
+    
+    
+# callback to reload the user object        
+@login_manager.user_loader
+def load_user(userid):
+    return User(userid)
+
+
+
+
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     return render_template('signup.html')
 
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    return render_template('login.html')
+
 
 
 @app.route('/dashboard', methods=['GET', 'POST'])
+@login_required
 def dashboard():
     return render_template('dashboard.html')
 
@@ -49,6 +134,10 @@ def dashboard():
 @app.route('/', methods=['GET', 'POST'])
 def index():
     return render_template('index.html')
+
+
+# test only
+users = {'foo@bar.tld': {'password': 'secret'}}
 
 
 @app.route('/search_backend', methods=['GET', 'POST'])
@@ -217,51 +306,6 @@ def contact():
             result = 'Your message sent successfully. Thank you!'
 
     return render_template('contact.html', result=result)
-
-
-
-
-
-
-
-# Set the secret key to some random bytes. Keep this really secret!
-app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
-
-@app.route('/x')
-def indexx():
-    if 'username' in session:
-        return 'Logged in as %s' % escape(session['username'])
-    return 'You are not logged in'
-
-@app.route('/loginx', methods=['GET', 'POST'])
-def loginx():
-    if request.method == 'POST':
-        session['username'] = request.form['username']
-        return redirect(url_for('index'))
-    return '''
-        <form method="post">
-            <p><input type=text name=username>
-            <p><input type=submit value=Login>
-        </form>
-    '''
-
-@app.route('/logoutx')
-def logoutx():
-    # remove the username from the session if it's there
-    session.pop('username', None)
-    return redirect(url_for('index'))
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
