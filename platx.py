@@ -5,6 +5,8 @@ import os
 import time
 from datetime import datetime
 
+from sample_insta_data import sample_insta_data_maker
+
 import flask
 import flask_login
 
@@ -98,20 +100,24 @@ def signup():
     if request.method == 'POST':
         logger.debug('# post method arrived, going to update mongo')
         create_new_user({'username': 'test_user_1', 'password': 'test_pass_1'})
-        
+
         username = request.form.get('username', None)
         email = request.form.get('email', None)
         password = request.form.get('password', None)
         agreeterms = request.form.get('agreeterms', None)
+        
+        if not agreeterms:
+            agreeterms = "off"
+        
         country = request.form.get('country', None)
 
-        new_user_data = {'username':username,
-                    'password':password,
-                    'email':email,
-                    'agreeterms':agreeterms,
-                    'country':country,
-                    'time-formatted':datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                    'time':datetime.now()}
+        new_user_data = {'username': username,
+                         'password': password,
+                         'email': email,
+                         'agreeterms': agreeterms,
+                         'country': country,
+                         'time-formatted': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                         'time': datetime.now()}
 
         create_new_user(new_user_data)
 
@@ -169,112 +175,7 @@ def search_backend():
                   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGqeiMvcMA8ATx6McIgv0QgGq9njL6_9Q9Ww&usqp=CAU',
                   ]
 
-    results = [
-        {'name': 'testname1', 'id': 'testid1', 'avglikesppost': 14, 'postspw': 12,
-            'followers': '42345', 'following': 112, 'img': image_list[0]},
-        {'name': 'testname2', 'id': 'testid2', 'avglikesppost': 29, 'postspw': 32,
-            'followers': '86', 'following': 242,        'img': image_list[1]},
-        {'name': 'testname1', 'id': 'testid1', 'avglikesppost': 32, 'postspw': 12,
-            'followers': '42345', 'following': 112, 'img': image_list[0]},
-        {'name': 'testname2', 'id': 'testid2', 'avglikesppost': 43, 'postspw': 32,
-            'followers': '86', 'following': 242,        'img': image_list[1]},
-        {'name': 'testname1', 'id': 'testid1', 'avglikesppost': 55, 'postspw': 12,
-            'followers': '42345', 'following': 112, 'img': image_list[0]},
-        {'name': 'testname2', 'id': 'testid2', 'avglikesppost': 67, 'postspw': 32,
-            'followers': '86', 'following': 242,        'img': image_list[1]},
-        {'name': 'testname1', 'id': 'testid1', 'avglikesppost': 32, 'postspw': 12,
-            'followers': '42345', 'following': 112, 'img': image_list[0]},
-        {'name': 'testname2', 'id': 'testid2', 'avglikesppost': 43, 'postspw': 32,
-            'followers': '86', 'following': 242,        'img': image_list[1]},
-        {'name': 'testname1', 'id': 'testid1', 'avglikesppost': 55, 'postspw': 12,
-            'followers': '42345', 'following': 112, 'img': image_list[0]},
-        {'name': 'testname2', 'id': 'testid2', 'avglikesppost': 67, 'postspw': 32,
-            'followers': '86', 'following': 242,        'img': image_list[1]},
-        {'name': 'testname3', 'id': 'testid3', 'avglikesppost': 79, 'postspw': 5,
-            'followers': '1593476', 'following': 193,   'img': image_list[2]},
-        {'name': 'testname2', 'id': 'testid2', 'avglikesppost': 43, 'postspw': 32,
-            'followers': '86', 'following': 242,        'img': image_list[1]},
-        {'name': 'testname1', 'id': 'testid1', 'avglikesppost': 55, 'postspw': 12,
-            'followers': '42345', 'following': 112, 'img': image_list[0]},
-        {'name': 'testname2', 'id': 'testid2', 'avglikesppost': 67, 'postspw': 32,
-            'followers': '86', 'following': 242,        'img': image_list[1]},
-        {'name': 'testname3', 'id': 'testid3', 'avglikesppost': 79, 'postspw': 5,
-            'followers': '1593476', 'following': 193,   'img': image_list[2]},
-        {'name': 'testname1', 'id': 'testid1', 'avglikesppost': 32, 'postspw': 12,
-            'followers': '42345', 'following': 112, 'img': image_list[0]},
-        {'name': 'testname2', 'id': 'testid2', 'avglikesppost': 43, 'postspw': 32,
-            'followers': '86', 'following': 242,        'img': image_list[1]},
-        {'name': 'testname1', 'id': 'testid1', 'avglikesppost': 55, 'postspw': 12,
-            'followers': '42345', 'following': 112, 'img': image_list[0]},
-        {'name': 'testname2', 'id': 'testid2', 'avglikesppost': 67, 'postspw': 32,
-            'followers': '86', 'following': 242,        'img': image_list[1]},
-        {'name': 'testname3', 'id': 'testid3', 'avglikesppost': 79, 'postspw': 5,
-            'followers': '1593476', 'following': 193,   'img': image_list[2]},
-        {'name': 'testname1', 'id': 'testid1', 'avglikesppost': 55, 'postspw': 12,
-            'followers': '42345', 'following': 112, 'img': image_list[0]},
-        {'name': 'testname2', 'id': 'testid2', 'avglikesppost': 67, 'postspw': 32,
-            'followers': '86', 'following': 242,        'img': image_list[1]},
-        {'name': 'testname1', 'id': 'testid1', 'avglikesppost': 32, 'postspw': 12,
-            'followers': '42345', 'following': 112, 'img': image_list[0]},
-        {'name': 'testname2', 'id': 'testid2', 'avglikesppost': 43, 'postspw': 32,
-            'followers': '86', 'following': 242,        'img': image_list[1]},
-        {'name': 'testname1', 'id': 'testid1', 'avglikesppost': 55, 'postspw': 12,
-            'followers': '42345', 'following': 112, 'img': image_list[0]},
-        {'name': 'testname2', 'id': 'testid2', 'avglikesppost': 67, 'postspw': 32,
-            'followers': '86', 'following': 242,        'img': image_list[1]},
-        {'name': 'testname3', 'id': 'testid3', 'avglikesppost': 79, 'postspw': 5,
-            'followers': '1593476', 'following': 193,   'img': image_list[2]},
-        {'name': 'testname2', 'id': 'testid2', 'avglikesppost': 43, 'postspw': 32,
-            'followers': '86', 'following': 242,        'img': image_list[1]},
-        {'name': 'testname1', 'id': 'testid1', 'avglikesppost': 55, 'postspw': 12,
-            'followers': '42345', 'following': 112, 'img': image_list[0]},
-        {'name': 'testname2', 'id': 'testid2', 'avglikesppost': 67, 'postspw': 32,
-            'followers': '86', 'following': 242,        'img': image_list[1]},
-        {'name': 'testname3', 'id': 'testid3', 'avglikesppost': 79, 'postspw': 5,
-            'followers': '1593476', 'following': 193,   'img': image_list[2]},
-        {'name': 'testname1', 'id': 'testid1', 'avglikesppost': 32, 'postspw': 12,
-            'followers': '42345', 'following': 112, 'img': image_list[0]},
-        {'name': 'testname2', 'id': 'testid2', 'avglikesppost': 43, 'postspw': 32,
-            'followers': '86', 'following': 242,        'img': image_list[1]},
-        {'name': 'testname1', 'id': 'testid1', 'avglikesppost': 55, 'postspw': 12,
-            'followers': '42345', 'following': 112, 'img': image_list[0]},
-        {'name': 'testname2', 'id': 'testid2', 'avglikesppost': 67, 'postspw': 32,
-            'followers': '86', 'following': 242,        'img': image_list[1]},
-        {'name': 'testname3', 'id': 'testid3', 'avglikesppost': 79, 'postspw': 5,
-            'followers': '1593476', 'following': 193,   'img': image_list[2]},
-        {'name': 'testname1', 'id': 'testid1', 'avglikesppost': 55, 'postspw': 12,
-            'followers': '42345', 'following': 112, 'img': image_list[0]},
-        {'name': 'testname2', 'id': 'testid2', 'avglikesppost': 67, 'postspw': 32,
-            'followers': '86', 'following': 242,        'img': image_list[1]},
-        {'name': 'testname1', 'id': 'testid1', 'avglikesppost': 32, 'postspw': 12,
-            'followers': '42345', 'following': 112, 'img': image_list[0]},
-        {'name': 'testname2', 'id': 'testid2', 'avglikesppost': 43, 'postspw': 32,
-            'followers': '86', 'following': 242,        'img': image_list[1]},
-        {'name': 'testname1', 'id': 'testid1', 'avglikesppost': 55, 'postspw': 12,
-            'followers': '42345', 'following': 112, 'img': image_list[0]},
-        {'name': 'testname2', 'id': 'testid2', 'avglikesppost': 67, 'postspw': 32,
-            'followers': '86', 'following': 242,        'img': image_list[1]},
-        {'name': 'testname3', 'id': 'testid3', 'avglikesppost': 79, 'postspw': 5,
-            'followers': '1593476', 'following': 193,   'img': image_list[2]},
-        {'name': 'testname2', 'id': 'testid2', 'avglikesppost': 43, 'postspw': 32,
-            'followers': '86', 'following': 242,        'img': image_list[1]},
-        {'name': 'testname1', 'id': 'testid1', 'avglikesppost': 55, 'postspw': 12,
-            'followers': '42345', 'following': 112, 'img': image_list[0]},
-        {'name': 'testname2', 'id': 'testid2', 'avglikesppost': 67, 'postspw': 32,
-            'followers': '86', 'following': 242,        'img': image_list[1]},
-        {'name': 'testname3', 'id': 'testid3', 'avglikesppost': 79, 'postspw': 5,
-            'followers': '1593476', 'following': 193,   'img': image_list[2]},
-        {'name': 'testname1', 'id': 'testid1', 'avglikesppost': 32, 'postspw': 12,
-            'followers': '42345', 'following': 112, 'img': image_list[0]},
-        {'name': 'testname2', 'id': 'testid2', 'avglikesppost': 43, 'postspw': 32,
-            'followers': '86', 'following': 242,        'img': image_list[1]},
-        {'name': 'testname1', 'id': 'testid1', 'avglikesppost': 55, 'postspw': 12,
-            'followers': '42345', 'following': 112, 'img': image_list[0]},
-        {'name': 'testname2', 'id': 'testid2', 'avglikesppost': 67, 'postspw': 32,
-            'followers': '86', 'following': 242,        'img': image_list[1]},
-        {'name': 'testname3', 'id': 'testid3', 'avglikesppost': 79, 'postspw': 5,
-            'followers': '1593476', 'following': 193,   'img': image_list[2]},
-    ]
+    results = sample_insta_data_maker()
 
     page = request.form.get('page', 1)
 
