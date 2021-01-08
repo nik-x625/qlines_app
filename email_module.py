@@ -84,7 +84,7 @@ def send_email_contact(message_dict):
         logger.debug('# email enqueue error: '+str(e))
         return False
 
-    return True
+    return "The message sent successfully!"
 
 
 def send_email_signup(toaddr):

@@ -170,11 +170,6 @@ users = {'foo@bar.tld': {'password': 'secret'}}
 def search_backend():
     logger.debug('in flask, route is /search_backend')
 
-    image_list = ['https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgfO1Mq0Kcpp5TjqGOja-AnEFkpFLAav4R0g&usqp=CAU',
-                  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBwgu1A5zgPSvfE83nurkuzNEoXs9DMNr8Ww&usqp=CAU',
-                  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGqeiMvcMA8ATx6McIgv0QgGq9njL6_9Q9Ww&usqp=CAU',
-                  ]
-
     results = sample_insta_data_maker()
 
     page = request.form.get('page', 1)
@@ -218,10 +213,8 @@ def contact():
             'datetime': datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 
         logger.debug('# contact contents to send as email: '+str(message_dict))
-        email_result = send_email_contact(message_dict)
-        logger.debug('# email attempt result: '+str(email_result))
-
-        logger.debug('# email_result: ' + str(email_result))
+        result = send_email_contact(message_dict)
+        logger.debug('# email attempt result: '+str(result))
 
     return render_template('contact.html', result=result)
 
