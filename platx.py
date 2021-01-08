@@ -8,7 +8,7 @@ from datetime import datetime
 import flask
 import flask_login
 
-from flask import *
+#from flask import *
 from flask import (Flask, Response, abort, current_app, json, jsonify,
                    make_response, redirect, render_template, request, session,
                    url_for)
@@ -87,7 +87,7 @@ def login():
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
 
-    logger.debug('in flask, route is /signup')
+    logger.debug('in flask, route is /signup, method: '+str(request.method))
 
     logger.debug('')
     logger.debug('# in signup, request.form: '+str(request.form))
@@ -98,7 +98,26 @@ def signup():
     if request.method == 'POST':
         logger.debug('# post method arrived, going to update mongo')
         create_new_user({'username': 'test_user_1', 'password': 'test_pass_1'})
-        send_email_signup('adsd')
+        
+        username = request.form.get('username', None)
+        email = request.form.get('email', None)
+        password = request.form.get('password', None)
+        agreeterms = request.form.get('agreeterms', None)
+        country = request.form.get('country', None)
+
+        new_user_data = {'username':username,
+                    'password':password,
+                    'email':email,
+                    'agreeterms':agreeterms,
+                    'country':country,
+                    'time-formatted':datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    'time':datetime.now()}
+
+        create_new_user(new_user_data)
+
+        # Send email to confirm new user's email address
+        send_email_signup(email)
+
         return render_template('confirm_registration.html')
     else:
         return render_template('signup.html')

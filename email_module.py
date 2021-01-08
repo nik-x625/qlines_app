@@ -79,7 +79,7 @@ def send_email_contact(message_dict):
 
     try:
         email_result = q.enqueue(send_email_async, msg)
-        #logger.debug('# enqueueing result: '+str(email_result))
+        # logger.debug('# enqueueing result: '+str(email_result))
     except Exception as e:
         logger.debug('# email enqueue error: '+str(e))
         return False
@@ -99,6 +99,9 @@ def send_email_signup(toaddr):
     msg['From'] = "Fluence24"
     msg['To'] = toaddr
     msg['Subject'] = "Confirm your email address!"
+
+    logger.debug('# send_email_signup, sending to: '+str(toaddr))
+    logger.debug('# send_email_signup, msg: '+str(msg))
 
     """
     message_html = '''
