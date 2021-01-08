@@ -4,14 +4,16 @@ import logging
 logger = logging.getLogger(__name__)
 
 client = MongoClient('127.0.0.1', 22022)
-db = client['vdm']
-sensor_collection = db['sensor_data']
-contact_submission = db['contact_submission']
+db = client['platform']
+#sensor_collection = db['sensor_data']
+#contact_submission = db['contact_submission']
+
 
 def read_user_doc(username):
     users = db['users']
     user_doc = users.find_one({'username': username})
     return user_doc
+
 
 def write_to_user_doc(key, item):
     users = db['users']
@@ -23,6 +25,7 @@ def write_to_user_doc(key, item):
         }
     )
 
+
 def update_sensor_data(doc):
     sensor_collection.insert_one(doc)
 
@@ -33,9 +36,11 @@ def contact_submission_update(doc):
     #logit('db writing is done')
     return True
 
+
 def create_new_user(doc):
     users = db['users']
     users.insert_one(doc)
+
 
 def read_users_collection():
     return db['users'].find()
@@ -70,4 +75,4 @@ if __name__ == '__main__':
         print
         "Items from users collection: ", i
     '''
-    update_sensor_data({'aa':10,'bb':20})
+    update_sensor_data({'aa': 10, 'bb': 20})

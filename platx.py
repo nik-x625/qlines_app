@@ -7,18 +7,20 @@ from datetime import datetime
 
 import flask
 import flask_login
-import redis
+
 from flask import *
 from flask import (Flask, Response, abort, current_app, json, jsonify,
                    make_response, redirect, render_template, request, session,
                    url_for)
 from flask_login import (LoginManager, UserMixin, login_required, login_user,
                          logout_user)
-from rq import Queue
 
 from email_module import *
 from flask_pager import Pager
 from mongodb_module import *
+
+from logger_custom import get_module_logger
+logger = get_module_logger(__name__)
 
 app = Flask(__name__)
 app.secret_key = os.urandom(42)
@@ -26,25 +28,11 @@ app.config['PAGE_SIZE'] = 10
 app.config['VISIBLE_PAGE_COUNT'] = 5
 
 
-logging.config.fileConfig(fname='logging_config.ini',
-                          disable_existing_loggers=False)
-logger = logging.getLogger(__name__)
-
-
-# for long running jobs
-r = redis.Redis()
-q = Queue('insta', connection=r)
-
-
-
-
-
-
-
 # initialise the flask_login
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
+
 
 # silly user model
 class User(UserMixin):
@@ -53,51 +41,73 @@ class User(UserMixin):
         self.id = id
         self.name = "user" + str(id)
         self.password = self.name + "_secret"
-        
+
     def __repr__(self):
         return "%d/%s/%s" % (self.id, self.name, self.password)
+
 
 # create some users with ids 1 to 5
 users = [User(id) for id in range(1, 5)]
 
 
-
 # somewhere to login
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    print()
-    print('# request.form: '+str(request.form))
-    print('# request.args: '+str(request.args))
-    print('# request.args.get("next"): '+str(request.args.get("next")))
+    logger.debug('in flask, route is /login')
+
+    logger.debug('')
+    logger.debug('# request.form: '+str(request.form))
+    logger.debug('# request.args: '+str(request.args))
+    logger.debug('# request.args.get("next"): '+str(request.args.get("next")))
     if request.method == 'POST':
-            email = request.form.get('email_holder',None)
-            password = request.form.get('password_holder',None)
-            keepsignedin = request.form.get('keepsignedin_holder',None)
+        email = request.form.get('email_holder', None)
+        password = request.form.get('password_holder', None)
+        keepsignedin = request.form.get('keepsignedin_holder', None)
 
-            
-            if keepsignedin == "on":
-                remember_me_flag = True
-            else:
-                remember_me_flag = False
+        # To remember the user even if browser is closed
+        if keepsignedin == "on":
+            remember_me_flag = True
+        else:
+            remember_me_flag = False
 
-            # do user/pass verification here
-            if 1: # if verification passed
+        # do user/pass verification here
+        if 1:  # if verification passed
 
-                next = request.args.get('next')
+            next = request.args.get('next')
 
-                login_user(User(2), remember=remember_me_flag)
-                return redirect(next or url_for('dashboard')) #
-            else:
-                return abort(401)
+            login_user(User(2), remember=remember_me_flag)
+            return redirect(next or url_for('dashboard'))
+        else:
+            return abort(401)
     else:
 
         return render_template('login.html')
 
 
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+
+    logger.debug('in flask, route is /signup')
+
+    logger.debug('')
+    logger.debug('# in signup, request.form: '+str(request.form))
+    logger.debug('# in signup, request.args: '+str(request.args))
+    logger.debug('# in signup, request.args.get("next"): ' +
+                 str(request.args.get("next")))
+
+    if request.method == 'POST':
+        logger.debug('# post method arrived, going to update mongo')
+        create_new_user({'username': 'test_user_1', 'password': 'test_pass_1'})
+        send_email_signup('adsd')
+        return render_template('confirm_registration.html')
+    else:
+        return render_template('signup.html')
+
 
 # somewhere to logout
 @app.route("/logout")
 def logout():
+    logger.debug('in flask, route is /logout')
     logout_user()
     return render_template('index.html')
 
@@ -106,33 +116,24 @@ def logout():
 @app.errorhandler(401)
 def page_not_found(e):
     return Response('<p>Login failed</p>')
-    
-    
-# callback to reload the user object        
+
+
+# callback to reload the user object
 @login_manager.user_loader
 def load_user(userid):
     return User(userid)
 
 
-
-
-
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
-    return render_template('signup.html')
-
-
-
-
-
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
+    logger.debug('in flask, route is /dashboard')
     return render_template('dashboard.html')
 
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    logger.debug('in flask, route is /')
     return render_template('index.html')
 
 
@@ -142,6 +143,7 @@ users = {'foo@bar.tld': {'password': 'secret'}}
 
 @app.route('/search_backend', methods=['GET', 'POST'])
 def search_backend():
+    logger.debug('in flask, route is /search_backend')
 
     image_list = ['https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgfO1Mq0Kcpp5TjqGOja-AnEFkpFLAav4R0g&usqp=CAU',
                   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBwgu1A5zgPSvfE83nurkuzNEoXs9DMNr8Ww&usqp=CAU',
@@ -275,8 +277,10 @@ def search_backend():
 # Used to show the contact page and also POST method to submit the message
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
+    logger.debug('in flask, route is /contact')
+
     result = ''
-    logger.debug('in contact function 1')
+
     if request.method == 'POST':
 
         fname = request.form['fname']
@@ -293,21 +297,13 @@ def contact():
             'message': message,
             'datetime': datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 
-        email_result = None
-        try:
-            email_result = q.enqueue(send_email, message_dict)
-        except Exception as e:
-            # logger.debug('# email enqueue error: '+str(e))
-            print('# email enqueue error: '+str(e))
+        logger.debug('# contact contents to send as email: '+str(message_dict))
+        email_result = send_email_contact(message_dict)
+        logger.debug('# email attempt result: '+str(email_result))
 
-        print('# email_result - voip: ' + str(email_result))
-
-        if email_result:
-            result = 'Your message sent successfully. Thank you!'
+        logger.debug('# email_result: ' + str(email_result))
 
     return render_template('contact.html', result=result)
-
-
 
 
 if __name__ == "__main__":

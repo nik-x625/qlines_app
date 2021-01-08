@@ -1,23 +1,57 @@
+from logger_custom import get_module_logger
 import smtplib
 import logging
+import logging.config
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-default_address = 'mabolfathi@gmail.com'
+import redis
+from rq import Queue
 
+r = redis.Redis()
+q = Queue('insta', connection=r)
+
+default_address = 'mabolfathi@gmail.com'
 fromaddr = "wpmessages1050@gmail.com"
 password = 'spring64'
 
-logger = logging.getLogger(__name__)
+logger = get_module_logger(__name__)
 
 
-def send_email(message_dict, toaddr=None):
+def send_email_async(msg, toaddr=None):
+    '''
+    This method is called by RQ Worker
+    '''
+
     if not toaddr:
         toaddr = default_address
 
+    logger.debug('# in async email func, start....')
+
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.starttls()
+    server.login(fromaddr, password)
+    text = msg.as_string()
+    server.sendmail(fromaddr, toaddr, text)
+    server.quit()
+
+    logger.debug('# fromaddr: '+str(fromaddr))
+    logger.debug('# toaddr: '+str(toaddr))
+    logger.debug('# text: '+str(text))
+
+    logger.debug('# in async email func, end....')
+
+    return True
+
+
+def send_email_contact(message_dict):
+    '''
+    This method is called by Flask route of '/contact'
+    '''
+
     msg = MIMEMultipart()
     msg['From'] = "FLUENCE24"
-    msg['To'] = toaddr
+    msg['To'] = default_address
     msg['Subject'] = message_dict['subject']
 
     message_html = '''
@@ -28,7 +62,7 @@ def send_email(message_dict, toaddr=None):
     Email address: {}
     Date/Time: {}
 
-    Message: 
+    Message:
     {}
     '''.format("FLUENCE24 contact form",
                message_dict.get('subject', ''),
@@ -39,18 +73,64 @@ def send_email(message_dict, toaddr=None):
                message_dict.get('message', '')
                )
 
-    print('# sending email with data: '+str(message_html))
+    logger.debug('# contact contents to send as email: '+str(message_html))
 
-    # 'message_dict['message'], 'plain'))
     msg.attach(MIMEText(message_html, 'plain'))
 
-    server = smtplib.SMTP('smtp.gmail.com', 587)
-    server.starttls()
-    server.login(fromaddr, password)
-    text = msg.as_string()
-    server.sendmail(fromaddr, toaddr, text)
-    server.quit()
+    try:
+        email_result = q.enqueue(send_email_async, msg)
+        #logger.debug('# enqueueing result: '+str(email_result))
+    except Exception as e:
+        logger.debug('# email enqueue error: '+str(e))
+        return False
 
+    return True
+
+
+def send_email_signup(toaddr):
+    '''
+    This method is called by Flask route of '/signup'
+    '''
+
+    if not toaddr:
+        toaddr = default_address
+
+    msg = MIMEMultipart()
+    msg['From'] = "Fluence24"
+    msg['To'] = toaddr
+    msg['Subject'] = "Confirm your email address!"
+
+    """
+    message_html = '''
+    Submitted in portal: {}
+    Subject: {}
+    First name: {}
+    Last name: {}
+    Email address: {}
+    Date/Time: {}
+
+    Message:
+    {}
+    '''.format("FLUENCE24 contact form",
+               message_dict.get('subject', ''),
+               message_dict.get('first_name', ''),
+               message_dict.get('last_name', ''),
+               message_dict.get('email', ''),
+               message_dict.get('datetime', ''),
+               message_dict.get('message', '')
+               )
+    """
+
+    msg.attach(MIMEText("Confirm your email address!", 'plain'))
+
+    try:
+        email_result = q.enqueue(send_email_async, msg, toaddr)
+    except Exception as e:
+        logger.debug('# in send_email_signup, email enqueue error: '+str(e))
+        return False
+
+    logger.debug('# in send_email_signup, send_email result: ' +
+                 str(email_result))
     return True
 
 
