@@ -40,4 +40,11 @@ alias ins='cd /opt/source'
 alias b='cd /opt/source/backend_files/script'
 alias res='/etc/init.d/apache2 restart'
 alias log='tail /var/log/apache2/*.log -f'
-alias p="ps -ef | egrep 'apache|sql|mongo|python'"
+alias p="ps -ef | egrep 'apache|sql|mongo|python|redis|rq'"
+alias mongo='mongo --port=22022 platform'
+
+alias start='/etc/init.d/all_daemons start'
+alias status='/etc/init.d/all_daemons status'
+alias stop='/etc/init.d/all_daemons stop'
+
+
