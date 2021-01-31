@@ -48,3 +48,6 @@ alias status='/etc/init.d/all_daemons status'
 alias stop='/etc/init.d/all_daemons stop'
 
 
+
+export PYTHONPATH='/opt/source'
+

@@ -4,7 +4,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-client = MongoClient('127.0.0.1')
+client = MongoClient('127.0.0.1', 22022)
 db = client.insta
 coll = db.pages
 #contact_submission = db['contact_submission']

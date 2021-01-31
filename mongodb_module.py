@@ -1,5 +1,7 @@
 from pymongo import MongoClient
 import logging
+import datetime
+
 
 logger = logging.getLogger(__name__)
 
@@ -7,6 +9,19 @@ client = MongoClient('127.0.0.1', 22022)
 db = client['platform']
 #sensor_collection = db['sensor_data']
 #contact_submission = db['contact_submission']
+
+
+
+def update_profile_in_db(key, doc):
+    client = MongoClient('127.0.0.1', 22022)
+    db = client.platform
+    coll = db.pages
+    #contact_submission = db['contact_submission']
+
+    doc['ts'] = datetime.datetime.now()
+    coll.update(key, doc, upsert=True)
+
+
 
 
 def read_user_doc(username):
