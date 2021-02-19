@@ -11,7 +11,6 @@ db = client['platform']
 #contact_submission = db['contact_submission']
 
 
-
 def update_profile_in_db(key, doc):
     client = MongoClient('127.0.0.1', 22022)
     db = client.platform
@@ -20,8 +19,6 @@ def update_profile_in_db(key, doc):
 
     doc['ts'] = datetime.datetime.now()
     coll.update(key, doc, upsert=True)
-
-
 
 
 def read_user_doc(username):
