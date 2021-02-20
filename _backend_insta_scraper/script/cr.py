@@ -31,10 +31,14 @@ def manual_sleep():
 
 def flow_is_ok():
     if psutil.cpu_times_percent().iowait > 10:
+        print('# in flow_is_ok, wait io is high!!!')
         return 0
     
     if psutil.cpu_percent() > 60:
+        print('# in flow_is_ok, cpu percentage is high!!!')
         return 0
+
+    print('# in flow_is_ok, so far so good')
     
     return 1
 
@@ -153,50 +157,29 @@ def collect_post_links(browser, tag):
 
     links = []
 
-    if 1:  # for scroll_times in range(1, 6):
+    for iter in range(2, 6):  # for scroll_times in range(1, 6):
         counter = 0
-        for x in browser.find_elements_by_tag_name('a'):
-            link = x.get_attribute('href')
-            if 'www.instagram.com/p/' in link and (link not in links):
-                counter = counter+1
-                links.append(link)
-        print('# new added links: '+str(counter))
-        print('# all collected links so far: '+str(len(links)))
-        browser.execute_script("window.scrollTo(0,2000)")
-        time.sleep(1)
-        browser.execute_script("window.scrollTo(0,6000)")
-        time.sleep(1)
-        browser.execute_script("window.scrollTo(0,10000)")
-        time.sleep(1)
-        browser.execute_script("window.scrollTo(0,15000)")
 
-        for x in browser.find_elements_by_tag_name('a'):
-            link = x.get_attribute('href')
-            if 'www.instagram.com/p/' in link and (link not in links):
-                counter = counter+1
-                links.append(link)
-        print('# new added links: '+str(counter))
-        print('# all collected links so far: '+str(len(links)))
-
-        time.sleep(1)
-        browser.execute_script("window.scrollTo(0,18000)")
-        time.sleep(1)
-        browser.execute_script("window.scrollTo(0,20000)")
-        time.sleep(1)
-        browser.execute_script("window.scrollTo(0,25000)")
+        browser.execute_script("window.scrollTo(0,%d)" %(iter*1000))
         time.sleep(1)
 
         for x in browser.find_elements_by_tag_name('a'):
-            link = x.get_attribute('href')
+            link = ''
+            try:
+                link = x.get_attribute('href')
+            except Exception as e:
+                print('# in collect_post_links, in x.get_attribute, error: '+str(e))
             if 'www.instagram.com/p/' in link and (link not in links):
                 counter = counter+1
                 links.append(link)
-        print('# new added links: '+str(counter))
-        print('# all collected links so far: '+str(len(links)))
 
+        print('# in iteration, new added links: '+str(counter))
+        print('# in iteration, all collected links so far: '+str(len(links)))
+
+
+    print('# the target tag was: '+str(tag))
     print('# all links collected for this hashtag: '+str(links))
     print('# all links len: '+str(len(links)))
-    print('# the target tag was: '+str(tag))
     print('')
     return links
 
@@ -244,7 +227,7 @@ def create_id_list(links, browser):  # , create_id_list):
 
     failed_wget = 0
 
-    for post_link in links:  # [0:5]:
+    for post_link in links[0:7]:  # [0:5]:
         print('')
         print('# going to fetch post page, to get the user ID from it: '+str(post_link))
 
@@ -259,6 +242,7 @@ def create_id_list(links, browser):  # , create_id_list):
                 print('# flow control triggered, flow_is_ok: '+str(flow_is_ok()))
                 print('# flow control triggered, failed_wget: '+str(failed_wget))
                 browser.close()
+                kill_zombies()
                 failed_wget = 0
 
                 while not flow_is_ok():
@@ -398,39 +382,63 @@ def fetch_user_ids(browser, insta_id_list):  # , trained_dict):
 
         user_url = 'https://www.instagram.com/' + id
 
+
+        if not flow_is_ok() or manual_sleep():#read_config('do_sleep'):
+            
+            print('# flow control triggered, flow_is_ok: '+str(flow_is_ok()))
+            browser.close()
+            kill_zombies()
+            failed_wget = 0
+
+            while not flow_is_ok():
+                print('# sleeping a bit.......................')
+                time.sleep(1)
+            while manual_sleep():
+                print('# sleeping a bit.......................manually requested')
+                time.sleep(1)
+
+            print('# !!!!!!!!!!!!!!! Restarting the handler...')
+            browser = create_driver()
+            #login_instagram(browser)
+
+
+
         try:
             print('# going to call wget')
             #browser.set_page_load_timeout(5)
             browser.get(user_url)
             print('# calling wget passed')
 
-            with open('user.html', 'w') as file_handler:
-                file_handler.write(str(browser.page_source))
+            #with open('user.html', 'w') as file_handler:
+            #    file_handler.write(str(browser.page_source))
 
             print('# fetching user info for: '+str(id))
-            print('# fetching followers')
+
             followers = WebDriverWait(browser, 3).until(EC.presence_of_element_located(
                 (By.XPATH, '//li/a[text()=" followers"]/span'))).text
+            print('# followers: '+str(followers))
 
-            print('# fetching following')
+
             following = WebDriverWait(browser, 3).until(EC.presence_of_element_located(
                 (By.XPATH, '//li/a[text()=" following"]/span'))).text
+            print('# following: '+str(following))
 
-            print('# fetching title')
+            #print('# fetching title')
             #title = WebDriverWait(browser, 3).until(EC.presence_of_element_located((By.XPATH, title_xpath))).text
-
             title = WebDriverWait(browser, 10).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, ".rhpdm"))).text
+            print('# title: '+str(title))
 
-            print('# title found: '+str(title))
 
             print('# fetching profile_pic_url')
             profile_pic_url = WebDriverWait(browser, 3).until(
                 EC.presence_of_element_located((By.XPATH, profile_pic_url_xpath))).get_attribute("src")
+            print('# profile_pic_url: '+str(profile_pic_url))
 
             print('# fetching description')
             description = WebDriverWait(browser, 3).until(
                 EC.presence_of_element_located((By.XPATH, description_xpath))).text
+            print('# description: '+str(description))
 
             #print('# fetching posts')
             #posts = WebDriverWait(browser, 3).until(EC.presence_of_element_located(
@@ -452,8 +460,8 @@ def fetch_user_ids(browser, insta_id_list):  # , trained_dict):
             user_doc['title'] = title
             user_doc['profile_pic_url'] = profile_pic_url
             user_doc['description'] = description
-            user_doc['posts'] = posts
-            user_doc['website'] = website
+            #user_doc['posts'] = posts
+            #user_doc['website'] = website
 
             '''
             print()
@@ -465,10 +473,10 @@ def fetch_user_ids(browser, insta_id_list):  # , trained_dict):
             print('# posts: '+str(posts))
             '''
 
-            print('################# user id: '+str(id))
+            print('# user id: '+str(id))
             print('# user_doc: '+str(user_doc))
             update_profile_in_db({'user_id': id}, user_doc)
-            print('# updating the db finished')
+            print('################# updating the db finished')
             print()
 
         except Exception as e:
@@ -509,7 +517,7 @@ def prepared_user_list():
 
 
 def tag_list():
-    tag_list = ['frankfurt','tabaco','melborn','moscow','texas']
+    tag_list = ['mashad','sari','venice']
     return tag_list
 
 if __name__ == '__main__':
