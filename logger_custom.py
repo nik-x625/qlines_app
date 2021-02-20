@@ -1,6 +1,4 @@
-
 import logging
-
 
 def get_module_logger(mod_name):
     logger = logging.getLogger(mod_name)

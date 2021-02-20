@@ -23,7 +23,7 @@ logger = get_module_logger(__name__)
 
 
 def manual_sleep():
-    configParser = configparser.RawConfigParser()
+    configParser = configparser.RawConfigParser() 
     configParser.read('./manual_actions.cfg')
     res = configParser.get('section1', 'manual_sleep')
     res = int(res)
@@ -134,15 +134,15 @@ def login_instagram(browser):
 
 def collect_post_links(browser, tag):
     # it is possible to disable the notification here. Might be needed for a new "click"
-    print('# going to browse Tag url: '+str(tag))
+    print('# all logins went OK, going to browse Tag url: '+str(tag))
 
     try:
-        #browser.set_page_load_timeout(5)
+        browser.set_page_load_timeout(5)
         browser.get('https://www.instagram.com/explore/tags/'+str(tag))
     except Exception as e:
-        print('# in func collect_post_links, in step browser.get, error: '+str(e))
+        print('# in browser.get, error: '+str(e))
 
-    time.sleep(3)
+    time.sleep(1)
 
     #with open('hashtag_browse.html', 'w') as file_handler:
     #    file_handler.write(str(browser.page_source))
@@ -197,7 +197,7 @@ def collect_post_links(browser, tag):
     print('# all links collected for this hashtag: '+str(links))
     print('# all links len: '+str(len(links)))
     print('# the target tag was: '+str(tag))
-    print('')
+    print()
     return links
 
 
@@ -270,7 +270,7 @@ def create_id_list(links, browser):  # , create_id_list):
 
                 print('# !!!!!!!!!!!!!!! Restarting the handler...')
                 browser = create_driver()
-                #login_instagram(browser)
+                login_instagram(browser)
 
 
 
@@ -293,14 +293,12 @@ def create_id_list(links, browser):  # , create_id_list):
             #xpath_without_login = '/html/body/div[1]/section/main/div/div/article/header/div[2]/div[1]/div[1]/a'
             #xpath_with_login_old = "/html/body/div[1]/section/main/div/div[1]/article/header/div[2]/div[1]/div[1]/span/a"
             #xpath_with_login =     '/html/body/div[1]/section/main/div/div[1]/article/header/div[2]/div[1]/div[1]/a'
-            xpath_without_login  = '/html/body/div[1]/section/main/div/div[1]/article/header/div[2]/div[1]/div[1]/a'
-            xpath_with_login = "/html/body/div[1]/section/main/div/div[1]/article/header/div[2]/div[1]/div[1]/span/a"
 
-            xpath_for_username = xpath_without_login
+            xpath_with_login = "/html/body/div[1]/section/main/div/div[1]/article/header/div[2]/div[1]/div[1]/span/a"
 
             print("# going to read the userid")
 
-            insta_id = browser.find_element_by_xpath(xpath_for_username).get_attribute('text')
+            insta_id = browser.find_element_by_xpath(xpath_with_login).get_attribute('text')
 
             #insta_id = WebDriverWait(browser, 5).until(
             #    EC.presence_of_element_located((By.XPATH, xpath_with_login))).text
@@ -318,7 +316,7 @@ def create_id_list(links, browser):  # , create_id_list):
     print('# all ids len: '+str(len(insta_id_list)))
 
     print()
-    print('# finished in func create_id_list, probably going to fetch user info')
+    print('# going to browse the users page and fetch the User info, these results will go to DB')
 
     return insta_id_list
 
@@ -365,7 +363,6 @@ def train_user_page_items(browser, training_dict):
 
 
 def fetch_user_ids(browser, insta_id_list):  # , trained_dict):
-    print('# in func fetch_user_ids')
     '''
     followers_xpath = trained_dict['followers_xpath_trained']
     following_xpath = trained_dict['following_xpath_trained']
@@ -385,29 +382,17 @@ def fetch_user_ids(browser, insta_id_list):  # , trained_dict):
 
     for id in insta_id_list:
         user_doc = {}
-        followers = ''
-        following = ''
-        title = ''
-        description = ''
-        profile_pic_url = ''
-        posts = ''
-        website = ''
-
-
-        print('# fetching user info for: '+str(id))
 
         user_url = 'https://www.instagram.com/' + id
 
         try:
-            print('# going to call wget')
-            #browser.set_page_load_timeout(5)
+            browser.set_page_load_timeout(5)
             browser.get(user_url)
-            print('# calling wget passed')
 
             with open('user.html', 'w') as file_handler:
                 file_handler.write(str(browser.page_source))
 
-            print('# fetching user info for: '+str(id))
+            print('# fetching username info for: '+str(id))
             print('# fetching followers')
             followers = WebDriverWait(browser, 3).until(EC.presence_of_element_located(
                 (By.XPATH, '//li/a[text()=" followers"]/span'))).text
@@ -432,13 +417,13 @@ def fetch_user_ids(browser, insta_id_list):  # , trained_dict):
             description = WebDriverWait(browser, 3).until(
                 EC.presence_of_element_located((By.XPATH, description_xpath))).text
 
-            #print('# fetching posts')
-            #posts = WebDriverWait(browser, 3).until(EC.presence_of_element_located(
-            #    (By.XPATH, '//li/span[text()=" posts"]/span'))).text
+            print('# fetching posts')
+            posts = WebDriverWait(browser, 3).until(EC.presence_of_element_located(
+                (By.XPATH, '//li/span[text()=" posts"]/span'))).text
 
-            #print('# fetching website')
-            #website = WebDriverWait(browser, 3).until(
-            #    EC.presence_of_element_located((By.XPATH, website_xpath))).text
+            print('# fetching website')
+            website = WebDriverWait(browser, 3).until(
+                EC.presence_of_element_located((By.XPATH, website_xpath))).text
 
         except Exception as e:
             print('# in browser.get, in fetching user id pages, error: '+str(e))
@@ -465,6 +450,7 @@ def fetch_user_ids(browser, insta_id_list):  # , trained_dict):
             print('# posts: '+str(posts))
             '''
 
+            print()
             print('################# user id: '+str(id))
             print('# user_doc: '+str(user_doc))
             update_profile_in_db({'user_id': id}, user_doc)
@@ -509,7 +495,7 @@ def prepared_user_list():
 
 
 def tag_list():
-    tag_list = ['frankfurt','tabaco','melborn','moscow','texas']
+    tag_list = ['paris','porto','melborn','moscow','texas']
     return tag_list
 
 if __name__ == '__main__':
@@ -522,17 +508,16 @@ if __name__ == '__main__':
     #browser = create_driver_chrome()
 
     # login to instagram
-    #login_instagram(browser)
+    
 
     # enter hashtag and collect the post links
     #links = collect_post_links(browser, 'california')
 
     for tag in tag_list():
         browser = create_driver()
+        login_instagram(browser)
         links = collect_post_links(browser, tag)
         insta_id_list = create_id_list(links, browser)
-        #insta_id_list = prepared_user_list()
-        browser = create_driver()
         fetch_user_ids(browser, insta_id_list)
 
     #links = prepared_post_list()
