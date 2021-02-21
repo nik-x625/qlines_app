@@ -17,10 +17,15 @@ from mongodb_module import *
 from lxml import html
 import configparser
 import psutil
+import datetime
 
 from logger_custom import get_module_logger
 logger = get_module_logger(__name__)
 
+def printx(text=None):
+    if text is None:
+        text = ''
+    print(str(datetime.datetime.now())+" - "+str(text))
 
 def manual_sleep():
     configParser = configparser.RawConfigParser()
@@ -29,22 +34,23 @@ def manual_sleep():
     res = int(res)
     return res
 
+
 def flow_is_ok():
-    if psutil.cpu_times_percent().iowait > 10:
-        print('# in flow_is_ok, wait io is high!!!')
+    if psutil.cpu_times_percent(interval=0.2).iowait > 10:
+        printx('in flow_is_ok, wait io is high!!!')
         return 0
     
-    if psutil.cpu_percent() > 60:
-        print('# in flow_is_ok, cpu percentage is high!!!')
+    if psutil.cpu_percent(interval=0.2) > 60:
+        printx('in flow_is_ok, cpu percentage is high!!!')
         return 0
 
-    print('# in flow_is_ok, so far so good')
+    printx('in flow_is_ok, so far so good')
     
     return 1
 
 
 def kill_zombies():
-    print('# going to kill all zombie processes of firefox')
+    printx('going to kill all zombie processes of firefox')
     ps_result = subprocess.Popen("pkill -f firefox", shell=True,
                                  stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
 
@@ -56,7 +62,7 @@ def create_driver():
     options.add_argument('--headless')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
-    print('# creating firefox handler')
+    printx('creating firefox handler')
     browser = webdriver.Firefox(options=options)
     return browser
 
@@ -77,13 +83,13 @@ def login_instagram(browser):
     username = "mikemx888"
     password = "spring60709080"
 
-    print('# going to browse the page for first time')
+    printx('going to browse the page for first time')
 
     try:
         browser.set_page_load_timeout(5)
         browser.get("https://www.instagram.com/")
     except Exception as e:
-        print('# in browser.get, login func, error: '+str(e))
+        printx('in browser.get, login func, error: '+str(e))
 
     cookie_button = WebDriverWait(browser, 10).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, ".aOOlW")))
@@ -91,33 +97,33 @@ def login_instagram(browser):
     #with open('login1.html', 'w') as file_handler:
     #    file_handler.write(str(browser.page_source))
 
-    #print("# The page content saved to file: login1.html")
+    #printx("# The page content saved to file: login1.html")
 
     cookie_button.click()
 
     #cookie_accept_button = browser.find_element_by_class_name("bIiDR")
     # cookie_accept_button.click()
-    print('# cookie accept button pressed!')
+    printx('cookie accept button pressed!')
 
     username_input_field = WebDriverWait(browser, 5).until(
         EC.presence_of_element_located((By.NAME, "username"))
     )
     username_input_field.send_keys(username)
 
-    print('# username field done')
+    printx('username field done')
 
     password_input_field = WebDriverWait(browser, 5).until(
         EC.presence_of_element_located((By.NAME, "password"))
     )
     password_input_field.send_keys(password)
 
-    print('# password field done')
+    printx('password field done')
 
     #with open('login2.html', 'w') as file_handler:
     #    file_handler.write(str(browser.page_source))
-    #print("# The page content saved to file: login2.html")
+    #printx("# The page content saved to file: login2.html")
 
-    print('# going to find and click on Log-In')
+    printx('going to find and click on Log-In')
     but = browser.find_element_by_class_name("L3NKy")
     but.click()
     time.sleep(3)
@@ -125,39 +131,39 @@ def login_instagram(browser):
     with open('login3.html', 'w') as file_handler:
         file_handler.write(str(browser.page_source))
 
-    print('# click pressed, waiting for not now')
+    printx('click pressed, waiting for not now')
     not_now = WebDriverWait(browser, 10).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, ".sqdOP")))
-    print('# not now appeared')
+    printx('not now appeared')
     not_now.click()
 
     # to click on "Not now" which appears after login
-    print("# login successful, 'not now' pressed")
+    printx("login successful, 'not now' pressed")
     time.sleep(1)
 
 
 def collect_post_links(browser, tag):
     # it is possible to disable the notification here. Might be needed for a new "click"
-    print('# going to browse Tag url: '+str(tag))
+    printx('going to browse Tag url: '+str(tag))
 
     try:
         #browser.set_page_load_timeout(5)
         browser.get('https://www.instagram.com/explore/tags/'+str(tag))
     except Exception as e:
-        print('# in func collect_post_links, in step browser.get, error: '+str(e))
+        printx('in func collect_post_links, in step browser.get, error: '+str(e))
 
     time.sleep(3)
 
     #with open('hashtag_browse.html', 'w') as file_handler:
     #    file_handler.write(str(browser.page_source))
-    #print("# The page content saved to file: hashtag_browse.html")
+    #printx("# The page content saved to file: hashtag_browse.html")
 
     # browser.execute_script("window.scrollTo(0,10000)")
     #b = browser
 
     links = []
 
-    for iter in range(2, 6):  # for scroll_times in range(1, 6):
+    for iter in range(2, 4):  # for scroll_times in range(1, 6):
         counter = 0
 
         browser.execute_script("window.scrollTo(0,%d)" %(iter*1000))
@@ -168,46 +174,46 @@ def collect_post_links(browser, tag):
             try:
                 link = x.get_attribute('href')
             except Exception as e:
-                print('# in collect_post_links, in x.get_attribute, error: '+str(e))
+                printx('in collect_post_links, in x.get_attribute, error: '+str(e))
             if 'www.instagram.com/p/' in link and (link not in links):
                 counter = counter+1
                 links.append(link)
 
-        print('# in iteration, new added links: '+str(counter))
-        print('# in iteration, all collected links so far: '+str(len(links)))
+        printx('in iteration, new added links: '+str(counter))
+        printx('in iteration, all collected links so far: '+str(len(links)))
 
 
-    print('# the target tag was: '+str(tag))
-    print('# all links collected for this hashtag: '+str(links))
-    print('# all links len: '+str(len(links)))
-    print('')
+    printx('the target tag was: '+str(tag))
+    printx('all links collected for this hashtag: '+str(links))
+    printx('all links len: '+str(len(links)))
+    printx('')
     return links
 
 
 def trainer(browser, element, url):
 
     try:
-        print('# in trainer function - start - element: '+str(element))
-        print('# in trainer function - start - url: '+str(url))
+        printx('in trainer function - start - element: '+str(element))
+        printx('in trainer function - start - url: '+str(url))
 
         try:
             browser.set_page_load_timeout(5)
             browser.get(url)
         except Exception as e:
-            print('# in browser.get, trainer, error: '+str(e))
+            printx('in browser.get, trainer, error: '+str(e))
 
         time.sleep(1)   # todo: enhance this, wait as much as needed, not more
         root = html.fromstring(browser.page_source)
         tree = root.getroottree()
         result = root.xpath('//*[. = "%s"]' % element)
-        print('# in trainer function - result: '+str(result))
+        printx('in trainer function - result: '+str(result))
         res = tree.getpath(result[0])
-        print('# res in trainer: '+str(res))
-        print('# in trainer function - end')
+        printx('res in trainer: '+str(res))
+        printx('in trainer function - end')
         return res
 
     except Exception as e:
-        print('# in trainer function, error: '+str(e))
+        printx('in trainer function, error: '+str(e))
         with open('trainer_error_page_source.html', 'w') as file_handler:
             file_handler.write(str(browser.page_source))
 
@@ -217,7 +223,7 @@ def trainer(browser, element, url):
 def train_the_userid_xpath(train_username, train_url):
     # training to get the xpath for userid from post page
     userid_learned_xpath = trainer(browser, train_username, train_url)
-    print('# userid_learned_xpath: '+str(userid_learned_xpath))
+    printx('userid_learned_xpath: '+str(userid_learned_xpath))
     return userid_learned_xpath
 
 
@@ -228,49 +234,47 @@ def create_id_list(links, browser):  # , create_id_list):
     failed_wget = 0
 
     for post_link in links[0:7]:  # [0:5]:
-        print('')
-        print('# going to fetch post page, to get the user ID from it: '+str(post_link))
+        printx('')
+        printx('going to fetch post page, to get the user ID from it: '+str(post_link))
 
         try:
             
             browser.set_page_load_timeout(5)
             #browser.implicitly_wait(5);
-            print('# setting set_page_load_timeout done')
+            printx('setting set_page_load_timeout done')
 
             if not flow_is_ok() or failed_wget > 2 or manual_sleep():#read_config('do_sleep'):
                 
-                print('# flow control triggered, flow_is_ok: '+str(flow_is_ok()))
-                print('# flow control triggered, failed_wget: '+str(failed_wget))
+                printx('flow control triggered, flow_is_ok: '+str(flow_is_ok()))
+                printx('flow control triggered, failed_wget: '+str(failed_wget))
                 browser.close()
                 kill_zombies()
                 failed_wget = 0
 
                 while not flow_is_ok():
-                    print('# sleeping a bit.......................')
+                    printx('sleeping a bit.......................')
                     time.sleep(1)
                 while manual_sleep():
-                    print('# sleeping a bit.......................manually requested')
+                    printx('sleeping a bit.......................manually requested')
                     time.sleep(1)
 
-                print('# !!!!!!!!!!!!!!! Restarting the handler...')
+                printx('!!!!!!!!!!!!!!! Restarting the handler...')
                 browser = create_driver()
                 #login_instagram(browser)
 
 
 
-            print("# going to do the GET")
+            printx("going to do the GET")
 
             browser.get(post_link)
-            print('# page get finished')
+            printx('page get finished')
         except Exception as e:
-            print('# in browser.get, in fetching post pages, error: '+str(e))
+            printx('in browser.get, in fetching post pages, error: '+str(e))
             if 'Timeout loading page after' in str(e):
                 failed_wget = failed_wget + 1
-                print('# failure added, failed_wget count is: '+str(failed_wget))
+                printx('failure added, failed_wget count is: '+str(failed_wget))
             time.sleep(3)
 
-        #with open('post_'+post_link.split('/')[4]+'.html', 'w') as file_handler:
-        #    file_handler.write(str(browser.page_source))
 
         try:
             # To fetch the Username - test purpose, userid is being learned now
@@ -282,27 +286,33 @@ def create_id_list(links, browser):  # , create_id_list):
 
             xpath_for_username = xpath_without_login
 
-            print("# going to read the userid")
+            printx("going to read the userid")
+
+            time.sleep(1)
 
             insta_id = browser.find_element_by_xpath(xpath_for_username).get_attribute('text')
 
             #insta_id = WebDriverWait(browser, 5).until(
             #    EC.presence_of_element_located((By.XPATH, xpath_with_login))).text
 
-            print('################# id fetched from post page: '+str(insta_id))
+            printx('################# id fetched from post page: '+str(insta_id))
             insta_id_list.append(insta_id)
 
             #browser.close()
 
         except Exception as e:
-            print('# in the post page, the insta id not found, error: ' + str(e)+'  page link: '+str(post_link))
+
+            with open('post_'+post_link.split('/')[4]+'.html', 'w') as file_handler:
+                file_handler.write(str(browser.page_source))
+
+            printx('in the post page, the insta id not found, error: ' + str(e)+'  page link: '+str(post_link))
             continue
 
-    print('# all ids found: '+str(insta_id_list))
-    print('# all ids len: '+str(len(insta_id_list)))
+    printx('all ids found: '+str(insta_id_list))
+    printx('all ids len: '+str(len(insta_id_list)))
 
-    print()
-    print('# finished in func create_id_list, probably going to fetch user info')
+    printx('')
+    printx('finished in func create_id_list, probably going to fetch user info')
 
     return insta_id_list
 
@@ -333,23 +343,23 @@ def train_user_page_items(browser, training_dict):
                     'posts_xpath_trained': posts_xpath_trained,
                     }
 
-    print()
+    printx('')
 
-    print('# followers_xpath:         '+str(followers_xpath))
-    print('# followers_xpath_trained: ' + str(followers_xpath_trained))
+    printx('followers_xpath:         '+str(followers_xpath))
+    printx('followers_xpath_trained: ' + str(followers_xpath_trained))
 
-    print('# following_xpath:         '+str(following_xpath))
-    print('# following_xpath_trained: ' + str(following_xpath_trained))
+    printx('following_xpath:         '+str(following_xpath))
+    printx('following_xpath_trained: ' + str(following_xpath_trained))
 
-    print('# title_xpath:         '+str(title_xpath))
-    print('# title_xpath_trained: '+str(title_xpath_trained))
-    print()
+    printx('title_xpath:         '+str(title_xpath))
+    printx('title_xpath_trained: '+str(title_xpath_trained))
+    printx('')
 
     return trained_dict
 
 
 def fetch_user_ids(browser, insta_id_list):  # , trained_dict):
-    print('# in func fetch_user_ids')
+    printx('in func fetch_user_ids')
     '''
     followers_xpath = trained_dict['followers_xpath_trained']
     following_xpath = trained_dict['following_xpath_trained']
@@ -378,78 +388,78 @@ def fetch_user_ids(browser, insta_id_list):  # , trained_dict):
         website = ''
 
 
-        print('# fetching user info for: '+str(id))
+        printx('fetching user info for: '+str(id))
 
         user_url = 'https://www.instagram.com/' + id
 
 
         if not flow_is_ok() or manual_sleep():#read_config('do_sleep'):
             
-            print('# flow control triggered, flow_is_ok: '+str(flow_is_ok()))
+            printx('flow control triggered, flow_is_ok: '+str(flow_is_ok()))
             browser.close()
             kill_zombies()
             failed_wget = 0
 
             while not flow_is_ok():
-                print('# sleeping a bit.......................')
+                printx('sleeping a bit.......................')
                 time.sleep(1)
             while manual_sleep():
-                print('# sleeping a bit.......................manually requested')
+                printx('sleeping a bit.......................manually requested')
                 time.sleep(1)
 
-            print('# !!!!!!!!!!!!!!! Restarting the handler...')
+            printx('!!!!!!!!!!!!!!! Restarting the handler...')
             browser = create_driver()
             #login_instagram(browser)
 
 
 
         try:
-            print('# going to call wget')
+            printx('going to call wget')
             #browser.set_page_load_timeout(5)
             browser.get(user_url)
-            print('# calling wget passed')
+            printx('calling wget passed')
 
             #with open('user.html', 'w') as file_handler:
             #    file_handler.write(str(browser.page_source))
 
-            print('# fetching user info for: '+str(id))
+            printx('fetching user info for: '+str(id))
 
             followers = WebDriverWait(browser, 3).until(EC.presence_of_element_located(
                 (By.XPATH, '//li/a[text()=" followers"]/span'))).text
-            print('# followers: '+str(followers))
+            printx('followers: '+str(followers))
 
 
             following = WebDriverWait(browser, 3).until(EC.presence_of_element_located(
                 (By.XPATH, '//li/a[text()=" following"]/span'))).text
-            print('# following: '+str(following))
+            printx('following: '+str(following))
 
-            #print('# fetching title')
+            #printx('fetching title')
             #title = WebDriverWait(browser, 3).until(EC.presence_of_element_located((By.XPATH, title_xpath))).text
             title = WebDriverWait(browser, 10).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, ".rhpdm"))).text
-            print('# title: '+str(title))
+            printx('title: '+str(title))
 
 
-            print('# fetching profile_pic_url')
+            printx('fetching profile_pic_url')
             profile_pic_url = WebDriverWait(browser, 3).until(
                 EC.presence_of_element_located((By.XPATH, profile_pic_url_xpath))).get_attribute("src")
-            print('# profile_pic_url: '+str(profile_pic_url))
+            printx('profile_pic_url: '+str(profile_pic_url))
 
-            print('# fetching description')
+            printx('fetching description')
             description = WebDriverWait(browser, 3).until(
                 EC.presence_of_element_located((By.XPATH, description_xpath))).text
-            print('# description: '+str(description))
+            printx('description: '+str(description))
 
-            #print('# fetching posts')
+            #printx('fetching posts')
             #posts = WebDriverWait(browser, 3).until(EC.presence_of_element_located(
             #    (By.XPATH, '//li/span[text()=" posts"]/span'))).text
 
-            #print('# fetching website')
+            #printx('fetching website')
             #website = WebDriverWait(browser, 3).until(
             #    EC.presence_of_element_located((By.XPATH, website_xpath))).text
 
         except Exception as e:
-            print('# in browser.get, in fetching user id pages, error: '+str(e))
+            printx('in browser.get, in fetching user id pages, error: '+str(e))
             time.sleep(5)
 
         try:
@@ -464,30 +474,30 @@ def fetch_user_ids(browser, insta_id_list):  # , trained_dict):
             #user_doc['website'] = website
 
             '''
-            print()
-            print('# followers count: '+str(followers))
-            print('# following count: '+str(following))
-            print('# title: '+str(title))
-            print('# user pic url: '+str(profile_pic_url))
-            print('# description: '+str(description))
-            print('# posts: '+str(posts))
+            printx('')
+            printx('followers count: '+str(followers))
+            printx('following count: '+str(following))
+            printx('title: '+str(title))
+            printx('user pic url: '+str(profile_pic_url))
+            printx('description: '+str(description))
+            printx('posts: '+str(posts))
             '''
 
-            print('# user id: '+str(id))
-            print('# user_doc: '+str(user_doc))
+            printx('user id: '+str(id))
+            printx('user_doc: '+str(user_doc))
             update_profile_in_db({'user_id': id}, user_doc)
-            print('################# updating the db finished')
-            print()
+            printx('################# updating the db finished')
+            printx('')
 
         except Exception as e:
-            print('# problem in fetching some info from users page: ' +
+            printx('problem in fetching some info from users page: ' +
                   str(e)+'  - page id: '+str(id))
             time.sleep(5)
 
 
 def close_browser(browser):
 
-    print('# going to close the browser')
+    printx('going to close the browser')
     # closing and killing all handlers to save memory
     browser.close
     browser.quit
@@ -517,7 +527,8 @@ def prepared_user_list():
 
 
 def tag_list():
-    tag_list = ['mashad','sari','venice']
+    tag_list = ['mashad','sari','venice','texas','team','shift','bmw','volkswagen','kish','moscow','tent','bike','ski','jogging',
+                'running','adidas','green','black','sabz','dunkel','hamburg','galaxy']
     return tag_list
 
 if __name__ == '__main__':
