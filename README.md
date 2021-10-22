@@ -1,1 +1,1 @@
-Some guides in the readme file.
+This is the repository for IoT platform app in the cloud.
