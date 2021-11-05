@@ -19,11 +19,8 @@ NC='\[\033[0m\]'
 PS1="$yellow[$BLUE\t$yellow][$red\H$yellow][$blue\w$grey$yellow]$NC# "
 export LC_ALL=C LANG=C
 export HISTTIMEFORMAT="%d/%m/%y %T "
+export PYTHONPATH='/opt/source'
 
-# Site folders
-alias platx='cd /var/www/site_platx'
-alias voip='cd /var/www/site_voip'
-alias saya='cd /var/www/site_saya'
 
 # All daemons
 alias start='/etc/init.d/all_daemons start'
@@ -37,6 +34,7 @@ alias apstop='/etc/init.d/apache2 stop'
 alias res='/etc/init.d/apache2 stop;apachectl -f /etc/apache2/apache2.conf'
 
 # Miscel
-alias mongo='mongo --port=22022 vdm'
 alias p='ps -ef | egrep '\''apache|sql|mongo|python|rqworker'\'''
-
+alias iot='cd /opt/source'
+alias log='tail /var/log/apache2/*.log -f'
+#alias mongo='mongo --port=22022 platform'
