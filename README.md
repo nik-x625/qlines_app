@@ -11,8 +11,5 @@
 - Find the container id with “docker ps -a”
 - docker exec -it a5ff9cec9f2e /bin/bash  
 - or use the alias "iot", for this you need to define this alias in mac as below:
-- in the file ~/.zprofile
--- alias iot="docker exec -it $(docker ps  | grep 'debian_iot' | awk '{print $1}') /bin/bash"
-
-
-
+- in Mac, in the file ~/.zprofile, add this:
+- alias iot="docker exec -it $(docker ps  | grep 'debian_iot' | awk '{print $1}') /bin/bash"
