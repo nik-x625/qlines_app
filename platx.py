@@ -5,7 +5,7 @@ import os
 import time
 from datetime import datetime
 
-from sample_insta_data import sample_insta_data_maker
+#from sample_insta_data import sample_insta_data_maker
 
 import flask
 import flask_login
@@ -170,7 +170,7 @@ users = {'foo@bar.tld': {'password': 'secret'}}
 def search_backend():
     logger.debug('in flask, route is /search_backend')
 
-    results = sample_insta_data_maker()
+    results = [] #sample_insta_data_maker()
 
     page = request.form.get('page', 1)
 
