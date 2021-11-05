@@ -1,7 +1,7 @@
 **Steps to build the development environment**
 
 - git clone git@gitlab.com:mehdifth/platform.git
-note: here the public ssh keys must be already loaded in the gitlab
+- Note: here the public ssh keys must be already loaded in the gitlab
 - mv platform docker_iot
 - vi Dockerfile
 - add these contents:
