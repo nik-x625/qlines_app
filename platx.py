@@ -105,12 +105,11 @@ def signup():
         email = request.form.get('email', None)
         password = request.form.get('password', None)
         agreeterms = request.form.get('agreeterms', None)
-        
+
         if not agreeterms:
             agreeterms = "off"
-        
-        country = request.form.get('country', None)
 
+        country = request.form.get('country', None)
         new_user_data = {'username': username,
                          'password': password,
                          'email': email,
@@ -170,7 +169,7 @@ users = {'foo@bar.tld': {'password': 'secret'}}
 def search_backend():
     logger.debug('in flask, route is /search_backend')
 
-    results = [] #sample_insta_data_maker()
+    results = []  # sample_insta_data_maker()
 
     page = request.form.get('page', 1)
 
