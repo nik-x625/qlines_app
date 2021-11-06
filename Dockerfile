@@ -6,6 +6,7 @@ RUN apt-get -y install redis
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.7 1
 RUN dpkg-reconfigure -f noninteractive tzdata
 RUN pip3 install flask flask_login redis rq pymongo
+RUN useradd flask
 
 
 # bashrc content
@@ -18,7 +19,7 @@ ADD apache_configuration.conf /tmp/
 RUN cp /tmp/apache_configuration.conf /etc/apache2/sites-available/000-default.conf
 RUN echo "ServerName 127.0.0.1" >> /etc/apache2/apache2.conf
 RUN a2enmod rewrite
-RUN useradd flask
-RUN /etc/init.d/apache2 start
+RUN sed -i 's/Listen 80/Listen 8080/g' /etc/apache2/ports.conf
+RUN /etc/init.d/apache2 restart
 
 CMD tail -f /dev/null
