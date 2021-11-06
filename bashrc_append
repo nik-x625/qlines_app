@@ -29,7 +29,7 @@ alias status='/etc/init.d/all_daemons status'
 
 # Apache
 alias whox="tail /var/log/apache2/*.log -f | grep -v '95.91.255.30' | grep -v '127.0.0.1 - -'"
-alias apstart='apachectl -f /etc/apache2/apache2.conf'
+alias apstart='/etc/init.d/apache2 start'
 alias apstop='/etc/init.d/apache2 stop'
 #alias res='/etc/init.d/apache2 stop;apachectl -f /etc/apache2/apache2.conf'
 alias res='/etc/init.d/apache2 restart'
