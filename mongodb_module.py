@@ -5,7 +5,7 @@ import datetime
 
 logger = logging.getLogger(__name__)
 
-client = MongoClient('127.0.0.1', 22022)
+client = MongoClient('127.0.0.1')
 db = client['platform']
 #sensor_collection = db['sensor_data']
 #contact_submission = db['contact_submission']

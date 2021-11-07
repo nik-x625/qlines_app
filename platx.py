@@ -2,18 +2,18 @@
 import logging
 import logging.config
 import os
+
 import time
-from datetime import datetime
+from datetime import datetime as dt
 
 #from sample_insta_data import sample_insta_data_maker
 
-import flask
 import flask_login
 
-#from flask import *
 from flask import (Flask, Response, abort, current_app, json, jsonify,
                    make_response, redirect, render_template, request, session,
                    url_for)
+
 from flask_login import (LoginManager, UserMixin, login_required, login_user,
                          logout_user)
 
@@ -35,10 +35,10 @@ login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
 
-
 # silly user model
-class User(UserMixin):
 
+
+class User(UserMixin):
     def __init__(self, id):
         self.id = id
         self.name = "user" + str(id)
@@ -115,8 +115,8 @@ def signup():
                          'email': email,
                          'agreeterms': agreeterms,
                          'country': country,
-                         'time-formatted': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                         'time': datetime.now()}
+                         'time-formatted': dt.now().strftime("%Y-%m-%d %H:%M:%S"),
+                         'time': dt.now()}
 
         create_new_user(new_user_data)
 
