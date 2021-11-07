@@ -22,13 +22,13 @@ from flask_pager import Pager
 from mongodb_module import *
 
 from logger_custom import get_module_logger
+
 logger = get_module_logger(__name__)
 
 app = Flask(__name__)
 app.secret_key = os.urandom(42)
 app.config['PAGE_SIZE'] = 10
 app.config['VISIBLE_PAGE_COUNT'] = 5
-
 
 # initialise the flask_login
 login_manager = flask_login.LoginManager()
@@ -58,9 +58,10 @@ def login():
     logger.debug('in flask, route is /login')
 
     logger.debug('')
-    logger.debug('# request.form: '+str(request.form))
-    logger.debug('# request.args: '+str(request.args))
-    logger.debug('# request.args.get("next"): '+str(request.args.get("next")))
+    logger.debug('# request.form: ' + str(request.form))
+    logger.debug('# request.args: ' + str(request.args))
+    logger.debug('# request.args.get("next"): ' +
+                 str(request.args.get("next")))
     if request.method == 'POST':
         email = request.form.get('email_holder', None)
         password = request.form.get('password_holder', None)
@@ -89,11 +90,11 @@ def login():
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
 
-    logger.debug('in flask, route is /signup, method: '+str(request.method))
+    logger.debug('in flask, route is /signup, method: ' + str(request.method))
 
     logger.debug('')
-    logger.debug('# in signup, request.form: '+str(request.form))
-    logger.debug('# in signup, request.args: '+str(request.args))
+    logger.debug('# in signup, request.form: ' + str(request.form))
+    logger.debug('# in signup, request.args: ' + str(request.args))
     logger.debug('# in signup, request.args.get("next"): ' +
                  str(request.args.get("next")))
 
@@ -110,13 +111,15 @@ def signup():
             agreeterms = "off"
 
         country = request.form.get('country', None)
-        new_user_data = {'username': username,
-                         'password': password,
-                         'email': email,
-                         'agreeterms': agreeterms,
-                         'country': country,
-                         'time-formatted': dt.now().strftime("%Y-%m-%d %H:%M:%S"),
-                         'time': dt.now()}
+        new_user_data = {
+            'username': username,
+            'password': password,
+            'email': email,
+            'agreeterms': agreeterms,
+            'country': country,
+            'time-formatted': dt.now().strftime("%Y-%m-%d %H:%M:%S"),
+            'time': dt.now()
+        }
 
         create_new_user(new_user_data)
 
@@ -183,9 +186,11 @@ def search_backend():
 
     skip = (page - 1) * current_app.config['PAGE_SIZE']
     limit = current_app.config['PAGE_SIZE']
-    data_to_show = results[skip: skip + limit]
+    data_to_show = results[skip:skip + limit]
 
-    return render_template('search_result.html', results=data_to_show, pages=pages)
+    return render_template('search_result.html',
+                           results=data_to_show,
+                           pages=pages)
 
 
 # Used to show the contact page and also POST method to submit the message
@@ -209,11 +214,13 @@ def contact():
             'email': email,
             'subject': subject,
             'message': message,
-            'datetime': datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+            'datetime': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        }
 
-        logger.debug('# contact contents to send as email: '+str(message_dict))
+        logger.debug('# contact contents to send as email: ' +
+                     str(message_dict))
         result = send_email_contact(message_dict)
-        logger.debug('# email attempt result: '+str(result))
+        logger.debug('# email attempt result: ' + str(result))
 
     return render_template('contact.html', result=result)
 
