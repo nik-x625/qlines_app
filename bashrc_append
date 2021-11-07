@@ -40,3 +40,6 @@ alias iot='cd /opt/source'
 alias log='tail /var/log/apache2/*.log -f'
 #alias mongo='mongo --port=22022 platform'
 alias pip='pip3'
+
+# Git shortcuts
+alias gitall='git add .;git commit -m \"update\";git push origin master'
