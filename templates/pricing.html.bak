@@ -48,8 +48,7 @@
                     <div class="container">
                         <div class="col-md-12 col-md-offset-0">
                             <div class="animate-box">
-                                <h2>Smooth out your remote access!</h2>
-                                <p>Enriched device access and analytics with flexible protocols and environments</p>
+                                <h2>Membership and Pricing</h2>
                             </div>
                         </div>
                     </div>
@@ -61,42 +60,62 @@
             <div class="container">
                 <div class="row">
 
-                    <div class="col-md-4 text-center animate-box">
+                    <div class="col-md-3 text-center animate-box">
                         <div class="services">
                             <span class="icon">
 								<i class="icon-envelop"></i>
 							</span>
-                            <div class="desc">
-                                <h3>Remote SMS send and receive</h3>
-                                <p>Control your SIM card SMS send and receive anywhere from internet! If you travel to another continent or overseas, send and receive the SMS with local tariffs.</p>
+                            <h3>Free</h3>
+                            <div class="desc text-left">
+                                <p>✔ One SMS station (GSM device)</p>
+                                <p>✔ 100 SMS transactions (cloud send/receive) per month</p>
+                                <p>✔ One dashboard user</p>
+                                <p>✔ Email notification of the incoming SMS</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-md-4 text-center animate-box">
+                    <div class="col-md-3 text-center animate-box">
                         <div class="services">
                             <span class="icon">
 								<i class="icon-mobile"></i>
 							</span>
-                            <div class="desc">
-                                <h3>GSM/4G/5G integration</h3>
-                                <p>Manage your cellular network instantly! Behind the NAT, Proxy, Firewal, etc.? Our cloud access helps to reach ouf the devices!</p>
+                            <h3>Standard</h3>
+                            <div class="desc text-left">
+                                <p>✔ 5 SMS station (GSM device)</p>
+                                <p>✔ Unlimited SMS transactions (cloud send/receive) per month</p>
+                                <p>✔ Up to 2 dashboard users</p>
+                                <p>✔ Email notification of the incoming SMS</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-md-4 text-center animate-box">
+                    <div class="col-md-3 text-center animate-box">
                         <div class="services">
                             <span class="icon">
 								<i class="icon-equalizer"></i>
 							</span>
-                            <div class="desc">
-                                <h3>User friendly dashboard</h3>
-                                <p>Easy to use dashboard with analytics and statistics of your local site.</p>
+                            <h3>Premium</h3>
+                            <div class="desc text-left">
+                                <p>✔ Up to 20 SMS station (GSM device)</p>
+                                <p>✔ Unlimited SMS transactions (cloud send/receive) per month</p>
+                                <p>✔ Up to 10 dashboard users</p>
+                                <p>✔ Email notification of the incoming SMS</p>
                             </div>
                         </div>
                     </div>
 
+                    <div class="col-md-3 text-center animate-box">
+                        <div class="services">
+                            <span class="icon">
+								<i class="icon-equalizer"></i>
+							</span>
+                            <h3>Custom Setup</h3>
+                            <div class="desc text-left">
+                                <p>✔ Contact us! </p>
+                            </div>
+                        </div>
+                    </div>
 
 
                 </div>

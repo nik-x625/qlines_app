@@ -1,133 +1,177 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
+
+<head>
     {% include 'header.html' %}
-	</head>
-	<body>
-	
-	<!-- jQuery -->
-	<script src="../static/js/jquery.min.js"></script>
-	<!-- jQuery Easing -->
-	<script src="../static/js/jquery.easing.1.3.js"></script>
-	<!-- Bootstrap -->
-	<script src="../static/js/bootstrap.min.js"></script>
-	<!-- Waypoints -->
-	<script src="../static/js/jquery.waypoints.min.js"></script>
-	<!-- Stellar Parallax -->
-	<script src="../static/js/jquery.stellar.min.js"></script>
-	<!-- YTPlayer -->
-	<script src="../static/js/jquery.mb.YTPlayer.min.js"></script>
-	<!-- Owl carousel -->
-	<script src="../static/s/owl.carousel.min.js"></script>
-	<!-- Magnific Popup -->
-	<script src="../static/js/jquery.magnific-popup.min.js"></script>
-	<script src="../static/js/magnific-popup-options.js"></script>
-	<!-- Counters -->
-	<script src="../static/js/jquery.countTo.js"></script>
-	<!-- Main -->
-	<script src="../static/js/main.js"></script>
-		
-	<div class="colorlib-loader"></div>
 
-	<div id="page">
-		{% include 'nav.html' %}
+    <!-- jQuery -->
+    <script src="static/js/jquery.min.js"></script>
+    <!-- jQuery Easing -->
+    <script src="static/js/jquery.easing.1.3.js"></script>
+    <!-- Bootstrap -->
+    <script src="static/js/bootstrap.min.js"></script>
+    <!-- Waypoints -->
+    <script src="static/js/jquery.waypoints.min.js"></script>
+    <!-- Stellar Parallax -->
+    <script src="static/js/jquery.stellar.min.js"></script>
+    <!-- YTPlayer -->
+    <!-- Owl carousel -->
+    <script src="static/js/owl.carousel.min.js"></script>
+    <!-- Magnific Popup -->
+    <script src="static/js/jquery.magnific-popup.min.js"></script>
+    <script src="static/js/magnific-popup-options.js"></script>
+    <!-- Counters -->
+    <script src="static/js/jquery.countTo.js"></script>
+    <!-- Main -->
+    <script src="static/js/main.js"></script>
 
-		<section id="home" class="video-hero" style="height: 400px; background-image: url(../static/images/cover_img_1.jpg);  background-size:cover; background-position: center center;background-attachment:fixed;" data-section="home">
-		<div class="overlay"></div>
-			<div class="display-t display-t2 text-center">
-				<div class="display-tc display-tc2">
-					<div class="container">
-						<div class="col-md-12 col-md-offset-0">
-							<div class="animate-box">
-								<h2>Services</h2>
-								<p class="breadcrumbs"><span><a href="index.html">Home</a></span> <span>Services</span></p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
+</head>
 
-		<div class="colorlib-services">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-4 text-center animate-box">
-						<div class="services">
-							<span class="icon">
-								<i class="icon-browser"></i>
-							</span>
-							<div class="desc">
-								<h3>Create your own template</h3>
-								<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-4 text-center animate-box">
-						<div class="services">
-							<span class="icon">
-								<i class="icon-download"></i>
-							</span>
-							<div class="desc">
-								<h3>Automatic Backup Data</h3>
-								<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-4 text-center animate-box">
-						<div class="services">
-							<span class="icon">
-								<i class="icon-layers"></i>
-							</span>
-							<div class="desc">
-								<h3>Page Builder</h3>
-								<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-4 text-center animate-box">
-						<div class="services">
-							<span class="icon">
-								<i class="icon-video"></i>
-							</span>
-							<div class="desc">
-								<h3>Watch tutorial</h3>
-								<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-4 text-center animate-box">
-						<div class="services">
-							<span class="icon">
-								<i class="icon-gears"></i>
-							</span>
-							<div class="desc">
-								<h3>Help &amp; Support</h3>
-								<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-4 text-center animate-box">
-						<div class="services">
-							<span class="icon">
-								<i class="icon-adjustments"></i>
-							</span>
-							<div class="desc">
-								<h3>Lots of features</h3>
-								<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+<body>
+    <div class="colorlib-loader"></div>
 
-		{% include 'footer.html' %}
-	</div>
+    <div id="page">
+        {% include 'nav.html' %}
 
-	<div class="gototop js-top">
-		<a href="#" class="js-gotop"><i class="icon-arrow-up2"></i></a>
-	</div>
+        <section id="home" class="video-hero" style="height: 400px; background-image: url(./static/images/cover_img_1.jpg);  background-size:cover; background-position: center center;background-attachment:fixed;" data-section="home">
+            <div class="overlay"></div>
+            <div class="display-t display-t2 text-center">
+                <div class="display-tc display-tc2">
+                    <div class="container">
+                        <div class="col-md-12 col-md-offset-0">
+                            <div class="animate-box">
+                                <h2>Cloud services you rely on...</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-	</body>
+        <div class="colorlib-work">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="work-flex">
+                            <div class="half animate-box">
+                                <div class="row no-gutters">
+                                    <div class="col-md-12 col-md-push-12 no-gutters">
+                                        <a href="#" class="work-img" style="background-image: url(../static/images/work-1.jpg);"></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="half animate-box">
+                                <div class="row no-gutters">
+                                    <div class="col-md-12 col-md-pull-12 no-gutters">
+                                        <div class="display-t desc">
+                                            <div class="display-tc">
+                                                <h2><a href="#">A beige chair at a basket</a></h2>
+                                                <p>Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="work-flex">
+                            <div class="half animate-box">
+                                <div class="row no-gutters">
+                                    <div class="col-md-12 no-gutters">
+                                        <a href="#" class="work-img" style="background-image: url(images/work-2.jpg);"></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="half animate-box">
+                                <div class="row no-gutters">
+                                    <div class="col-md-12 no-gutters">
+                                        <div class="display-t desc">
+                                            <div class="display-tc">
+                                                <h2><a href="#">A beige chair at a small white desk</a></h2>
+                                                <p>Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="work-flex">
+                            <div class="half animate-box">
+                                <div class="row no-gutters">
+                                    <div class="col-md-12 col-md-push-12 no-gutters">
+                                        <a href="#" class="work-img" style="background-image: url(images/work-3.jpg);"></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="half animate-box">
+                                <div class="row no-gutters">
+                                    <div class="col-md-12 col-md-pull-12 no-gutters">
+                                        <div class="display-t desc">
+                                            <div class="display-tc">
+                                                <h2><a href="#">A beige chair at a basket</a></h2>
+                                                <p>Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="work-flex">
+                            <div class="half animate-box">
+                                <div class="row no-gutters">
+                                    <div class="col-md-12 no-gutters">
+                                        <a href="#" class="work-img" style="background-image: url(images/work-4.jpg);"></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="half animate-box">
+                                <div class="row no-gutters">
+                                    <div class="col-md-12 no-gutters">
+                                        <div class="display-t desc">
+                                            <div class="display-tc">
+                                                <h2><a href="#">A beige chair at a small white desk</a></h2>
+                                                <p>Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <ul class="pagination">
+                            <li class="disabled"><a href="#">&laquo;</a></li>
+                            <li class="active"><a href="#">1</a></li>
+                            <li><a href="#">2</a></li>
+                            <li><a href="#">3</a></li>
+                            <li><a href="#">4</a></li>
+                            <li><a href="#">&raquo;</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% include 'footer.html' %}
+
+    </div>
+
+    <div class="gototop js-top">
+        <a href="#" class="js-gotop">
+            <i class="icon-arrow-up2"></i>
+        </a>
+    </div>
+
+</body>
+
 </html>
-

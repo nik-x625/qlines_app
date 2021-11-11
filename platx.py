@@ -164,6 +164,17 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/products', methods=['GET', 'POST'])
+def products():
+    logger.debug('in flask, route is /products')
+    return render_template('products.html')
+
+@app.route('/pricing', methods=['GET', 'POST'])
+def pricing():
+    logger.debug('in flask, route is /pricing')
+    return render_template('pricing.html')
+
+
 # test only
 users = {'foo@bar.tld': {'password': 'secret'}}
 
