@@ -1,21 +1,20 @@
 #!/usr/bin/python
+from rq import Queue
+import redis
 import logging
 import logging.config
 import os
 
-import time
 from datetime import datetime as dt
 
-#from sample_insta_data import sample_insta_data_maker
-
-import flask_login
 
 from flask import (Flask, Response, abort, current_app, json, jsonify,
                    make_response, redirect, render_template, request, session,
                    url_for)
 
 from flask_login import (LoginManager, UserMixin, login_required, login_user,
-                         logout_user)
+                         logout_user, LoginManager)
+
 
 from email_module import *
 from flask_pager import Pager
@@ -31,16 +30,13 @@ app.config['PAGE_SIZE'] = 10
 app.config['VISIBLE_PAGE_COUNT'] = 5
 
 # initialise the flask_login
-login_manager = flask_login.LoginManager()
+login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
 
 # for long running functions
-import redis
-from rq import Queue
 r = redis.Redis()
 q = Queue('platx', connection=r)
-
 
 
 class User(UserMixin):
@@ -174,6 +170,7 @@ def products():
     logger.debug('in flask, route is /products')
     return render_template('products.html')
 
+
 @app.route('/pricing', methods=['GET', 'POST'])
 def pricing():
     logger.debug('in flask, route is /pricing')
@@ -213,22 +210,22 @@ def search_backend():
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
     result = ''
-    logger.debug('in contact function 1')
-    if flask.request.method == 'POST':
+    logger.debug('in flask, in the contact function')
+    if request.method == 'POST':
 
-        fname = flask.request.form['fname']
-        lname = flask.request.form['lname']
-        subject = flask.request.form['subject']
-        email = flask.request.form['email']
-        message = flask.request.form['message']
+        fname = request.form['fname']
+        lname = request.form['lname']
+        subject = request.form['subject']
+        email = request.form['email']
+        message = request.form['message']
 
         message_dict = {
-               'first_name': fname,
-               'last_name': lname,
-               'email': email,
-               'subject': subject,
-               'message': message,
-               'datetime': datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+            'first_name': fname,
+            'last_name': lname,
+            'email': email,
+            'subject': subject,
+            'message': message,
+            'datetime': dt.now().strftime("%Y-%m-%d %H:%M:%S")}
 
         email_result = q.enqueue(send_email, message_dict)
         logger.debug('# email_result: ' + str(email_result))
@@ -237,6 +234,7 @@ def contact():
             result = 'Your message sent successfully. Thank you!'
 
     return render_template('contact.html', result=result)
+
 
 if __name__ == "__main__":
     app.logger.setLevel(logging.DEBUG)
