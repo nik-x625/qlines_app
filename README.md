@@ -20,10 +20,9 @@
 
 
 **Deployment to cloud vps**
-add this to the apache config: python-path=/var/www/site_platx:/usr/local/lib/python3.7/dist-packages
-change the logger file path:
-- edit the file logger_custom.py
-- change from "/opt/source/mylogs.log" to "/var/www/site_platx/mylogs.log"
+- add this to the apache config: 
+- python-path=/var/www/site_platx:/usr/local/lib/python3.7/dist-packages
+- change the logger file path. edit the file logger_custom.py and change from "/opt/source/mylogs.log" to "/var/www/site_platx/mylogs.log"
 - in apache might be needed to remove the tags: `<IfDefine IgnoreBlockComment> and </IfDefine>`
 
 
