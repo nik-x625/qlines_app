@@ -6,7 +6,7 @@ from email.mime.text import MIMEText
 default_address = 'mabolfathi@gmail.com'
 
 fromaddr = "wpmessages1050@gmail.com"
-password = 'spring64'
+password = 'gj46_d3tgn14nvlsw'
 
 logger = logging.getLogger(__name__)
 
@@ -69,4 +69,4 @@ def submit_email_for_newsletter(message_dict):
 
 
 if __name__ == "__main__":
-    send_email('test_subj2','test_body2')
+    send_email({'first_name': '', 'last_name': '', 'email': '', 'subject': '', 'message': 'xx','datetime':'fff'})

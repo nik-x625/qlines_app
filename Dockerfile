@@ -14,8 +14,8 @@ ADD bashrc_append /tmp/
 RUN cat /tmp/bashrc_append >> /root/.bashrc
 
 # apache config
-ADD apache_configuration.conf /tmp/
-RUN cp /tmp/apache_configuration.conf /etc/apache2/sites-available/000-default.conf
+ADD _apache_site_config.conf /tmp/
+RUN cp /tmp/_apache_site_config.conf /etc/apache2/sites-available/000-default.conf
 RUN echo "ServerName 127.0.0.1" >> /etc/apache2/apache2.conf
 RUN a2enmod rewrite
 RUN sed -i 's/Listen 80/Listen 8080/g' /etc/apache2/ports.conf
@@ -23,6 +23,11 @@ RUN sed -i 's/Listen 80/Listen 8080/g' /etc/apache2/ports.conf
 # git
 RUN git config --global user.email "Mehdi's email from docker"
 RUN git config --global user.name "Mehdi from docker"
+
+# RQ worker init script
+ADD _init_script_rq_worker_platx /tmp/
+RUN cp /tmp/_init_script_rq_worker_platx /etc/init.d/rqworker
+
 
 # MongoDB installation
 RUN wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | apt-key add -
@@ -34,15 +39,14 @@ RUN apt-get update
 RUN apt-get install -y mongodb-org mongodb-org-database mongodb-org-server mongodb-org-shell mongodb-org-mongos mongodb-org-tools
 
 # MongoDB init script
-ADD mongodb_init_script /tmp/
-RUN cp /tmp/mongodb_init_script /etc/init.d/mongodb
+ADD _init_script_mongodb /tmp/
+RUN cp /tmp/_init_script_mongodb /etc/init.d/mongodb
 RUN chmod 755 /etc/init.d/mongodb
 
 # all_daemons init script
-ADD all_daemons_init_script /tmp/
-RUN cp /tmp/all_daemons_init_script /etc/init.d/all_daemons
+ADD _init_script_all_daemons /tmp/
+RUN cp /tmp/_init_script_all_daemons /etc/init.d/all_daemons
 RUN chmod 755 /etc/init.d/all_daemons
 
 # To keep container alive
 CMD /etc/init.d/all_daemons restart;tail -f /dev/null
-

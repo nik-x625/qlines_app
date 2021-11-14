@@ -9,8 +9,8 @@
 # Files with exactly that name (and executable flag set!) should be placed in
 # $SUBSERVICES_LOCATION (see below). By default, that should already be the
 # case.
-SUBSERVICES_START="mongod redis-server rq_worker_insta"
-SUBSERVICES_STOP="rq_worker_insta redis-server mongod"
+SUBSERVICES_START="mongodb redis-server rqworker apache2"
+SUBSERVICES_STOP="apache2 rqworker redis-server mongodb"
 
 # This defines where this script looks for the other init-scripts. Must end
 # with a "/".

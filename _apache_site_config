@@ -1,6 +1,6 @@
 <virtualhost *:8080>
-        ServerName panorama24-dev.tk
-        #ServerAlias *.panorama24-dev.tk
+        ServerName qlines-dev.net
+        #ServerAlias *.qlines-dev.net
         WSGIDaemonProcess platx_main user=flask group=www-data threads=5 home=/opt/source
         WSGIScriptAlias / /opt/source/platx.wsgi
 
