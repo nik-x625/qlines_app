@@ -9,9 +9,11 @@ RUN dpkg-reconfigure -f noninteractive tzdata
 RUN pip3 install flask flask_login redis rq pymongo flake8
 RUN useradd flask
 
+
 # bashrc content
 ADD _bashrc_append /tmp/
 RUN cat /tmp/_bashrc_append >> /root/.bashrc
+
 
 # apache config
 ADD _apache_site.conf /tmp/
@@ -20,9 +22,11 @@ RUN echo "ServerName 127.0.0.1" >> /etc/apache2/apache2.conf
 RUN a2enmod rewrite
 RUN sed -i 's/Listen 80/Listen 8080/g' /etc/apache2/ports.conf
 
+
 # git
 RUN git config --global user.email "Mehdi's email from docker"
 RUN git config --global user.name "Mehdi from docker"
+
 
 # RQ worker init script
 ADD _init_script_rq_worker_platx /tmp/
@@ -38,15 +42,18 @@ RUN echo "deb http://repo.mongodb.org/apt/debian buster/mongodb-org/5.0 main" | 
 RUN apt-get update
 RUN apt-get install -y mongodb-org mongodb-org-database mongodb-org-server mongodb-org-shell mongodb-org-mongos mongodb-org-tools
 
+
 # MongoDB init script
 ADD _init_script_mongodb /tmp/
 RUN cp /tmp/_init_script_mongodb /etc/init.d/mongodb
 RUN chmod 755 /etc/init.d/mongodb
 
+
 # all_daemons init script
 ADD _init_script_all_daemons /tmp/
 RUN cp /tmp/_init_script_all_daemons /etc/init.d/all_daemons
 RUN chmod 755 /etc/init.d/all_daemons
+
 
 # To keep container alive
 CMD /etc/init.d/all_daemons restart;tail -f /dev/null
