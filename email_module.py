@@ -1,24 +1,24 @@
 import smtplib
-import logging
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from logger_custom import get_module_logger
 
 default_address = 'mabolfathi@gmail.com'
 
 fromaddr = "wpmessages1050@gmail.com"
 password = 'gj46_d3tgn14nvlsw'
 
-logger = logging.getLogger(__name__)
+logger = get_module_logger(__name__)
 
-def send_email(message_dict,toaddr=None):
+
+def send_email(message_dict, toaddr=None):
     if not toaddr:
         toaddr = default_address
 
-    logger.debug('in send_email method, in module email_module')
-
+    logger.debug('picked from queue, in send_email method')
 
     msg = MIMEMultipart()
-    msg['From'] = "SayaNetworks contact form"
+    msg['From'] = "Q-Lines Contact Page"
     msg['To'] = toaddr
     msg['Subject'] = message_dict['subject']
 
@@ -32,25 +32,33 @@ def send_email(message_dict,toaddr=None):
 
     Message:
     {}
-    '''.format( "SayaNetworks contact form",
-                message_dict['subject'],
-                message_dict['first_name'],
-                message_dict['last_name'],
-                message_dict['email'],
-                message_dict['datetime'],
-                message_dict['message']
-                )
+    '''.format("Q-Lines contact form",
+               message_dict['subject'],
+               message_dict['first_name'],
+               message_dict['last_name'],
+               message_dict['email'],
+               message_dict['datetime'],
+               message_dict['message']
+               )
 
-    msg.attach(MIMEText(message_html, 'plain')) #'message_dict['message'], 'plain'))
+    logger.debug(
+        'picked from queue, in send_email method, going to login to gmail and submit the email')
 
+    # 'message_dict['message'], 'plain'))
+    msg.attach(MIMEText(message_html, 'plain'))
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.starttls()
     server.login(fromaddr, password)
     text = msg.as_string()
+    logger.debug(
+        'picked from queue, in send_email method, the login result is: '+str(text))
     server.sendmail(fromaddr, toaddr, text)
     server.quit()
+    logger.debug(
+        'picked from queue, in send_email method, the email sending attempt done')
 
     return True
+
 
 def submit_email_for_newsletter(message_dict):
     msg = MIMEMultipart()
@@ -69,4 +77,5 @@ def submit_email_for_newsletter(message_dict):
 
 
 if __name__ == "__main__":
-    send_email({'first_name': '', 'last_name': '', 'email': '', 'subject': '', 'message': 'xx','datetime':'fff'})
+    send_email({'first_name': '', 'last_name': '', 'email': '',
+                'subject': '', 'message': 'xx', 'datetime': 'fff'})
