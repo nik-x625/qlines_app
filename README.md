@@ -17,3 +17,16 @@ Steps to build the development environment**
 
 Architecture
 Apache => WSGI => Flask
+
+
+Deployment to cloud vps
+add this to the apache config: python-path=/var/www/site_platx:/usr/local/lib/python3.7/dist-packages
+change the logger file path:
+- edit the file logger_custom.py
+- change from "/opt/source/mylogs.log" to "/var/www/site_platx/mylogs.log"
+
+
+What to remember about Redis and message queue
+- 
+- 
+-
