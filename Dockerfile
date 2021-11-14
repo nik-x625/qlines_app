@@ -1,5 +1,5 @@
 # buster or bullseye
-FROM debian:buster
+FROM debian:bullseye
 ENV TZ Europe/Berlin
 RUN apt-get update -y
 RUN apt-get -y install ntp ssh vim net-tools python3 python3-pip wget tzdata git apache2 tcpdump pylint
@@ -11,7 +11,7 @@ RUN apt-get -y install redis lsb-release
 
 # Debian 10 (buster) => python 3.7
 # Debian 11 (bullseye) => python 3.9
-RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.7 1
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.9 1
 RUN apt-get -y install libapache2-mod-wsgi-py3
 RUN dpkg-reconfigure -f noninteractive tzdata
 RUN pip3 install flask flask_login redis rq pymongo flake8
