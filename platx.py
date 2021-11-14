@@ -1,8 +1,6 @@
 #!/usr/bin/python
 from rq import Queue
 import redis
-import logging
-import logging.config
 import os
 
 from datetime import datetime as dt
