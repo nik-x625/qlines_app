@@ -30,9 +30,31 @@ change the logger file path:
 **What to remember about Redis and message queue**
 - install the redis-server on both linux and python by "apt-get install redis" and "pip3 install redis"
 - use this in the main python script:
-`import redis`
-`from rq import Queue`
-`r = redis.Redis()`
-`q = Queue('platx', connection=r)`
+```
+import redis
+from rq import Queue
+r = redis.Redis()
+q = Queue('platx', connection=r)
+```
 
-- c
+- create rqworker.py with this content:
+```
+#!/usr/bin/env python
+import os
+
+import redis
+from rq import Worker, Queue, Connection
+
+listen = ['platx']
+redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
+conn = redis.from_url(redis_url)
+
+if __name__ == '__main__':
+    with Connection(conn):
+        worker = Worker(list(map(Queue, listen)))
+        worker.work()
+
+```
+
+- if you want to put into the queue, do like this:
+
