@@ -57,4 +57,5 @@ if __name__ == '__main__':
 ```
 
 - if you want to put into the queue, do like this:
+```result = q.enqueue(yourmetho, inputs_to_the_metho)```
 
