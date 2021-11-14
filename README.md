@@ -1,5 +1,9 @@
-Steps to build the development environment**
+**Current Architecture**
+- Apache => WSGI => Flask
+- Redis is involved for message queue use cases
 
+
+**Steps to build the development environment****
 - git clone git@gitlab.com:mehdifth/platform.git
 - Note: here the public ssh keys must be already loaded in the gitlab
 - mv platform docker_iot
@@ -15,18 +19,15 @@ Steps to build the development environment**
 - alias iot="docker exec -it $(docker ps  | grep 'debian_iot' | awk '{print $1}') /bin/bash"
 
 
-Architecture
-Apache => WSGI => Flask
-
-
-Deployment to cloud vps
+**Deployment to cloud vps**
 add this to the apache config: python-path=/var/www/site_platx:/usr/local/lib/python3.7/dist-packages
 change the logger file path:
 - edit the file logger_custom.py
 - change from "/opt/source/mylogs.log" to "/var/www/site_platx/mylogs.log"
+- in apache might be needed to remove the tags: <IfDefine IgnoreBlockComment> and </IfDefine>
 
 
-What to remember about Redis and message queue
-- 
-- 
--
+**What to remember about Redis and message queue**
+- a
+- b
+- c
