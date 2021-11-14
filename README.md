@@ -29,7 +29,7 @@ change the logger file path:
 
 **What to remember about Redis and message queue**
 - install the redis-server on both linux and python by "apt-get install redis" and "pip3 install redis"
-- use this in the main python script:
+- use this in the main python script where you want to push the jobs to queue:
 ```
 import redis
 from rq import Queue
@@ -55,7 +55,9 @@ if __name__ == '__main__':
         worker.work()
 
 ```
-
+- the "rqworker.py" needs to be run always in the background, better to do with init script of systemd
 - if you want to put into the queue, do like this:
-```result = q.enqueue(yourmetho, inputs_to_the_metho)```
+```result = q.enqueue(yourmethod, inputs_to_the_metho)```
+
+"yourmethod" is the method to consume the object in the queue, and "inputs_to_the_metho" is the input for that method. "platx" is the pipe name in the queue.
 
