@@ -35,7 +35,12 @@ login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
 
-# silly user model
+# for long running functions
+import redis
+from rq import Queue
+r = redis.Redis()
+q = Queue('platx', connection=r)
+
 
 
 class User(UserMixin):
@@ -207,34 +212,31 @@ def search_backend():
 # Used to show the contact page and also POST method to submit the message
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
-    logger.debug('in flask, route is /contact')
-
     result = ''
+    logger.debug('in contact function 1')
+    if flask.request.method == 'POST':
 
-    if request.method == 'POST':
-
-        fname = request.form['fname']
-        lname = request.form['lname']
-        subject = request.form['subject']
-        email = request.form['email']
-        message = request.form['message']
+        fname = flask.request.form['fname']
+        lname = flask.request.form['lname']
+        subject = flask.request.form['subject']
+        email = flask.request.form['email']
+        message = flask.request.form['message']
 
         message_dict = {
-            'first_name': fname,
-            'last_name': lname,
-            'email': email,
-            'subject': subject,
-            'message': message,
-            'datetime': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        }
+               'first_name': fname,
+               'last_name': lname,
+               'email': email,
+               'subject': subject,
+               'message': message,
+               'datetime': datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 
-        logger.debug('# contact contents to send as email: ' +
-                     str(message_dict))
-        result = send_email_contact(message_dict)
-        logger.debug('# email attempt result: ' + str(result))
+        email_result = q.enqueue(send_email, message_dict)
+        logger.debug('# email_result: ' + str(email_result))
+
+        if email_result:
+            result = 'Your message sent successfully. Thank you!'
 
     return render_template('contact.html', result=result)
-
 
 if __name__ == "__main__":
     app.logger.setLevel(logging.DEBUG)

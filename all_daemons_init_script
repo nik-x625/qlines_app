@@ -9,8 +9,8 @@
 # Files with exactly that name (and executable flag set!) should be placed in
 # $SUBSERVICES_LOCATION (see below). By default, that should already be the
 # case.
-SUBSERVICES_START="mongodb apache2"
-SUBSERVICES_STOP="apache2 mongodb"
+SUBSERVICES_START="mongodb redis-server apache2"
+SUBSERVICES_STOP="apache2 redis-server mongodb"
 
 # This defines where this script looks for the other init-scripts. Must end
 # with a "/".
