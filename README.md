@@ -59,7 +59,7 @@ if __name__ == '__main__':
 - if you want to put into the queue, do like this:
 ```result = q.enqueue(yourmethod, inputs_to_the_metho)```
 
-"yourmethod" is the method to consume the object in the queue, and "inputs_to_the_metho" is the input for that method. "platx" is the pipe name in the queue.
+- "yourmethod" is the method to consume the object in the queue, and "inputs_to_the_metho" is the input for that method. "platx" is the pipe name in the queue.
 - for more queues, it is enough to expand this list for more items:
 ```listen = ['platx']```
 
