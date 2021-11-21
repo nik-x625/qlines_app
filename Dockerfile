@@ -31,11 +31,6 @@ RUN a2enmod rewrite
 RUN sed -i 's/Listen 80/Listen 8080/g' /etc/apache2/ports.conf
 
 
-# git
-RUN git config --global user.email "Mehdi's email from docker"
-RUN git config --global user.name "Mehdi from docker"
-
-
 # RQ worker init script
 ADD _init_script_rq_worker_platx /tmp/
 RUN cp /tmp/_init_script_rq_worker_platx /etc/init.d/rqworker
