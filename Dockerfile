@@ -14,7 +14,7 @@ RUN apt-get -y install redis lsb-release
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.9 1
 RUN apt-get -y install libapache2-mod-wsgi-py3
 RUN dpkg-reconfigure -f noninteractive tzdata
-RUN pip3 install flask flask_login redis rq pymongo flake8
+RUN pip3 install flask flask_login redis rq pymongo flake8 pyyaml
 RUN useradd flask
 
 

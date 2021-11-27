@@ -1,9 +1,16 @@
 import logging
+import yaml
 
 def get_module_logger(mod_name):
+    
+    # this part needs optimisation
+    with open("config.yml", "r") as ymlfile:
+        cfg = yaml.safe_load(ymlfile)
+    
     logger = logging.getLogger(mod_name)
     logger.setLevel(logging.DEBUG)
-    handler = logging.FileHandler('/opt/source/mylogs.log')
+    log_file_path =cfg["logger"]["log_file_path"]
+    handler = logging.FileHandler(log_file_path)
     formatter = logging.Formatter(
         '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     handler.setFormatter(formatter)
