@@ -1,9 +1,16 @@
 **Current Architecture**
 - Apache => WSGI => Flask
 - Redis is involved for message queue use cases
+- "Init scripts" are used. No need to switch to "systemd". So far they work fine.
+- Dockerfile will be updated with the configuration steps
+- For tests (on python packages or OS packages) use current container, the Dockerfile helps to create from scratch later
+- using rq worker as init script
+- using redis as init script
+- using VSCODE in the docker folder in Mac local filesystem, then docker in the VPS
+- use aliases inside the container, use aliases outisde the container
 
 
-**Steps to build the development environment****
+**Steps to build the environment - both Testbed and Production
 - git clone git@gitlab.com:mehdifth/platform.git
 - Note: here the public ssh keys must be already loaded in the gitlab
 - mv platform docker_iot
@@ -14,8 +21,12 @@
 - Find the container id with “docker ps -a”
 - docker exec -it a5ff9cec9f2e /bin/bash
 - or use the alias "iot", for this you need to define this alias in mac as below:
-- in Mac, in the file ~/.zprofile, add this:
+- in the host where the docker engine is running add these aliases:
 - alias iot="docker exec -it $(docker ps  | grep 'debian_iot' | awk '{print $1}') /bin/bash"
+- alias iotc="docker exec -it $(docker ps  | grep 'debian_iot' | awk '{print $1}') /bin/bash"
+- alias iotc="cd /Users/amc/Desktop/G/Docker/docker_iot"  => on Mac
+- alias iotc="cd /opt/docker_iot" => on Linux host (vps)
+- In each host, enter the "iotc" and update the git. This way you will have the SSH key on the Git.
 
 
 **Deployment to cloud vps**
