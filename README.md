@@ -11,9 +11,8 @@
 - Now the content of the file Dockerfile will be executed
 - docker build -t debian_iot_image .
 - docker run -d -p80:80 -p443:443 --shm-size 2g --privileged -v "$(pwd)":/opt/source debian_iot_image
-- Note: /Users/amc/Desktop/G/Docker/docker_iot is the address of the cloned git repo
 - Find the container id with “docker ps -a”
-- docker exec -it a5ff9cec9f2e /bin/bash  
+- docker exec -it a5ff9cec9f2e /bin/bash
 - or use the alias "iot", for this you need to define this alias in mac as below:
 - in Mac, in the file ~/.zprofile, add this:
 - alias iot="docker exec -it $(docker ps  | grep 'debian_iot' | awk '{print $1}') /bin/bash"
