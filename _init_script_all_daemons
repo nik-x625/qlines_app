@@ -25,7 +25,7 @@ SUBSERVICES_LOCATION="/etc/init.d/"
 # Required-Stop:        $local_fs $remote_fs $network
 # Default-Start:        2 3 5
 # Default-Stop:         0 1 4 6
-# Short-Description:    All daemons of the Axiros Axess Server
+# Short-Description:    All daemons in the application
 ### END INIT INFO
 
 
