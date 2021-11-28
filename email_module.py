@@ -76,13 +76,6 @@ def submit_email_for_newsletter(message_dict):
     return True
 
 
-
-
-
-
-
-
-
 def send_email_async(msg, toaddr=None):
     '''
     This method is called by RQ Worker
@@ -151,6 +144,7 @@ def send_email_contact(message_dict):
 
     return "The message sent successfully!"
 
+
 def send_email_signup(toaddr):
     '''
     This method is called by Flask route of '/signup'
@@ -199,9 +193,6 @@ def send_email_signup(toaddr):
     logger.debug('# in send_email_signup, send_email result: ' +
                  str(email_result))
     return True
-
-
-
 
 
 if __name__ == "__main__":
