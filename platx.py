@@ -60,7 +60,8 @@ def login():
     logger.debug('# request.form: ' + str(request.form))
     logger.debug('# request.args: ' + str(request.args))
     logger.debug('# request.args.get("next"): ' +
-                 str(request.args.get("next")))
+                str(request.args.get("next")))
+
     if request.method == 'POST':
         email = request.form.get('email_holder', None)
         password = request.form.get('password_holder', None)
@@ -72,18 +73,25 @@ def login():
         else:
             remember_me_flag = False
 
-        # do user/pass verification here
-        if 1:  # if verification passed
+        login_success = 0
 
+        user_doc = read_user_doc(email)
+        if not user_doc:
+            return render_template('login.html', login_message='The username does not exist!')
+
+        if user_doc.get('password', None) == password:
+            login_success = 1
+
+        if login_success:
             next = request.args.get('next')
-
             login_user(User(2), remember=remember_me_flag)
             return redirect(next or url_for('dashboard'))
         else:
-            return abort(401)
+            return render_template('login.html', login_message='The password is not correct!')
+
     else:
 
-        return render_template('login.html')
+        return render_template('login.html', login_message = "Sign in to continue...")
 
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -99,35 +107,42 @@ def signup():
 
     if request.method == 'POST':
         logger.debug('# post method arrived, going to update mongo')
-        create_new_user({'username': 'test_user_1', 'password': 'test_pass_1'})
 
-        username = request.form.get('username', None)
         email = request.form.get('email', None)
-        password = request.form.get('password', None)
         agreeterms = request.form.get('agreeterms', None)
+        
+        password_main = request.form.get('password_main', None)
+        password_confirm = request.form.get('password_confirm', None)
+        if password_main != password_confirm:
+            return render_template('signup.html', message='Passwords do not match!') 
 
         if not agreeterms:
-            agreeterms = "off"
+            return render_template('signup.html', message='Please read the terms and conditions.')
 
         country = request.form.get('country', None)
         new_user_data = {
-            'username': username,
-            'password': password,
             'email': email,
+            'password': password_main,
             'agreeterms': agreeterms,
-            'country': country,
             'time-formatted': dt.now().strftime("%Y-%m-%d %H:%M:%S"),
             'time': dt.now()
         }
+        
+        message_dict = {'email':email,
+                        'confirmation_link':'https://www.qlines.net/confirmation/wertgwekjnekrg'}
 
-        create_new_user(new_user_data)
+        create_user_result = create_new_user(new_user_data)
+        
+        if create_user_result:
+            return render_template('confirm_registration.html')
+        else:
+            return render_template('signup.html', message='The user already exists!')
+        
+        # todo: enable email confirmation for sign up requests, for the moment, for MVP it is not necessary,
+        # send_email_signup(message_dict)
 
-        # Send email to confirm new user's email address
-        send_email_signup(email)
-
-        return render_template('confirm_registration.html')
     else:
-        return render_template('signup.html')
+        return render_template('signup.html', message='Signing up is easy. It only takes a few steps')
 
 
 # somewhere to logout
@@ -150,39 +165,43 @@ def load_user(userid):
     return User(userid)
 
 
-
-
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
     logger.debug('in flask, route is /dashboard')
     return render_template('ml_dashboard.html')
 
+
 @app.route('/sms-panel', methods=['GET', 'POST'])
 @login_required
 def smspanel():
-    logger.debug('in flask, route is /dashboard')
     return render_template('ml_sms-panel.html')
+
 
 @app.route('/mashin-panel', methods=['GET', 'POST'])
 @login_required
 def mashinpanel():
-    logger.debug('in flask, route is /dashboard')
     return render_template('ml_mashin-panel.html')
+
 
 @app.route('/call-panel', methods=['GET', 'POST'])
 @login_required
 def callpanel():
-    logger.debug('in flask, route is /dashboard')
     return render_template('ml_call-panel.html')
+
 
 @app.route('/more', methods=['GET', 'POST'])
 @login_required
 def more_func():
-    logger.debug('in flask, route is /dashboard')
     return render_template('ml_more.html')
 
 
+# to test and bring up some stuff from old dashboard
+@app.route('/dashboard-old', methods=['GET', 'POST'])
+@login_required
+def dashboard_old():
+    logger.debug('in flask, route is /dashboard-old')
+    return render_template('dashboard.html')
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -253,7 +272,7 @@ def contact():
             'message': message,
             'datetime': dt.now().strftime("%Y-%m-%d %H:%M:%S")}
 
-        email_result = q.enqueue(send_email, message_dict)
+        email_result = q.enqueue(send_email_contact, message_dict)
         logger.debug('# email_result: ' + str(email_result))
 
         if email_result:

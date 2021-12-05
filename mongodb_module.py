@@ -21,9 +21,9 @@ def update_profile_in_db(key, doc):
     coll.update(key, doc, upsert=True)
 
 
-def read_user_doc(username):
+def read_user_doc(email):
     users = db['users']
-    user_doc = users.find_one({'username': username})
+    user_doc = users.find_one({'email': email})
     return user_doc
 
 
@@ -50,8 +50,13 @@ def contact_submission_update(doc):
 
 
 def create_new_user(doc):
+    # todo: don't keep the whole doc received from form submission, this is security threat
     users = db['users']
-    users.insert_one(doc)
+    if users.find_one({'email': doc['email']}):
+        return False
+    else:
+        users.insert_one(doc)
+        return True
 
 
 def read_users_collection():

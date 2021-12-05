@@ -17,3 +17,9 @@ def get_module_logger(mod_name):
     logger.addHandler(handler)
 
     return logger
+
+if __name__=='__main__':
+    loggerx = get_module_logger(__name__)
+    loggerx.debug('test')
+
+    

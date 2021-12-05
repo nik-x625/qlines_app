@@ -37,7 +37,7 @@ alias res='/etc/init.d/apache2 restart'
 # Miscel
 alias p='ps -ef | egrep '\''apache|sql|mongo|python|rqworker'\'''
 alias iot='cd /opt/source'
-alias log='tail /var/log/apache2/*.log -f'
+alias log='tail /var/log/apache2/*.log /opt/source/mylogs.log -f'
 #alias mongo='mongo --port=22022 platform'
 alias pip='pip3'
 

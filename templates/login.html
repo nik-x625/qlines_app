@@ -29,10 +29,10 @@
                         <div class="auth-form-light text-left p-5">
 
                             <h4>Q-Lines Dashboard</h4>
-                            <h6 class="font-weight-light">Sign in to continue.</h6>
+                            <h6 class="font-weight-light">{{login_message}}</h6>
                             <form method="post">
                                 <div class="form-group">
-                                    <input name="email_holder" type="text" class="form-control form-control-lg" id="exampleInputEmail1" placeholder="Username">
+                                    <input name="email_holder" type="text" class="form-control form-control-lg" id="exampleInputEmail1" placeholder="Email">
                                 </div>
                                 <div class="form-group">
                                     <input name="password_holder" type="password" class="form-control form-control-lg" id="exampleInputPassword1" placeholder="Password">
@@ -43,18 +43,21 @@
                                 <div class="my-2 d-flex justify-content-between align-items-center">
                                     <div class="form-check">
                                         <label class="form-check-label text-muted">
-                      <input name="keepsignedin_holder" type="checkbox" class="form-check-input"> Keep me signed in
-                    </label>
+                                                <input name="keepsignedin_holder" type="checkbox" class="form-check-input">
+                                                Keep me signed in
+                                            </label>
                                     </div>
                                     <a href="#" class="auth-link text-black">Forgot password?</a>
                                 </div>
                                 <!--
-                  <div class="mb-2">
-                    <button type="button" class="btn btn-block btn-facebook auth-form-btn">
-                      <i class="mdi mdi-facebook mr-2"></i>Connect using facebook </button>
-                  </div>
-                  -->
-                                <div class="text-center mt-4 font-weight-light"> Don't have an account? <a href="signup" class="text-primary">Create</a>
+                                                                    <div class="mb-2">
+                                                                    <button type="button" class="btn btn-block btn-facebook auth-form-btn">
+                                                                        <i class="mdi mdi-facebook mr-2"></i>Connect using facebook </button>
+                                                                    </div>
+                                                                    -->
+                                <div class="text-center mt-4 font-weight-light">
+                                    Don't have an account?
+                                    <a href="signup" class="text-primary">Create</a>
                                 </div>
                             </form>
                         </div>
@@ -72,7 +75,8 @@
     <!-- Plugin js for this page -->
     <!-- End plugin js for this page -->
     <!-- inject:js -->
-    <script src="static/login_assets/js/off-canvas.js"></script>
+    <script src="static/login_assets/js/off-canvas.js">
+    </script>
     <script src="static/login_assets/js/hoverable-collapse.js"></script>
     <script src="static/login_assets/js/misc.js"></script>
     <!-- endinject -->

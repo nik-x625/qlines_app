@@ -11,11 +11,15 @@ password = 'gj46_d3tgn14nvlsw'
 logger = get_module_logger(__name__)
 
 
-def send_email(message_dict, toaddr=None):
+def send_email_contact(message_dict):
+    '''
+    This method is called by Flask route of '/contact'
+    '''
+
     if not toaddr:
         toaddr = default_address
 
-    logger.debug('picked from queue, in send_email method')
+    logger.debug('picked from queue, in send_email_contact method')
 
     msg = MIMEMultipart()
     msg['From'] = "Q-Lines Contact Page"
@@ -42,20 +46,86 @@ def send_email(message_dict, toaddr=None):
                )
 
     logger.debug(
-        'picked from queue, in send_email method, going to login to gmail and submit the email')
+        'picked from queue, in send_email_contact method, going to login to gmail and submit the email')
 
     # 'message_dict['message'], 'plain'))
     msg.attach(MIMEText(message_html, 'plain'))
+    text = msg.as_string()
+
+    # login to gmail sender account
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.starttls()
     server.login(fromaddr, password)
-    text = msg.as_string()
+
     logger.debug(
-        'picked from queue, in send_email method, the login result is: '+str(text))
+        'picked from queue, in send_email_contact method, the login result is: '+str(text))
+
+    # main sending action
     server.sendmail(fromaddr, toaddr, text)
     server.quit()
     logger.debug(
-        'picked from queue, in send_email method, the email sending attempt done')
+        'picked from queue, in send_email_contact method, the email sending attempt done')
+
+    return True
+
+
+def send_email_signup(message_dict):
+    
+    '''
+    This method is called by Flask route of '/signup'
+    
+    message_dict =  {
+                    'email':'test_email@abc.xxx,
+                    'confirmation_link': 'https://qlines.net/confirmation/sdfsdfwekjfnwekrng'
+                    }
+    '''
+    
+    logger.debug('picked from queue, in send_email_signup method - start, message_dict: '+str(message_dict))
+
+    # todo: fix this later
+    email = message_dict['email']
+    if not email:
+        email = default_address
+
+    
+
+    # create message metadata
+    msg = MIMEMultipart()
+    msg['From'] = "Q-Lines sign-up"
+    msg['To'] = email
+    msg['Subject'] = "Confirm your email address!"
+
+    logger.debug('# send_email_signup, sending to: '+str(email))
+    logger.debug('# send_email_signup, msg body: '+str(msg))
+
+    # create message body
+    message_html = '''
+    Confirm your email address!
+    Link: {}
+
+    '''.format(message_dict['confirmation_link'],
+               )
+
+    logger.debug(
+        'picked from queue, in send_email_signup method, going to login to gmail and submit the email')
+
+    # 'message_dict['message'], 'plain'))
+    msg.attach(MIMEText(message_html, 'plain'))
+    text = msg.as_string()
+
+    # login to gmail sender account
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.starttls()
+    server.login(fromaddr, password)
+
+    logger.debug(
+        'picked from queue, in send_email_signup method, the login result is: '+str(text))
+
+    # main sending action
+    server.sendmail(fromaddr, email, text)
+    server.quit()
+    logger.debug(
+        'picked from queue, in send_email_signup method, the email sending attempt done')
 
     return True
 
@@ -102,7 +172,7 @@ def send_email_async(msg, toaddr=None):
     return True
 
 
-def send_email_contact(message_dict):
+def send_email_contact__old(message_dict):
     '''
     This method is called by Flask route of '/contact'
     '''
@@ -145,57 +215,6 @@ def send_email_contact(message_dict):
     return "The message sent successfully!"
 
 
-def send_email_signup(toaddr):
-    '''
-    This method is called by Flask route of '/signup'
-    '''
-
-    if not toaddr:
-        toaddr = default_address
-
-    msg = MIMEMultipart()
-    msg['From'] = "Fluence24"
-    msg['To'] = toaddr
-    msg['Subject'] = "Confirm your email address!"
-
-    logger.debug('# send_email_signup, sending to: '+str(toaddr))
-    logger.debug('# send_email_signup, msg: '+str(msg))
-
-    """
-    message_html = '''
-    Submitted in portal: {}
-    Subject: {}
-    First name: {}
-    Last name: {}
-    Email address: {}
-    Date/Time: {}
-
-    Message:
-    {}
-    '''.format("FLUENCE24 contact form",
-               message_dict.get('subject', ''),
-               message_dict.get('first_name', ''),
-               message_dict.get('last_name', ''),
-               message_dict.get('email', ''),
-               message_dict.get('datetime', ''),
-               message_dict.get('message', '')
-               )
-    """
-
-    msg.attach(MIMEText("Confirm your email address!", 'plain'))
-
-    try:
-        email_result = q.enqueue(send_email_async, msg, toaddr)
-    except Exception as e:
-        logger.debug('# in send_email_signup, email enqueue error: '+str(e))
-        return False
-
-    logger.debug('# in send_email_signup, send_email result: ' +
-                 str(email_result))
-    return True
-
-
 if __name__ == "__main__":
     send_email({'first_name': '', 'last_name': '', 'email': '',
                 'subject': '', 'message': 'xx', 'datetime': 'fff'})
-

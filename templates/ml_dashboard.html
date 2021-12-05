@@ -11,60 +11,14 @@
 </head>
 
 <body>
-    <div class="sidebar">
-        <div class="logo-details">
-            <!-- <img src="" alt="logo"> -->
-            <span class="logo_name">brand Name</span>
-        </div>
-        <ul class="nav-links">
-            <li>
-                <a href="dashboard" class="active">
-                    <i class='bx bx-grid-alt'></i>
-                    <span class="links_name">Dashboard</span>
-                </a>
-            </li>
-            <li>
-                <a href="sms-panel">
-                    <i class='bx bx-box'></i>
-                    <span class="links_name">sms panel</span>
-                </a>
-            </li>
-            <li>
-                <a href="mashin-panel">
-                    <i class='bx bx-list-ul'></i>
-                    <span class="links_name">mashins panel</span>
-                </a>
-            </li>
-            <li>
-                <a href="call-panel">
-                    <i class='bx bx-pie-chart-alt-2'></i>
-                    <span class="links_name">call panel</span>
-                </a>
-            </li>
-            <li>
-                <a href="more">
-                    <i class='bx bx-coin-stack'></i>
-                    <span class="links_name">More</span>
-                </a>
-            </li>
-        </ul>
+    <div class="wrapper">
+        {% include 'ml_sidebar.html' %}
     </div>
-    <section class="home-section">
-        <nav>
-            <div class="sidebar-button">
-                <i class='bx bx-menu sidebarBtn'></i>
-                <span class="dashboard">Dashboard</span>
-            </div>
-            <div class="search-box">
-                <input type="text" placeholder="Search...">
-                <i class='bx bx-search'></i>
-            </div>
-            <div class="profile-details">
-                <!--<img src="images/profile.jpg" alt="">-->
-                <span class="admin_name">user1</span>
 
-            </div>
-        </nav>
+    <section class="home-section">
+
+        {% include 'ml_header.html' %}
+
         <div class="home-content">
             <div class="overview-boxes">
                 <div class="box">
@@ -117,38 +71,89 @@
                     <div class="sales-details">
                         <ul class="details">
                             <li class="topic">Date</li>
-                            <li><a href="#">02 Jan 2021</a></li>
-                            <li><a href="#">02 Jan 2021</a></li>
-                            <li><a href="#">02 Jan 2021</a></li>
-                            <li><a href="#">02 Jan 2021</a></li>
-                            <li><a href="#">02 Jan 2021</a></li>
-                            <li><a href="#">02 Jan 2021</a></li>
-                            <li><a href="#">02 Jan 2021</a></li>
-                            <li><a href="#">02 Jan 2021</a></li>
+                            <li>
+                                <a href="#">02 Jan 2021</a>
+                            </li>
+                            <li>
+                                <a href="#">02 Jan 2021</a>
+                            </li>
+                            <li>
+                                <a href="#">02 Jan 2021</a>
+                            </li>
+                            <li>
+                                <a href="#">02 Jan 2021</a>
+                            </li>
+                            <li>
+                                <a href="#">02 Jan 2021</a>
+                            </li>
+                            <li>
+                                <a href="#">02 Jan 2021</a>
+                            </li>
+                            <li>
+                                <a href="#">02 Jan 2021</a>
+                            </li>
+                            <li>
+                                <a href="#">02 Jan 2021</a>
+                            </li>
                         </ul>
                         <ul class="details">
-                            <li class="topic">PHONE NUMBER </li>
-                            <li><a href="#">0098235000000</a></li>
-                            <li><a href="#">0098235000000</a></li>
-                            <li><a href="#">0098235000000</a></li>
-                            <li><a href="#">0098235000000</a></li>
-                            <li><a href="#">0098235000000</a></li>
-                            <li><a href="#">0098235000000</a></li>
-                            <li><a href="#">0098235000000</a></li>
-                            <li><a href="#">0098235000000</a></li>
+                            <li class="topic">PHONE NUMBER
+                            </li>
+                            <li>
+                                <a href="#">0098235000000</a>
+                            </li>
+                            <li>
+                                <a href="#">0098235000000</a>
+                            </li>
+                            <li>
+                                <a href="#">0098235000000</a>
+                            </li>
+                            <li>
+                                <a href="#">0098235000000</a>
+                            </li>
+                            <li>
+                                <a href="#">0098235000000</a>
+                            </li>
+                            <li>
+                                <a href="#">0098235000000</a>
+                            </li>
+                            <li>
+                                <a href="#">0098235000000</a>
+                            </li>
+                            <li>
+                                <a href="#">0098235000000</a>
+                            </li>
 
                         </ul>
                         <ul class="details">
                             <li class="topic">SORT MASSAGE</li>
-                            <li><a href="#">HI....</a></li>
-                            <li><a href="#">HI....</a></li>
-                            <li><a href="#">HI....</a></li>
-                            <li><a href="#">HI.....</a></li>
-                            <li><a href="#">HI....</a></li>
-                            <li><a href="#">HI....</a></li>
-                            <li><a href="#">HI....</a></li>
-                            <li><a href="#">HI....</a></li>
-                            <li><a href="#">HI....</a></li>
+                            <li>
+                                <a href="#">HI....</a>
+                            </li>
+                            <li>
+                                <a href="#">HI....</a>
+                            </li>
+                            <li>
+                                <a href="#">HI....</a>
+                            </li>
+                            <li>
+                                <a href="#">HI.....</a>
+                            </li>
+                            <li>
+                                <a href="#">HI....</a>
+                            </li>
+                            <li>
+                                <a href="#">HI....</a>
+                            </li>
+                            <li>
+                                <a href="#">HI....</a>
+                            </li>
+                            <li>
+                                <a href="#">HI....</a>
+                            </li>
+                            <li>
+                                <a href="#">HI....</a>
+                            </li>
                         </ul>
                     </div>
                     <div class="button">
@@ -160,7 +165,8 @@
                     <ul class="top-sales-details">
                         <li>
                             <a href="#">
-                                <span class="product"> consectetur adipisicing elit.</span>
+                                <span class="product">
+                                        consectetur adipisicing elit.</span>
                             </a>
                             <span class="price">...</span>
                         </li>
@@ -172,13 +178,15 @@
                         </li>
                         <li>
                             <a href="#">
-                                <span class="product">Lorem ipsum dolor sit </span>
+                                <span class="product">Lorem ipsum dolor sit
+                                    </span>
                             </a>
                             <span class="price">....</span>
                         </li>
                         <li>
                             <a href="#">
-                                <span class="product">Lorem ipsum dolor sit amet </span>
+                                <span class="product">Lorem ipsum dolor sit amet
+                                    </span>
                             </a>
                             <span class="price">....</span>
                         </li>
@@ -190,21 +198,24 @@
                         </li>
                         <li>
                             <a href="#">
-                                <span class="product">Lorem ipsum dolor </span>
+                                <span class="product">Lorem ipsum dolor
+                                    </span>
                             </a>
                             <span class="price">....</span>
-                            <li>
-                                <a href="#">
-                                    <span class="product">Lorem ipsum dolor sit amet</span>
-                                </a>
-                                <span class="price">....</span>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <span class="product">Lorem ipsum dolor sit amet </span>
-                                </a>
-                                <span class="price">...</span>
-                            </li>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span class="product">Lorem ipsum dolor sit amet</span>
+                            </a>
+                            <span class="price">....</span>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span class="product">Lorem ipsum dolor sit amet
+                                    </span>
+                            </a>
+                            <span class="price">...</span>
+                        </li>
                     </ul>
                     <div class="button">
                         <a href="#">See All</a>
@@ -224,6 +235,7 @@
                 sidebarBtn.classList.replace("bx-menu", "bx-menu-alt-right");
             } else
                 sidebarBtn.classList.replace("bx-menu-alt-right", "bx-menu");
+
         }
     </script>
 

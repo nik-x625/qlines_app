@@ -12,60 +12,13 @@
 </head>
 
 <body>
-    <div class="sidebar">
-        <div class="logo-details">
-            <!-- <img src="" alt="logo"> -->
-            <span class="logo_name">brand Name</span>
-        </div>
-        <ul class="nav-links">
-            <li>
-                <a href="dashboard" class="active">
-                    <i class='bx bx-grid-alt'></i>
-                    <span class="links_name">Dashboard</span>
-                </a>
-            </li>
-            <li>
-                <a href="sms-panel">
-                    <i class='bx bx-box'></i>
-                    <span class="links_name">sms panel</span>
-                </a>
-            </li>
-            <li>
-                <a href="mashin-panel">
-                    <i class='bx bx-list-ul'></i>
-                    <span class="links_name">mashins panel</span>
-                </a>
-            </li>
-            <li>
-                <a href="call-panel">
-                    <i class='bx bx-pie-chart-alt-2'></i>
-                    <span class="links_name">call panel</span>
-                </a>
-            </li>
-            <li>
-                <a href="more">
-                    <i class='bx bx-coin-stack'></i>
-                    <span class="links_name">More</span>
-                </a>
-            </li>
-        </ul>
+    <div class="wrapper">
+        {% include 'ml_sidebar.html' %}
     </div>
     <section class="home-section">
-        <nav>
-            <div class="sidebar-button">
-                <i class='bx bx-menu sidebarBtn'></i>
-                <span class="dashboard">Dashboard</span>
-            </div>
-            <div class="search-box">
-                <input type="text" placeholder="Search...">
-                <i class='bx bx-search'></i>
-            </div>
-            <div class="profile-details">
-                <!--<img src="images/profile.jpg" alt="">-->
-                <span class="admin_name">user1</span>
 
-            </div>
-        </nav>
+        {% include 'ml_header.html' %}
+
         <div class="home-content">
             <div class="overview-boxes">
                 <div class="box">
