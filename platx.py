@@ -150,11 +150,39 @@ def load_user(userid):
     return User(userid)
 
 
+
+
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
     logger.debug('in flask, route is /dashboard')
-    return render_template('dashboard.html')
+    return render_template('ml_dashboard.html')
+
+@app.route('/sms-panel', methods=['GET', 'POST'])
+@login_required
+def smspanel():
+    logger.debug('in flask, route is /dashboard')
+    return render_template('ml_sms-panel.html')
+
+@app.route('/mashin-panel', methods=['GET', 'POST'])
+@login_required
+def mashinpanel():
+    logger.debug('in flask, route is /dashboard')
+    return render_template('ml_mashin-panel.html')
+
+@app.route('/call-panel', methods=['GET', 'POST'])
+@login_required
+def callpanel():
+    logger.debug('in flask, route is /dashboard')
+    return render_template('ml_call-panel.html')
+
+@app.route('/more', methods=['GET', 'POST'])
+@login_required
+def more_func():
+    logger.debug('in flask, route is /dashboard')
+    return render_template('ml_more.html')
+
+
 
 
 @app.route('/', methods=['GET', 'POST'])
