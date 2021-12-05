@@ -72,3 +72,9 @@ if __name__ == '__main__':
 - for more queues, it is enough to expand this list for more items:
 ```listen = ['platx']```
 
+
+** In the production VPS, keep these aliases:
+alias p="ps -ef | egrep 'apache|sql|mongo|python'"
+alias iot="docker exec -it $(docker ps  | grep 'debian_iot_image' | awk '{print $1}') /bin/bash"
+alias iotc="cd /opt/docker_iot"
+
