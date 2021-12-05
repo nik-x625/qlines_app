@@ -9,8 +9,7 @@
 - using VSCODE in the docker folder in Mac local filesystem, then docker in the VPS
 - use aliases inside the container, use aliases outisde the container
 
-
-**Steps to build the environment - both Testbed and Production
+**Steps to build the environment - both Testbed and Production**
 - git clone git@gitlab.com:mehdifth/platform.git
 - Note: here the public ssh keys must be already loaded in the gitlab
 - mv platform docker_iot
@@ -34,7 +33,10 @@
 - python-path=/var/www/site_platx:/usr/local/lib/python3.7/dist-packages
 - change the logger file path. edit the file logger_custom.py and change from "/opt/source/mylogs.log" to "/var/www/site_platx/mylogs.log"
 - in apache might be needed to remove the tags: `<IfDefine IgnoreBlockComment> and </IfDefine>`
-
+- add these aliases in the main host /etc/.bashrc file:
+-- alias p="ps -ef | egrep 'apache|sql|mongo|python'"
+-- alias iot="docker exec -it $(docker ps  | grep 'debian_iot_image' | awk '{print $1}') /bin/bash"
+-- alias iotc="cd /opt/docker_iot"
 
 **What to remember about Redis and message queue**
 - install the redis-server on both linux and python by "apt-get install redis" and "pip3 install redis"
@@ -71,10 +73,3 @@ if __name__ == '__main__':
 - "yourmethod" is the method to consume the object in the queue, and "inputs_to_the_metho" is the input for that method. "platx" is the pipe name in the queue.
 - for more queues, it is enough to expand this list for more items:
 ```listen = ['platx']```
-
-
-** In the production VPS, keep these aliases:
-alias p="ps -ef | egrep 'apache|sql|mongo|python'"
-alias iot="docker exec -it $(docker ps  | grep 'debian_iot_image' | awk '{print $1}') /bin/bash"
-alias iotc="cd /opt/docker_iot"
-
