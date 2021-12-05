@@ -9,6 +9,7 @@
 - using VSCODE in the docker folder in Mac local filesystem, then docker in the VPS
 - use aliases inside the container, use aliases outisde the container
 
+
 **Steps to build the environment - both Testbed and Production**
 - git clone git@gitlab.com:mehdifth/platform.git
 - Note: here the public ssh keys must be already loaded in the gitlab
@@ -25,6 +26,7 @@
 - alias iotc="docker exec -it $(docker ps  | grep 'debian_iot' | awk '{print $1}') /bin/bash"
 - alias iotc="cd /Users/amc/Desktop/G/Docker/docker_iot"  => on Mac
 - alias iotc="cd /opt/docker_iot" => on Linux host (vps)
+- alias p="ps -ef | egrep 'apache|sql|mongo|python'"
 - In each host, enter the "iotc" and update the git. This way you will have the SSH key on the Git.
 
 
@@ -33,10 +35,7 @@
 - python-path=/var/www/site_platx:/usr/local/lib/python3.7/dist-packages
 - change the logger file path. edit the file logger_custom.py and change from "/opt/source/mylogs.log" to "/var/www/site_platx/mylogs.log"
 - in apache might be needed to remove the tags: `<IfDefine IgnoreBlockComment> and </IfDefine>`
-- add these aliases in the main host /etc/.bashrc file:
-- alias p="ps -ef | egrep 'apache|sql|mongo|python'"
-- alias iot="docker exec -it $(docker ps  | grep 'debian_iot_image' | awk '{print $1}') /bin/bash"
-- alias iotc="cd /opt/docker_iot"
+
 
 **What to remember about Redis and message queue**
 - install the redis-server on both linux and python by "apt-get install redis" and "pip3 install redis"
