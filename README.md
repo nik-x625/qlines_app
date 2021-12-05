@@ -34,9 +34,9 @@
 - change the logger file path. edit the file logger_custom.py and change from "/opt/source/mylogs.log" to "/var/www/site_platx/mylogs.log"
 - in apache might be needed to remove the tags: `<IfDefine IgnoreBlockComment> and </IfDefine>`
 - add these aliases in the main host /etc/.bashrc file:
--- alias p="ps -ef | egrep 'apache|sql|mongo|python'"
--- alias iot="docker exec -it $(docker ps  | grep 'debian_iot_image' | awk '{print $1}') /bin/bash"
--- alias iotc="cd /opt/docker_iot"
+- alias p="ps -ef | egrep 'apache|sql|mongo|python'"
+- alias iot="docker exec -it $(docker ps  | grep 'debian_iot_image' | awk '{print $1}') /bin/bash"
+- alias iotc="cd /opt/docker_iot"
 
 **What to remember about Redis and message queue**
 - install the redis-server on both linux and python by "apt-get install redis" and "pip3 install redis"
