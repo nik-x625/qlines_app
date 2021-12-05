@@ -20,8 +20,7 @@
 - docker run -d -p80:80 -p443:443 --shm-size 2g --privileged -v "$(pwd)":/opt/source debian_iot_image
 - Find the container id with “docker ps -a”
 - docker exec -it a5ff9cec9f2e /bin/bash
-- or use the alias "iot", for this you need to define this alias in mac as below:
-- in the host where the docker engine is running add these aliases:
+- or use the alias "iot", for this you need to define this alias in mac/host as below:
 - alias iot="docker exec -it $(docker ps  | grep 'debian_iot' | awk '{print $1}') /bin/bash"
 - alias iotc="docker exec -it $(docker ps  | grep 'debian_iot' | awk '{print $1}') /bin/bash"
 - alias iotc="cd /Users/amc/Desktop/G/Docker/docker_iot"  => on Mac
