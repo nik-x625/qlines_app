@@ -13,11 +13,10 @@
 **Steps to build the environment - both Testbed and Production**
 - git clone git@gitlab.com:mehdifth/platform.git
 - Note: here the public ssh keys must be already loaded in the gitlab
-- mv platform docker_iot
-- cd docker_iot
-- Now the content of the file Dockerfile will be executed
-- docker build -t debian_iot_image .
-- docker run -d -p80:80 -p443:443 --shm-size 2g --privileged -v "$(pwd)":/opt/app1 debian_iot_image
+- cd platform 
+- From next steps, the content of the file Dockerfile will be effective
+- docker build -t debian_platform_image .
+- docker run -d -p80:80 -p443:443 --shm-size 2g --privileged -v "$(pwd)":/opt/app1 debian_platform_image
 - Find the container id with “docker ps -a”
 - docker exec -it a5ff9cec9f2e /bin/bash
 - or use the alias "iot", for this you need to define this alias in mac/host as below:
