@@ -42,7 +42,7 @@
 import redis
 from rq import Queue
 r = redis.Redis()
-q = Queue('platx', connection=r)
+q = Queue('app1', connection=r)
 ```
 
 - create rqworker.py with this content:
@@ -53,7 +53,7 @@ import os
 import redis
 from rq import Worker, Queue, Connection
 
-listen = ['platx']
+listen = ['app1']
 redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
 conn = redis.from_url(redis_url)
 
@@ -67,6 +67,6 @@ if __name__ == '__main__':
 - if you want to put into the queue, do like this:
 ```result = q.enqueue(yourmethod, inputs_to_the_metho)```
 
-- "yourmethod" is the method to consume the object in the queue, and "inputs_to_the_metho" is the input for that method. "platx" is the pipe name in the queue.
+- "yourmethod" is the method to consume the object in the queue, and "inputs_to_the_metho" is the input for that method. "app1" is the pipe name in the queue.
 - for more queues, it is enough to expand this list for more items:
-```listen = ['platx']```
+```listen = ['app1']```

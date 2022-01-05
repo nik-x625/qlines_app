@@ -7,7 +7,7 @@ from logger_custom import get_module_logger
 logger = get_module_logger(__name__)
 
 
-listen = ['platx']
+listen = ['app1']
 redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
 conn = redis.from_url(redis_url)
 

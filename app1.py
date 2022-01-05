@@ -34,7 +34,7 @@ login_manager.login_view = "login"
 
 # for long running functions
 r = redis.Redis()
-q = Queue('platx', connection=r)
+q = Queue('app1', connection=r)
 
 
 class User(UserMixin):
