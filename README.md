@@ -17,7 +17,7 @@
 - cd docker_iot
 - Now the content of the file Dockerfile will be executed
 - docker build -t debian_iot_image .
-- docker run -d -p80:80 -p443:443 --shm-size 2g --privileged -v "$(pwd)":/opt/source debian_iot_image
+- docker run -d -p80:80 -p443:443 --shm-size 2g --privileged -v "$(pwd)":/opt/app1 debian_iot_image
 - Find the container id with “docker ps -a”
 - docker exec -it a5ff9cec9f2e /bin/bash
 - or use the alias "iot", for this you need to define this alias in mac/host as below:
@@ -32,7 +32,7 @@
 **Deployment to cloud vps**
 - add this to the apache config: 
 - python-path=/var/www/site_platx:/usr/local/lib/python3.7/dist-packages
-- change the logger file path. edit the file logger_custom.py and change from "/opt/source/mylogs.log" to "/var/www/site_platx/mylogs.log"
+- change the logger file path. edit the file logger_custom.py and change from "/opt/app1/mylogs.log" to "/var/www/site_platx/mylogs.log"
 - in apache might be needed to remove the tags: `<IfDefine IgnoreBlockComment> and </IfDefine>`
 
 
