@@ -11,13 +11,18 @@
 
 
 **Steps to build the environment - both Testbed and Production**
+- Go to the Docker folder of the Mac, probably it is in this folder: /Users/amc/Desktop/G/Docker
 - git clone git@gitlab.com:mehdifth/platform.git
-- Note: here the public ssh keys must be already loaded in the gitlab
-- cd platform 
-- From next steps, the content of the file Dockerfile will be effective
-- docker build -t debian_platform_image .
-- docker run -d -p80:80 -p443:443 --shm-size 2g --privileged -v "$(pwd)":/opt/app1 debian_platform_image
-- Find the container id with “docker ps -a”
+- Note: Gitlab must already have the ssh public keys
+- Rename the platform to "app1" to be able to use more apps with this platform
+- mv platform app1
+- mkdir platform
+- mv app1 ./platform/
+- Now there is one platform folder which could include folders like app1, app2, app3, ...
+- cd platform
+- docker build -t debian_platform_image ./app1/  (the Dockerfile content is read here)
+- docker run -d -p80:80 -p443:443 --shm-size 2g --privileged -v "$(pwd)"/app1:/opt/app1 -v "$(pwd)"/app2:/opt/app2 debian_platform_image
+- Find the container id with "docker ps -a"
 - docker exec -it a5ff9cec9f2e /bin/bash
 - or use the alias "iot", for this you need to define this alias in mac/host as below:
 - alias iot="docker exec -it $(docker ps  | grep 'debian_iot' | awk '{print $1}') /bin/bash"
@@ -28,7 +33,7 @@
 - In each host, enter the "iotc" and update the git. This way you will have the SSH key on the Git.
 
 
-**Deployment to cloud vps**
+**Deployment to cloud vps** => deprecated because the production now is on Docker too
 - add this to the apache config: 
 - python-path=/var/www/site_platx:/usr/local/lib/python3.7/dist-packages
 - change the logger file path. edit the file logger_custom.py and change from "/opt/app1/mylogs.log" to "/var/www/site_platx/mylogs.log"
