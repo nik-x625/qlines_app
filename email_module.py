@@ -16,8 +16,7 @@ def send_email_contact(message_dict):
     This method is called by Flask route of '/contact'
     '''
 
-    if not toaddr:
-        toaddr = default_address
+    toaddr = default_address
 
     logger.debug('picked from queue, in send_email_contact method')
 
@@ -216,5 +215,5 @@ def send_email_contact__old(message_dict):
 
 
 if __name__ == "__main__":
-    send_email({'first_name': '', 'last_name': '', 'email': '',
+    send_email_contact({'first_name': '', 'last_name': '', 'email': '',
                 'subject': '', 'message': 'xx', 'datetime': 'fff'})
