@@ -11,15 +11,16 @@
 
 
 **Steps to build the environment - both Testbed and Production**
-- Go to the Docker folder of the Mac, probably it is in this folder: /Users/amc/Desktop/G/Docker
+- go to the Docker folder of the Mac, probably it is in this folder: /Users/amc/Desktop/G/Docker
 - git clone git@gitlab.com:mehdifth/platform.git
-- Note: Gitlab must already have the ssh public keys
-- Rename the platform to "app1" to be able to use more apps with this platform
+- note: Gitlab must already have the ssh public keys
+- rename the platform to "app1" to be able to use more apps with this platform
 - mv platform app1
 - mkdir platform
 - mv app1 ./platform/
-- Now there is one platform folder which could include folders like app1, app2, app3, ...
+- now there is one platform folder which could include folders like app1, app2, app3, ...
 - cd platform
+- install docker engine on the production linux server. Ref: https://docs.docker.com/engine/install/debian/, start from the step "Set up the repository"
 - docker build -t debian_platform_image ./app1/  (the Dockerfile content is read here)
 - docker run -d -p80:80 -p443:443 --shm-size 2g --privileged -v "$(pwd)"/app1:/opt/app1 -v "$(pwd)"/app2:/opt/app2 debian_platform_image
 - Find the container id with "docker ps -a"
@@ -30,7 +31,7 @@
 - alias iotc="cd /Users/amc/Desktop/G/Docker/docker_iot"  => on Mac
 - alias iotc="cd /opt/docker_iot" => on Linux host (vps)
 - alias p="ps -ef | egrep 'apache|sql|mongo|python'"
-- In each host, enter the "iotc" and update the git. This way you will have the SSH key on the Git.
+- in each host, enter the "iotc" and update the git. This way you will have the SSH key on the Git.
 
 
 **Deployment to cloud vps** => deprecated because the production now is on Docker too
