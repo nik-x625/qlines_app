@@ -16,56 +16,64 @@ def send_email_contact(message_dict):
     This method is called by Flask route of '/contact'
     '''
 
-    toaddr = default_address
+    try:
+        toaddr = default_address
 
-    logger.debug('picked from queue, in send_email_contact method')
+        logger.debug('picked from queue, in send_email_contact method')
 
-    msg = MIMEMultipart()
-    msg['From'] = "Q-Lines Contact Page"
-    msg['To'] = toaddr
-    msg['Subject'] = message_dict['subject']
+        msg = MIMEMultipart()
+        msg['From'] = "Q-Lines Contact Page"
+        msg['To'] = toaddr
+        msg['Subject'] = message_dict['subject']
 
-    message_html = '''
-    Submitted in portal: {}
-    Subject: {}
-    First name: {}
-    Last name: {}
-    Email address: {}
-    Date/Time: {}
+        message_html = '''
+        Submitted in portal: {}
+        Subject: {}
+        First name: {}
+        Last name: {}
+        Email address: {}
+        Date/Time: {}
 
-    Message:
-    {}
-    '''.format("Q-Lines contact form",
-               message_dict['subject'],
-               message_dict['first_name'],
-               message_dict['last_name'],
-               message_dict['email'],
-               message_dict['datetime'],
-               message_dict['message']
-               )
+        Message:
+        {}
+        '''.format("Q-Lines contact form",
+                message_dict['subject'],
+                message_dict['first_name'],
+                message_dict['last_name'],
+                message_dict['email'],
+                message_dict['datetime'],
+                message_dict['message']
+                )
 
-    logger.debug(
-        'picked from queue, in send_email_contact method, going to login to gmail and submit the email')
+        logger.debug(
+            'picked from queue, in send_email_contact method, going to login to gmail and submit the email')
 
-    # 'message_dict['message'], 'plain'))
-    msg.attach(MIMEText(message_html, 'plain'))
-    text = msg.as_string()
+        # 'message_dict['message'], 'plain'))
+        msg.attach(MIMEText(message_html, 'plain'))
+        text = msg.as_string()
 
-    # login to gmail sender account
-    server = smtplib.SMTP('smtp.gmail.com', 587)
-    server.starttls()
-    server.login(fromaddr, password)
+        # login to gmail sender account
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        
+        
+        logger.debug('login - going to')
+        server.login(fromaddr, password)
+        logger.debug('login - done')
+        
 
-    logger.debug(
-        'picked from queue, in send_email_contact method, the login result is: '+str(text))
+        logger.debug(
+            'picked from queue, in send_email_contact method, the login result is: '+str(text))
 
-    # main sending action
-    server.sendmail(fromaddr, toaddr, text)
-    server.quit()
-    logger.debug(
-        'picked from queue, in send_email_contact method, the email sending attempt done')
+        # main sending action
+        server.sendmail(fromaddr, toaddr, text)
+        server.quit()
+        logger.debug(
+            'picked from queue, in send_email_contact method, the email sending attempt done')
 
-    return True
+        return True
+    except Exception as e:
+        logger.error(e)
 
 
 def send_email_signup(message_dict):
