@@ -65,7 +65,7 @@ RUN chmod 755 /etc/init.d/all_daemons
 
 # to enable logging in mylogs files
 RUN touch mylogs.log
-RUN chmod 755 mylogs.log
+RUN chmod 777 mylogs.log
 
 
 # To keep container alive
