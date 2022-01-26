@@ -62,6 +62,7 @@ RUN chmod 755 /etc/init.d/all_daemons
 
 
 # to enable logging in mylogs files
+RUN touch mylogs.log
 RUN chmod 755 mylogs.log
 
 
