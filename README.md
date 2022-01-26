@@ -23,13 +23,12 @@
 - install docker engine on the production linux server. Ref: https://docs.docker.com/engine/install/debian/, start from the step "Set up the repository"
 - docker build -t debian_platform_image ./app1/  (the Dockerfile content is read here)
 - docker run -d -p80:80 -p443:443 --shm-size 2g --privileged -v "$(pwd)"/app1:/opt/app1 -v "$(pwd)"/app2:/opt/app2 debian_platform_image
+- now the docker container and the app should be running
 - Find the container id with "docker ps -a"
 - docker exec -it a5ff9cec9f2e /bin/bash
 - or use the alias "iot", for this you need to define this alias in mac/host as below:
-- alias iot="docker exec -it $(docker ps  | grep 'debian_iot' | awk '{print $1}') /bin/bash"
-- alias iotc="docker exec -it $(docker ps  | grep 'debian_iot' | awk '{print $1}') /bin/bash"
-- alias iotc="cd /Users/amc/Desktop/G/Docker/docker_iot"  => on Mac
-- alias iotc="cd /opt/docker_iot" => on Linux host (vps)
+- alias iot="docker exec -it $(docker ps  | grep 'debian_platform' | awk '{print $1}') /bin/bash"
+- alias iotc="cd /opt/platform"
 - alias p="ps -ef | egrep 'apache|sql|mongo|python'"
 - in each host, enter the "iotc" and update the git. This way you will have the SSH key on the Git.
 

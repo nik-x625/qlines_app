@@ -61,5 +61,9 @@ RUN cp /tmp/_init_script_all_daemons /etc/init.d/all_daemons
 RUN chmod 755 /etc/init.d/all_daemons
 
 
+# to enable logging in mylogs files
+RUN chmod 755 /opt/app1/mylogs.log
+
+
 # To keep container alive
 CMD /etc/init.d/all_daemons restart;tail -f /dev/null
