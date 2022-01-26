@@ -31,6 +31,7 @@
 - alias iotc="cd /opt/platform"
 - alias p="ps -ef | egrep 'apache|sql|mongo|python'"
 - in each host, enter the "iotc" and update the git. This way you will have the SSH key on the Git.
+- to change the command line prompt for easier readings, edit ~/.bashrc file and change PS1 entry based on LAB or PROD environment.
 
 
 **Deployment to cloud vps** => deprecated because the production now is on Docker too
