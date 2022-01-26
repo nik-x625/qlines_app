@@ -4,9 +4,11 @@ RUN apt-get update -y
 RUN apt-get -y install ntp ssh vim net-tools python3 python3-pip wget tzdata git apache2 tcpdump pylint
 RUN apt-get -y install redis lsb-release 
 
+
 # related to mysql
 # RUN apt-get -y mysql-connector-python
 # RUN pip3 install passlib
+
 
 # Debian 10 (buster) => python 3.7
 # Debian 11 (bullseye) => python 3.9
