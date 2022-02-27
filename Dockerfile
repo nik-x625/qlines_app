@@ -1,7 +1,7 @@
 # buster or bullseye
 FROM debian:bullseye
 RUN apt-get update -y
-RUN apt-get -y install ntp ssh vim net-tools python3 python3-pip wget tzdata git apache2 tcpdump pylint iputils-ping
+RUN apt-get -y install ntp ssh vim net-tools python3 python3-pip wget tzdata git apache2 tcpdump pylint iputils-ping curl
 RUN apt-get -y install redis lsb-release 
 
 
