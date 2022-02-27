@@ -22,7 +22,7 @@
 - install docker engine on the production linux server. Ref: https://docs.docker.com/engine/install/debian/, start from the step "Set up the repository"
 - cd /opt/platform
 - docker build -t debian_platform_image ./app1/  (the Dockerfile content is read here)
-- docker run -d -p80:80 -p443:443 --shm-size 2g --privileged -v "$(pwd)"/app1:/opt/app1 -v "$(pwd)"/app2:/opt/app2 debian_platform_image
+- docker run -d -p80:80 -p8080:8080 -p8081:8081 -p 8082:8082 -p443:443 --shm-size 2g --privileged -v "$(pwd)"/app1:/opt/app1 -v "$(pwd)"/app2:/opt/app2 -v "$(pwd)"/app3:/opt/app3 --restart=always debian_platform_image
 - now the docker container and the app should be running
 - Find the container id with "docker ps -a"
 - docker exec -it a5ff9cec9f2e /bin/bash

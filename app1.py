@@ -169,7 +169,7 @@ def load_user(userid):
 @login_required
 def dashboard():
     logger.debug('in flask, route is /dashboard')
-    return render_template('ml_dashboard.html')
+    return render_template('dashboard.html')
 
 
 @app.route('/sms-panel', methods=['GET', 'POST'])
