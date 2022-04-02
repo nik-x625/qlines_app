@@ -1,0 +1,4 @@
+  File "/opt/app1/ping_test.py", line 105
+    {'host':8.8.8.8,'pingthreshold':500},
+               ^
+SyntaxError: invalid syntax

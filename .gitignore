@@ -5,3 +5,5 @@
 __py*
 .DS_Store
 mylogs.log
+pingtest.py
+pinglogs.txt
