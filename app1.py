@@ -5,14 +5,12 @@ import os
 
 from datetime import datetime as dt
 
-
 from flask import (Flask, Response, abort, current_app, json, jsonify,
                    make_response, redirect, render_template, request, session,
                    url_for)
 
 from flask_login import (LoginManager, UserMixin, login_required, login_user,
                          logout_user, LoginManager)
-
 
 from email_module import *
 from flask_pager import Pager
@@ -51,6 +49,12 @@ class User(UserMixin):
 users = [User(id) for id in range(1, 5)]
 
 
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    logger.debug('in flask, route is /')
+    return render_template('index.html')
+
+
 # somewhere to login
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -60,7 +64,7 @@ def login():
     logger.debug('# request.form: ' + str(request.form))
     logger.debug('# request.args: ' + str(request.args))
     logger.debug('# request.args.get("next"): ' +
-                str(request.args.get("next")))
+                 str(request.args.get("next")))
 
     if request.method == 'POST':
         email = request.form.get('email_holder', None)
@@ -91,7 +95,7 @@ def login():
 
     else:
 
-        return render_template('login.html', login_message = "Sign in to continue...")
+        return render_template('login.html', login_message="Sign in to continue...")
 
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -110,11 +114,11 @@ def signup():
 
         email = request.form.get('email', None)
         agreeterms = request.form.get('agreeterms', None)
-        
+
         password_main = request.form.get('password_main', None)
         password_confirm = request.form.get('password_confirm', None)
         if password_main != password_confirm:
-            return render_template('signup.html', message='Passwords do not match!') 
+            return render_template('signup.html', message='Passwords do not match!')
 
         if not agreeterms:
             return render_template('signup.html', message='Please read the terms and conditions.')
@@ -127,17 +131,17 @@ def signup():
             'time-formatted': dt.now().strftime("%Y-%m-%d %H:%M:%S"),
             'time': dt.now()
         }
-        
-        message_dict = {'email':email,
-                        'confirmation_link':'https://www.qlines.net/confirmation/wertgwekjnekrg'}
+
+        message_dict = {'email': email,
+                        'confirmation_link': 'https://www.qlines.net/confirmation/wertgwekjnekrg'}
 
         create_user_result = create_new_user(new_user_data)
-        
+
         if create_user_result:
             return render_template('confirm_registration.html')
         else:
             return render_template('signup.html', message='The user already exists!')
-        
+
         # todo: enable email confirmation for sign up requests, for the moment, for MVP it is not necessary,
         # send_email_signup(message_dict)
 
@@ -153,61 +157,11 @@ def logout():
     return render_template('index.html')
 
 
-# handle login failed
-@app.errorhandler(401)
-def page_not_found(e):
-    return Response('<p>Login failed</p>')
-
-
-# callback to reload the user object
-@login_manager.user_loader
-def load_user(userid):
-    return User(userid)
-
-
 @app.route('/dashboard', methods=['GET', 'POST'])
-@login_required
+# @login_required
 def dashboard():
     logger.debug('in flask, route is /dashboard')
     return render_template('dashboard.html')
-
-
-@app.route('/sms-panel', methods=['GET', 'POST'])
-@login_required
-def smspanel():
-    return render_template('ml_sms-panel.html')
-
-
-@app.route('/mashin-panel', methods=['GET', 'POST'])
-@login_required
-def mashinpanel():
-    return render_template('ml_mashin-panel.html')
-
-
-@app.route('/call-panel', methods=['GET', 'POST'])
-@login_required
-def callpanel():
-    return render_template('ml_call-panel.html')
-
-
-@app.route('/more', methods=['GET', 'POST'])
-@login_required
-def more_func():
-    return render_template('ml_more.html')
-
-
-# to test and bring up some stuff from old dashboard
-@app.route('/dashboard-old', methods=['GET', 'POST'])
-@login_required
-def dashboard_old():
-    logger.debug('in flask, route is /dashboard-old')
-    return render_template('dashboard.html')
-
-
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    logger.debug('in flask, route is /')
-    return render_template('index.html')
 
 
 @app.route('/products', methods=['GET', 'POST'])
@@ -220,35 +174,6 @@ def products():
 def pricing():
     logger.debug('in flask, route is /pricing')
     return render_template('pricing.html')
-
-
-# test only
-users = {'foo@bar.tld': {'password': 'secret'}}
-
-
-@app.route('/search_backend', methods=['GET', 'POST'])
-def search_backend():
-    logger.debug('in flask, route is /search_backend')
-
-    results = []  # sample_insta_data_maker()
-
-    page = request.form.get('page', 1)
-
-    if not page.isdigit():
-        page = 1
-    page = int(page)
-
-    count = len(results)
-    pager = Pager(page, count)
-    pages = pager.get_pages()
-
-    skip = (page - 1) * current_app.config['PAGE_SIZE']
-    limit = current_app.config['PAGE_SIZE']
-    data_to_show = results[skip:skip + limit]
-
-    return render_template('search_result.html',
-                           results=data_to_show,
-                           pages=pages)
 
 
 # Used to show the contact page and also POST method to submit the message
@@ -279,6 +204,95 @@ def contact():
             result = 'Your message sent successfully. Thank you!'
 
     return render_template('contact.html', result=result)
+
+#
+#
+#
+#
+#
+#
+
+# handle login failed
+@app.errorhandler(401)
+def page_not_found(e):
+    return Response('<p>Login failed</p>')
+
+
+# callback to reload the user object
+@login_manager.user_loader
+def load_user(userid):
+    return User(userid)
+
+#
+#
+#
+#
+#
+#
+
+
+@app.route('/search_backend', methods=['GET', 'POST'])
+def search_backend():
+    logger.debug('in flask, route is /search_backend')
+
+    results = []  # sample_insta_data_maker()
+
+    page = request.form.get('page', 1)
+
+    if not page.isdigit():
+        page = 1
+    page = int(page)
+
+    count = len(results)
+    pager = Pager(page, count)
+    pages = pager.get_pages()
+
+    skip = (page - 1) * current_app.config['PAGE_SIZE']
+    limit = current_app.config['PAGE_SIZE']
+    data_to_show = results[skip:skip + limit]
+
+    return render_template('search_result.html',
+                           results=data_to_show,
+                           pages=pages)
+
+#
+#
+#
+#
+#
+# By ML - for testing if he can do this
+@app.route('/sms-panel', methods=['GET', 'POST'])
+@login_required
+def smspanel():
+    return render_template('ml_sms-panel.html')
+
+
+@app.route('/mashin-panel', methods=['GET', 'POST'])
+@login_required
+def mashinpanel():
+    return render_template('ml_mashin-panel.html')
+
+
+@app.route('/call-panel', methods=['GET', 'POST'])
+@login_required
+def callpanel():
+    return render_template('ml_call-panel.html')
+
+
+@app.route('/more', methods=['GET', 'POST'])
+@login_required
+def more_func():
+    return render_template('ml_more.html')
+
+
+# test only
+users = {'foo@bar.tld': {'password': 'secret'}}
+#
+#
+#
+#
+#
+#
 
 
 if __name__ == "__main__":
