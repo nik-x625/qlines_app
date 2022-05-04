@@ -161,13 +161,14 @@ def logout():
 # @login_required
 def dashboard():
     logger.debug('in flask, route is /dashboard')
-    return render_template('dashboard.html')
+    #return render_template('dashboard.html')
+    return render_template('index.html')
 
 
 @app.route('/products', methods=['GET', 'POST'])
 def products():
     logger.debug('in flask, route is /products')
-    return render_template('products.html')
+    return render_template('index.html')
 
 
 @app.route('/pricing', methods=['GET', 'POST'])
