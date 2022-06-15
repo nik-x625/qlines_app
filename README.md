@@ -11,16 +11,15 @@
 
 
 **Steps to build the environment - both Testbed and Production**
-- go to the Docker folder of the Mac, probably it is in this folder: /Users/amc/Desktop/G/Docker
-- git clone git@gitlab.com:mehdifth/platform.git
-- note: Gitlab must already have the ssh public keys
+- install docker engine on the production linux server. Ref: https://docs.docker.com/engine/install/debian/, start from the step "Set up the repository"
+- In case of Mac, go to the Docker folder of the Mac, probably it is in this folder: /Users/amc/Desktop/G/Docker
+- git clone git@gitlab.com:mehdifth/platform.git  (note: Gitlab must already have the ssh public keys)
 - rename the platform to "app1" to be able to use more apps with this platform
 - mv platform app1
 - mkdir platform
 - mv app1 ./platform/
 - now there is one platform folder which could include folders like app1, app2, app3, ...
-- install docker engine on the production linux server. Ref: https://docs.docker.com/engine/install/debian/, start from the step "Set up the repository"
-- cd /opt/platform
+- cd platform
 - docker build -t debian_platform_image ./app1/  (the Dockerfile content is read here)
 - docker run -d -p80:80 -p8080:8080 -p8081:8081 -p 8082:8082 -p443:443 --shm-size 2g --privileged -v "$(pwd)":/opt/ --restart=always debian_platform_image
 - now the docker container and the app should be running
