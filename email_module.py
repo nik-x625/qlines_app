@@ -6,7 +6,7 @@ from logger_custom import get_module_logger
 default_address = 'mabolfathi@gmail.com'
 
 fromaddr = "wpmessages1050@gmail.com"
-password = 'jthn5g_4bdf4nn224kbjshhive'
+password = 'vqqfnnsdvcqshzrj' #'jthn5g_4bdf4nn224kbjshhive'
 
 logger = get_module_logger(__name__)
 

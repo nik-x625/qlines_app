@@ -162,7 +162,7 @@ def logout():
 def dashboard():
     logger.debug('in flask, route is /dashboard')
     #return render_template('dashboard.html')
-    return render_template('index.html')
+    return render_template('dashboard.html')
 
 
 @app.route('/products', methods=['GET', 'POST'])

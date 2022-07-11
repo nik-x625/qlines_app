@@ -1,3 +1,3 @@
 logger:
-  log_file_path: '/opt/app1/mylogs.log'
+  log_file_path: '/opt/qlines/mylogs.log'
   # logpath: '/var/www/site_platx/mylogs.log'

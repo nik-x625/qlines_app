@@ -14,8 +14,8 @@
 - install docker engine on the production linux server. Ref: https://docs.docker.com/engine/install/debian/, start from the step "Set up the repository"
 - In case of Mac, go to the Docker folder of the Mac, probably it is in this folder: /Users/amc/Desktop/G/Docker
 - git clone git@gitlab.com:mehdifth/platform.git  (note: Gitlab must already have the ssh public keys)
-- rename the platform to "app1" to be able to use more apps with this platform
-- mv platform app1
+- rename the platform to "qlines" to be able to use more apps with this platform
+- mv platform qlines
 - mkdir platform
 - mv app1 ./platform/
 - now there is one platform folder which could include folders like app1, app2, app3, ...
@@ -27,7 +27,7 @@
 - docker exec -it a5ff9cec9f2e /bin/bash
 - or use the alias "iot", for this you need to define this alias in mac/host as below:
 - alias iot="docker exec -it $(docker ps  | grep 'debian_platform' | awk '{print $1}') /bin/bash"
-- alias iotc="cd /opt/platform/app1"
+- alias iotc="cd /opt/platform/qlines"
 - alias p="ps -ef | egrep 'apache|sql|mongo|python'"
 - in each host, enter the "iotc" and update the git. This way you will have the SSH key on the Git.
 - to change the command line prompt for easier readings, edit ~/.bashrc file and change PS1 entry based on LAB or PROD environment.
@@ -36,7 +36,7 @@
 **Deployment to cloud vps** => deprecated because the production now is on Docker too
 - add this to the apache config: 
 - python-path=/var/www/site_platx:/usr/local/lib/python3.7/dist-packages
-- change the logger file path. edit the file logger_custom.py and change from "/opt/app1/mylogs.log" to "/var/www/site_platx/mylogs.log"
+- change the logger file path. edit the file logger_custom.py and change from "/opt/qlines/mylogs.log" to "/var/www/site_platx/mylogs.log"
 - in apache might be needed to remove the tags: `<IfDefine IgnoreBlockComment> and </IfDefine>`
 
 
