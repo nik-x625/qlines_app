@@ -1,9 +1,6 @@
 #!/bin/bash
 #
 
-# This script is simply a wrapper around the other init scripts for the
-# Axess server. It does not do much itself.
-
 # These variables define which services to start and stop, and in which
 # order that should be done. You should not need to change anything else.
 # Files with exactly that name (and executable flag set!) should be placed in
@@ -65,7 +62,7 @@ case "$1" in
     for subservice in $SUBSERVICES_START; do
         tostart="$SUBSERVICES_LOCATION$subservice"
         "$tostart" start || {
-            log_failure_msg "Axess: Service startup failed for $subservice!"
+            log_failure_msg "Service startup failed for $subservice!"
             exit 1
         }
     done
