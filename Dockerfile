@@ -44,14 +44,14 @@ RUN cp /tmp/_init_script_rq_worker_platx /etc/init.d/rqworker
 # MongoDB installation
 RUN wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | apt-key add -
 RUN apt update
-RUN apt-get install gnupg2
+RUN apt-get -y install gnupg2
 RUN  wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | apt-key add -
 RUN echo "deb http://repo.mongodb.org/apt/debian buster/mongodb-org/5.0 main" | tee /etc/apt/sources.list.d/mongodb-org-5.0.list
 RUN apt-get update
-RUN apt-get install -y mongodb-org mongodb-org-database mongodb-org-server mongodb-org-shell mongodb-org-mongos mongodb-org-tools
+RUN apt-get -y install -y mongodb-org mongodb-org-database mongodb-org-server mongodb-org-shell mongodb-org-mongos mongodb-org-tools
 
 # Required for python-ldap
-RUN apt-get install build-essential python3-dev python2.7-dev libldap2-dev libsasl2-dev slapd ldap-utils tox lcov valgrind
+RUN apt-get -y install build-essential python3-dev python2.7-dev libldap2-dev libsasl2-dev slapd ldap-utils tox lcov valgrind
 RUN pip3 install python-ldap
 
 # MongoDB init script
