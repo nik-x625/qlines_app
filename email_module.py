@@ -185,7 +185,7 @@ def send_email_contact__old(message_dict):
     '''
 
     msg = MIMEMultipart()
-    msg['From'] = "FLUENCE24"
+    msg['From'] = "QLines"
     msg['To'] = default_address
     msg['Subject'] = message_dict['subject']
 
@@ -199,7 +199,7 @@ def send_email_contact__old(message_dict):
 
     Message:
     {}
-    '''.format("FLUENCE24 contact form",
+    '''.format("QLines contact form",
                message_dict.get('subject', ''),
                message_dict.get('first_name', ''),
                message_dict.get('last_name', ''),

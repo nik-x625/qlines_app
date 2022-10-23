@@ -1,5 +1,0 @@
-configurations = {
-
-	'log_folder' = '/var/log/bigbang24/'
-}
-
