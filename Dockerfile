@@ -19,6 +19,7 @@ RUN useradd flask
 RUN echo "Europe/Berlin" > /etc/timezone
 RUN dpkg-reconfigure -f noninteractive tzdata
 
+
 # This is necessary besides the main timezone command
 RUN ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime  
 
@@ -50,9 +51,11 @@ RUN echo "deb http://repo.mongodb.org/apt/debian buster/mongodb-org/5.0 main" | 
 RUN apt-get update
 RUN apt-get -y install mongodb-org mongodb-org-database mongodb-org-server mongodb-org-shell mongodb-org-mongos mongodb-org-tools
 
+
 # Required for python-ldap
 #RUN apt-get -y install build-essential python3-dev python2.7-dev libldap2-dev libsasl2-dev slapd ldap-utils tox lcov valgrind
 #RUN pip3 install python-ldap 
+
 
 # MongoDB init script
 ADD _init_script_mongodb /tmp/
