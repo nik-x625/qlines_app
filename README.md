@@ -8,6 +8,7 @@
 - using redis as init script
 - using VSCODE in the docker folder in Mac local filesystem, then docker in the VPS
 - use aliases inside the container, use aliases outisde the container
+- Grafana running on port 8082 (temporary)
 
 
 **Steps to build the environment - both Testbed and Production**
@@ -33,7 +34,7 @@
 - to change the command line prompt for easier readings, edit ~/.bashrc file and change PS1 entry based on LAB or PROD environment.
 
 
-**Deployment to cloud vps** => deprecated because the production now is on Docker too
+**Deployment to cloud vps** => deprecated because the production now is on Docker too, it is valid for chroot cases
 - add this to the apache config: 
 - python-path=/var/www/site_platx:/usr/local/lib/python3.7/dist-packages
 - change the logger file path. edit the file logger_custom.py and change from "/opt/qlines/mylogs.log" to "/var/www/site_platx/mylogs.log"
