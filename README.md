@@ -22,7 +22,7 @@
 - now there is one platform folder which could include folders like qlines, app1, app2, ...
 - cd ./platform
 - docker build -t debian_platform_image ./qlines/  (the Dockerfile content is read here)
-- docker run -d -p80:80 -p8080:8080 -p8081:8081 -p 8082:8082 -p443:443 --shm-size 2g --privileged -v "$(pwd)":/opt/ --restart=always debian_platform_image
+- docker run -d -p80:80 -p443:443 -p 7000-8000:7000-8000 --shm-size 2g --privileged -v "$(pwd)":/opt/ --restart=always debian_platform_image
 - now the docker container and the app should be running
 - Find the container id with "docker ps -a"
 - docker exec -it a5ff9cec9f2e /bin/bash
