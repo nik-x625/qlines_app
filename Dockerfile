@@ -19,6 +19,9 @@ RUN useradd flask
 RUN echo "Europe/Berlin" > /etc/timezone
 RUN dpkg-reconfigure -f noninteractive tzdata
 
+# grafana packages
+RUN apt-get -y install apt-transport-https
+
 
 # This is necessary besides the main timezone command
 RUN ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime  
