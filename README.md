@@ -26,12 +26,10 @@
 - now the docker container and the app should be running
 - Find the container id with "docker ps -a"
 - docker exec -it a5ff9cec9f2e /bin/bash
-- or use the alias "iot", for this you need to define this alias in mac/host as below:
-- alias iot="docker exec -it $(docker ps  | grep 'debian_platform' | awk '{print $1}') /bin/bash"
-- alias iotc="cd /opt/platform/qlines"
+- or use the alias "platform", for this you need to define this alias in mac/host as below:
+- alias platform="docker exec -it $(docker ps  | grep 'debian_platform_image' | awk '{print $1}') /bin/bash"
 - alias p="ps -ef | egrep 'apache|sql|mongo|python'"
-- in each host, enter the "iotc" and update the git. This way you will have the SSH key on the Git.
-- to change the command line prompt for easier readings, edit ~/.bashrc file and change PS1 entry based on LAB or PROD environment.
+- in each host, update the git outside the docker container. This way you will have the SSH key on the Git.
 
 
 **Deployment to cloud vps** => deprecated because the production now is on Docker too, it is valid for chroot cases
