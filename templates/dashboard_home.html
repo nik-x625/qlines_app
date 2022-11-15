@@ -1,3 +1,54 @@
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/series-label.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const chart = Highcharts.chart('container', {
+            chart: {
+                type: 'bar'
+            },
+            title: {
+                text: 'Fruit Consumption'
+            },
+            xAxis: {
+                categories: ['Apples', 'Bananas', 'Oranges']
+            },
+            yAxis: {
+                title: {
+                    text: 'Fruit eaten'
+                }
+            },
+            series: [{
+                name: 'Jane',
+                data: [1, 0, 4]
+            }, {
+                name: 'John',
+                data: [5, 7, 3]
+            }]
+        });
+    });
+
+
+    let chart; // globally available
+    document.addEventListener('DOMContentLoaded', function () {
+        chart = Highcharts.stockChart('container', {
+            rangeSelector: {
+                selected: 1
+            },
+            series: [{
+                name: 'USD to EUR',
+                data: usdtoeur // predefined JavaScript array
+            }]
+        });
+    });
+</script>
+
+
+
 <style>
     .logout-nav {
         position: absolute;
@@ -42,10 +93,10 @@
 
             <div id="flaskres"></div>
         </div>
-        -->
+        --> 
 
 
-        <div class="w-25 p-3" style="background-color: #eee;">Width 25%</div>
+        <!-- <div class="w-25 p-3" style="background-color: #eee;">Width 25%</div>
         <div class="w-50 p-3" style="background-color: #eee;">Width 50%</div>
         <div class="w-75 p-3" style="background-color: #eee;">Width 75%</div>
         <div class="w-100 p-3" style="background-color: #eee;">Width 100%</div>
@@ -57,6 +108,13 @@
             <div class="h-75 d-inline-block" style="width: 120px; background-color: rgba(0,0,255,.1)">Height 75%</div>
             <div class="h-100 d-inline-block" style="width: 120px; background-color: rgba(0,0,255,.1)">Height 100%</div>
         </div>
+        -->
+
+        
+
+        <div>{% include 'test_simple_barchart1.html' %}</div>
+        <div>{% include 'test_simple_linechart1.html' %}</div>
+
 
 
     </div>

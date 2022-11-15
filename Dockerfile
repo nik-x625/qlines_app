@@ -14,13 +14,13 @@ RUN apt-get -y install redis lsb-release
 # Debian 11 (bullseye) => python 3.9
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.9 1
 RUN apt-get -y install libapache2-mod-wsgi-py3
-RUN pip3 install flask flask_login redis rq pymongo flake8 pyyaml markdown sqlalchemy flask_principal slugify feedwerk shortuuid
+RUN pip3 install flask flask_login redis rq pymongo flake8 pyyaml markdown sqlalchemy flask_principal slugify feedwerk shortuuid psutil
 RUN useradd flask
 RUN echo "Europe/Berlin" > /etc/timezone
 RUN dpkg-reconfigure -f noninteractive tzdata
 
 # grafana packages
-RUN apt-get -y install apt-transport-https
+RUN apt-get -y install apt-transport-https software-properties-common
 
 
 # This is necessary besides the main timezone command

@@ -1,0 +1,51 @@
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/series-label.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+
+<div id="container" style="width:100%; height:400px;"></div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const chart = Highcharts.chart('container', {
+            chart: {
+                type: 'bar'
+            },
+            title: {
+                text: 'Fruit Consumption'
+            },
+            xAxis: {
+                categories: ['Apples', 'Bananas', 'Oranges']
+            },
+            yAxis: {
+                title: {
+                    text: 'Fruit eaten'
+                }
+            },
+            series: [{
+                name: 'Jane',
+                data: [1, 0, 4]
+            }, {
+                name: 'John',
+                data: [5, 7, 3]
+            }]
+        });
+    });
+
+
+    let chart; // globally available
+    document.addEventListener('DOMContentLoaded', function () {
+        chart = Highcharts.stockChart('container', {
+            rangeSelector: {
+                selected: 1
+            },
+            series: [{
+                name: 'USD to EUR',
+                data: usdtoeur // predefined JavaScript array
+            }]
+        });
+    });
+</script>
