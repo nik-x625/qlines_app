@@ -100,8 +100,8 @@ def fetchdata():
                     17300, 13053, 11906, 10073]
             }]'''
     
-    data = {'name':'some name here', 'data':[100, 150, 70, 190, 25]}
-    return {"res":data}
+    datadict = {'name':'some name here', 'datetime': [], 'data':[100, 150, 70, 390, 25]}
+    return {"res":datadict}
 
 
 
