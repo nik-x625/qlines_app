@@ -38,7 +38,7 @@
 - change the logger file path. edit the file logger_custom.py and change from "/opt/qlines/mylogs.log" to "/var/www/site_platx/mylogs.log"
 - in apache might be needed to remove the tags: `<IfDefine IgnoreBlockComment> and </IfDefine>`
 
-**Installing the ClickHouse
+**Installing the ClickHouse**
 - curl https://clickhouse.com/ | sh
 - ./clickhouse install
 - vi /etc/clickhouse-server/config.xml and change the port from 8123 to something like 7010 which is exposed also in the container
