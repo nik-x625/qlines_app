@@ -44,6 +44,7 @@
 - vi /etc/clickhouse-server/config.xml and change the port from 8123 to something like 7010 which is exposed also in the container
 - chown -R root:root /var/lib/clickhouse
 - create /etc/clickhouse-server/config.d/docker_related_config.xml and add following content:
+```
 <clickhouse>
      <!-- Listen wildcard address to allow accepting connections from other containers and host network. -->
     <listen_host>::</listen_host>
@@ -56,6 +57,7 @@
     </logger>
     -->
 </clickhouse>
+```
 
 - run with command:
 clickhouse-server --config-file /etc/clickhouse-server/config.xml --pid-file /var/run/clickhouse-server/clickhouse-server.pid --daemon
