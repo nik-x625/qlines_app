@@ -59,6 +59,7 @@ alias p='ps -ef | egrep '\''apache|sql|mongo|python|rqworker'\'''
 alias log='tail /var/log/apache2/*.log /opt/pdf_export/mylogs.log /var/log/redis/redis-server.log /opt/blog/mylogs.log /opt/qlines/mylogs.log -f'
 alias mongo='mongo platform'
 alias pip='pip3'
+alias ch='clickhouse-server --config-file /etc/clickhouse-server/config.xml --pid-file /var/run/clickhouse-server/clickhouse-server.pid --daemon'
 
 # Git shortcuts
 alias gitall='git add .;git commit -m \"update\";git push origin master'
