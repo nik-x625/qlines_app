@@ -38,6 +38,30 @@
 - change the logger file path. edit the file logger_custom.py and change from "/opt/qlines/mylogs.log" to "/var/www/site_platx/mylogs.log"
 - in apache might be needed to remove the tags: `<IfDefine IgnoreBlockComment> and </IfDefine>`
 
+**Installing the ClickHouse
+- curl https://clickhouse.com/ | sh
+- ./clickhouse install
+- vi /etc/clickhouse-server/config.xml and change the port from 8123 to something like 7010 which is exposed also in the container
+- chown -R root:root /var/lib/clickhouse
+- create /etc/clickhouse-server/config.d/docker_related_config.xml and add following content:
+<clickhouse>
+     <!-- Listen wildcard address to allow accepting connections from other containers and host network. -->
+    <listen_host>::</listen_host>
+    <listen_host>0.0.0.0</listen_host>
+    <listen_try>1</listen_try>
+
+    <!--
+    <logger>
+        <console>1</console>
+    </logger>
+    -->
+</clickhouse>
+
+- run with command:
+clickhouse-server --config-file /etc/clickhouse-server/config.xml --pid-file /var/run/clickhouse-server/clickhouse-server.pid --daemon
+or use alias 'ch'
+
+
 
 **What to remember about Redis and message queue**
 - install the redis-server on both linux and python by "apt-get install redis" and "pip3 install redis"
