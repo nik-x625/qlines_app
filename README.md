@@ -59,6 +59,22 @@
 </clickhouse>
 ```
 
+`
+<clickhouse>
+     <!-- Listen wildcard address to allow accepting connections from other containers and host network. -->
+    <listen_host>::</listen_host>
+    <listen_host>0.0.0.0</listen_host>
+    <listen_try>1</listen_try>
+
+    <!--
+    <logger>
+        <console>1</console>
+    </logger>
+    -->
+</clickhouse>
+
+`
+
 - run with command:
 clickhouse-server --config-file /etc/clickhouse-server/config.xml --pid-file /var/run/clickhouse-server/clickhouse-server.pid --daemon
 or use alias 'ch'
