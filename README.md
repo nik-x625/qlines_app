@@ -39,6 +39,7 @@
 - in apache might be needed to remove the tags: `<IfDefine IgnoreBlockComment> and </IfDefine>`
 
 **Installing the ClickHouse**
+- cd /tmp/
 - curl https://clickhouse.com/ | sh
 - ./clickhouse install
 - vi /etc/clickhouse-server/config.xml and change the port from 8123 to something like 7010 which is exposed also in the container

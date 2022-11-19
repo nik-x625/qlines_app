@@ -4,6 +4,8 @@ import redis
 import os
 import requests
 
+import clickhouse_connect
+
 from datetime import datetime as dt
 
 from flask import (Flask, Response, abort, current_app, json, jsonify,
@@ -56,57 +58,51 @@ def index():
     return render_template('index.html')
 
 
-
-
-
-
 # highcharts test page, from: https://github.com/soumilshah1995/Stockchart-highchart-flask-
 @app.route('/test', methods=['GET', 'POST'])
 def index_test():
     logger.debug('in flask, route is /test')
     return render_template('test_mychart.html')
 
-## to fetch data from jquery, highcharts
+# to fetch data from jquery, highcharts
+
+
+def sortFn(tpl):
+    return tpl[1]
+
+
 @app.route('/fetchdata', methods=["GET", "POST"])
 def fetchdata():
-    payload = {}
-    headers = {}
-    logger.debug('# the fetching data api called')
-    #url = "https://demo-live-data.highcharts.com/aapl-ohlcv.json"
-    #r = requests.get(url, headers=headers, data ={})
-    #logger.debug('# type of r - 1: '+str(type(r)))
-    #r = r.json()
-    #logger.debug('# type of r - 2: '+str(type(r)))
-    #logger.debug('# r is: '+str(r))
-    '''data = [{
-                name: 'Installation & Developers',
-                data: [43934, 48656, 65165, 81827, 112143, 142383,
-                    171533, 165174, 155157, 161454, 154610]
-            }, {
-                name: 'Manufacturing',
-                data: [24916, 37941, 29742, 29851, 32490, 30282,
-                    38121, 36885, 33726, 34243, 31050]
-            }, {
-                name: 'Sales & Distribution',
-                data: [11744, 30000, 16005, 19771, 20185, 24377,
-                    32147, 30912, 29243, 29213, 25663]
-            }, {
-                name: 'Operations & Maintenance',
-                data: [null, null, null, null, null, null, null,
-                    null, 11164, 11218, 10077]
-            }, {
-                name: 'Other',
-                data: [21908, 5548, 8105, 11248, 8989, 11816, 18274,
-                    17300, 13053, 11906, 10073]
-            }]'''
-    
-    datadict = {'name':'some name here', 'datetime': [], 'data':[100, 150, 70, 390, 25]}
-    return {"res":datadict}
+    # logger.debug('# the fetching data api called')
 
+    client_name = request.args.get('client_name', None)
+    param_name = request.args.get('param_name', None)
+    table_name = request.args.get('table_name', None)
+    single_data = request.args.get('single_data', None)
 
+    #ts_start = request.args.get('ts_start', None)
+    #ts_end = request.args.get('ts_end', None)
+    limit = 200
 
+    client = clickhouse_connect.get_client(
+        host='localhost', port='7010', username='default')
 
+    result = client.query("SELECT param_name, ts, param_value FROM {} WHERE client_name='{}' and param_name='{}' ORDER BY ts DESC LIMIT {}".format(
+        table_name, client_name, param_name, limit))
 
+    data = result.result_set
+
+    data.sort(key=sortFn)
+
+    if single_data:
+        limit = 1
+        result = client.query("SELECT param_name, ts, param_value FROM {} WHERE client_name='{}' and param_name='{}' ORDER BY ts DESC LIMIT {}".format(
+            table_name, client_name, param_name, limit))
+        data = result.result_set
+        #data=[('pp','Sat, 19 Nov 2022 17:19:06 GMT',120)]
+
+    logger.debug('# data to revert to FE is: '+str(data[0][2]))
+    return {'name': 'some name here', 'data': data}
 
 
 # somewhere to login
@@ -215,7 +211,7 @@ def logout():
 # @login_required
 def dashboard():
     logger.debug('in flask, route is /dashboard')
-    #return render_template('dashboard.html')
+    # return render_template('dashboard.html')
     return render_template('dashboard.html')
 
 
@@ -268,6 +264,8 @@ def contact():
 #
 
 # handle login failed
+
+
 @app.errorhandler(401)
 def page_not_found(e):
     return Response('<p>Login failed</p>')
@@ -316,6 +314,8 @@ def search_backend():
 #
 #
 # By ML - for testing if he can do this
+
+
 @app.route('/sms-panel', methods=['GET', 'POST'])
 @login_required
 def smspanel():
