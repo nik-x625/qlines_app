@@ -82,7 +82,7 @@ def fetchdata():
 
     #ts_start = request.args.get('ts_start', None)
     #ts_end = request.args.get('ts_end', None)
-    limit = 200
+    limit = 50
 
     client = clickhouse_connect.get_client(
         host='localhost', port='7010', username='default')

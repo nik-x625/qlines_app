@@ -8,7 +8,6 @@
 
 <script>
 
-
     var chartdata = [];
     var chartname = '';
     function processData(data_received) {
@@ -19,9 +18,7 @@
             ])
         }
         chartname = data_received.name;
-        //console.log('going to feed to charts: ', chartdata)
     };
-
 
     function plotCharts() {
         Highcharts.chart('container3', {
@@ -29,21 +26,14 @@
             chart: {
                 events: {
                     load: function () {
-
-                        // set up the updating of the chart each second
                         var series = this.series[0];
                         setInterval(function () {
                             var x = (new Date()).getTime(), // current time
                                 y = Math.round(Math.random() * 100);
 
 
-                            fetch_newdata3(series);
+                            fetch_newdata(series);
 
-                            //console.log('new_data: ', new_data.data);
-                            //console.log('y: ', new_data[2]);
-
-                            //series.addPoint([new_data[0], new_data[1]], true, true);
-                            //console.log('series: ', series);
                         }, 500);
                     }
                 }
@@ -64,7 +54,6 @@
                     year: '%Y'
                 }
             },
-
 
             series: [{
                 name: chartname,
@@ -91,47 +80,7 @@
     };
 
 
-
-    function fetch_newdata() {
-        var value = $.ajax({
-            url: '/fetchdata',
-            data: {
-                client_name: 'cpe1',
-                param_name: 'param1',
-                table_name: 'table1',
-                single_data: true,
-                ts_start: '',
-                ts_end: '',
-            },
-            async: false
-        }).responseText;
-
-        //console.log('# ajax res: ', value.data)
-        return value;
-    }
-
-
-    function fetch_newdata2() {
-        var value = $.ajax({
-            url: '/fetchdata',
-            data: {
-                client_name: 'cpe1',
-                param_name: 'param1',
-                table_name: 'table1',
-                single_data: true,
-                ts_start: '',
-                ts_end: '',
-            },
-            async: false
-        }).responseText;
-
-        //console.log('# ajax res: ', value.data)
-        return value;
-    }
-
-
-
-    function fetch_newdata3(series) {
+    function fetch_newdata(series) {
         $.ajax({
             url: "/fetchdata",
             data: {
@@ -156,9 +105,9 @@
 
                 //plot_chart()
                 var index = series.xData.indexOf(x)
-                console.log('# index',index)
-                if (y != null && index == -1){
-                    series.addPoint([x, y], true, true);
+                console.log('# index', index)
+                if (y != null && index == -1) {
+                    series.addPoint([x, y], true, true, false);
                 }
             }
         })
@@ -167,7 +116,6 @@
 
     $(document).ready(function () {
         fetchdata();
-        //setInterval(function() { plotCharts() }, 2000);
     });
 
 </script>
