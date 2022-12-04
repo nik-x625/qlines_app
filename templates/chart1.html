@@ -1,9 +1,6 @@
-<script src="https://code.highcharts.com/highcharts.js"></script>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
 <figure class="highcharts-figure">
-    <div id="container3"></div>
+    <div id="chart-div1"></div>
 </figure>
 
 <script>
@@ -13,7 +10,7 @@
     function processData(data_received) {
         var data = data_received.data;
         for (var i = 0; i < data.length; i++) {
-            chartdata.push([
+            chartdata.push([ 
                 Date.parse(data[i][1]), data[i][2]
             ])
         }
@@ -21,7 +18,7 @@
     };
 
     function plotCharts() {
-        Highcharts.chart('container3', {
+        Highcharts.chart('chart-div1', {
 
             chart: {
                 events: {
@@ -34,7 +31,7 @@
 
                             fetch_newdata(series);
 
-                        }, 500);
+                        }, 1000);
                     }
                 }
             },

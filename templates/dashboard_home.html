@@ -11,6 +11,7 @@
     }
 </style>
 
+
 <div id="content" style="width:100%">
     <nav class="navbar navbar-default">
         <div class="container-fluid">
@@ -21,21 +22,25 @@
                     <i class="glyphicon glyphicon-align-left"></i>
                     <span></span>
                 </button>
-
                 <button type="button" class="btn btn-info logout-nav" onclick="window.location.href='/logout'">
                     Log out
                 </button>
             </div>
-
         </div>
     </nav>
 
-
-    <div>
-
-
-        <div>{% include 'test_mychart.html' %}</div>
+    <div class="container-fluid mt-3">
+        <h1>Three equal width columns</h1>
+        <p>Note: Try to add a new div with class="col" inside the row class - this will create four equal-width columns.
+        </p>
+        <div class="row">
+            <div class="col p-3 bg-light text-white">{% include 'chart1.html' %}</div>
+            <div class="col p-3 bg-light text-white">{% include 'chart2.html' %}</div>
+            <div class="col p-3 bg-primary text-white">.col</div>
+            <!-- <div class="col p-3 bg-primary text-white">.col</div> -->
+        </div>
 
     </div>
+</div>
 
 </div>
