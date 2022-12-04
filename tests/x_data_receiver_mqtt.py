@@ -26,9 +26,9 @@ def on_message(client, userdata, msg):
 
     data = []
     
-    print('# mqtt received: ', msg.payload)
+    #print('# mqtt received: ', msg.payload)
     print('# mqtt received: ', msg.payload.decode())
-    print('# mqtt received - type: ', type(msg.payload.decode()))
+    #print('# mqtt received - type: ', type(msg.payload.decode()))
 
     try:
         data = msg.payload.decode()
@@ -39,6 +39,7 @@ def on_message(client, userdata, msg):
 
         dbclient.insert('table1', [data], column_names=[
             'ts', 'client_name', 'param_name', 'param_value'])
+        print()
 
     except Exception as e:
         print('# error in processing the recevied mqtt message: ', e)

@@ -17,6 +17,7 @@ def create_random_data(client_name, param_name, u, sigma):
     data = [now, client_name, param_name, s[0]]
     return data
 
+
 def mqtt_establish():
     client = mqtt.Client('xxx sender')
     client.connect(mqttBroker)
@@ -25,9 +26,8 @@ def mqtt_establish():
 
 client = None
 
-
 while True:
-    
+
     # Establishing the mqtt connection if not exists
     if not client:
         try:
@@ -43,16 +43,18 @@ while True:
             print('# connection attempt failed, skipping data point...')
             continue
         else:
-            data = create_random_data('cpe1', 'param1', 30, 5)
-            res = client.publish("topic1", json.dumps(data))
-            print('The sending attempt has result: ',(res.is_published()))
-            print("Just published " + str(data) + " to broker")
-            
+            data1 = create_random_data('cpe1', 'param1', 20, 5)
+            data2 = create_random_data('cpe1', 'param2', 100, 5)
+            res1 = client.publish("topic1", json.dumps(data1))
+            res2 = client.publish("topic1", json.dumps(data2))
+            print('The sending attempt has for data1 result: ', (res1.is_published()),' and data is: ', data1)
+            print('The sending attempt has for data1 result: ', (res2.is_published()),' and data is: ', data2)
+            #print("Just published " + str(data) + " to broker")
             #print('client obj: '+str(dir(client)))
-        
+
     except Exception as e:
         print('The error occured: {}, skipping this data point...'.format(e))
         client = None
-    
+
     print()
     time.sleep(1)

@@ -58,17 +58,14 @@ def index():
     return render_template('index.html')
 
 
-# highcharts test page, from: https://github.com/soumilshah1995/Stockchart-highchart-flask-
-@app.route('/test', methods=['GET', 'POST'])
-def index_test():
-    logger.debug('in flask, route is /test')
-    return render_template('test_mychart.html')
-
-# to fetch data from jquery, highcharts
-
-
 def sortFn(tpl):
     return tpl[1]
+
+
+def fetch_data_per_param(client_handler, param_name, client_name, limit, table_name='table1'):
+    res = client_handler.query("SELECT param_name, ts, param_value FROM {} WHERE client_name='{}' and param_name='{}' ORDER BY ts DESC LIMIT {}".format(
+        table_name, client_name, param_name, limit))
+    return res
 
 
 @app.route('/fetchdata', methods=["GET", "POST"])
@@ -76,35 +73,24 @@ def fetchdata():
     # logger.debug('# the fetching data api called')
 
     client_name = request.args.get('client_name', None)
-    param_name = request.args.get('param_name', None)
-    table_name = request.args.get('table_name', None)
-    single_data = request.args.get('single_data', None)
 
-    #ts_start = request.args.get('ts_start', None)
-    #ts_end = request.args.get('ts_end', None)
     limit = 30
 
     client = clickhouse_connect.get_client(
         host='localhost', port='7010', username='default')
 
-    result = client.query("SELECT param_name, ts, param_value FROM {} WHERE client_name='{}' and param_name='{}' ORDER BY ts DESC LIMIT {}".format(
-        table_name, client_name, param_name, limit))
+    parameter_list = ['param1', 'param2']
 
-    data = result.result_set
+    data_to_revert = {}
+    for param in parameter_list:
+        res = fetch_data_per_param(client, param, client_name, limit)
+        res = res.result_set
+        res.sort(key=sortFn)
+        data_to_revert[param] = res
 
-    data.sort(key=sortFn)
+    logger.debug('data_to_revert: ', str(data_to_revert))
 
-    if single_data:
-        limit = 1
-        result = client.query("SELECT param_name, ts, param_value FROM {} WHERE client_name='{}' and param_name='{}' ORDER BY ts DESC LIMIT {}".format(
-            table_name, client_name, param_name, limit))
-        data = result.result_set
-        #data=[('pp','Sat, 19 Nov 2022 17:19:06 GMT',120)]
-
-    logger.debug('# data to revert to FE is: '+str(data[0][2]))
-    logger.debug('# data to revert to FE is: '+str(data))
-    
-    return {'name': 'some name here', 'data': data}
+    return {'name': 'some name here', 'data': data_to_revert}
 
 
 # somewhere to login
