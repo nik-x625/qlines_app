@@ -102,6 +102,8 @@ def fetchdata():
         #data=[('pp','Sat, 19 Nov 2022 17:19:06 GMT',120)]
 
     logger.debug('# data to revert to FE is: '+str(data[0][2]))
+    logger.debug('# data to revert to FE is: '+str(data))
+    
     return {'name': 'some name here', 'data': data}
 
 

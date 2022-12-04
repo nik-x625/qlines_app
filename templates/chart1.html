@@ -7,7 +7,7 @@
 
     var chartdata = [];
     var chartname = '';
-    function processData(data_received) {
+    function processData1(data_received) {
         var data = data_received.data;
         for (var i = 0; i < data.length; i++) {
             chartdata.push([ 
@@ -17,7 +17,7 @@
         chartname = data_received.name;
     };
 
-    function plotCharts() {
+    function plotCharts1() {
         Highcharts.chart('chart-div1', {
 
             chart: {
@@ -28,8 +28,7 @@
                             var x = (new Date()).getTime(), // current time
                                 y = Math.round(Math.random() * 100);
 
-
-                            fetch_newdata(series);
+                            fetch_newdata1(series);
 
                         }, 1000);
                     }
@@ -60,7 +59,7 @@
     };
 
 
-    function fetchdata() {
+    function fetchdata1() {
         request_params = {
             client_name: 'cpe1',
             param_name: 'param1',
@@ -71,13 +70,13 @@
 
         $.getJSON('/fetchdata', request_params, function (data_received) {
             //console.log('received from be', data_received);
-            processData(data_received);
-            plotCharts();
+            processData1(data_received);
+            plotCharts1();
         });
     };
 
 
-    function fetch_newdata(series) {
+    function fetch_newdata1(series) {
         $.ajax({
             url: "/fetchdata",
             data: {
@@ -112,7 +111,7 @@
 
 
     $(document).ready(function () {
-        fetchdata();
+        fetchdata1();
     });
 
 </script>
