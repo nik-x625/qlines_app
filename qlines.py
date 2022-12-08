@@ -88,7 +88,7 @@ def fetchdata():
         res.sort(key=sortFn)
         data_to_revert[param] = res
 
-    logger.debug('data_to_revert: ', str(data_to_revert))
+    #logger.debug('data_to_revert: ', str(data_to_revert))
 
     return {'name': 'some name here', 'data': data_to_revert}
 
@@ -201,6 +201,24 @@ def dashboard():
     logger.debug('in flask, route is /dashboard')
     # return render_template('dashboard.html')
     return render_template('dashboard.html')
+
+
+
+@app.route('/test', methods=['GET', 'POST'])
+def test1():
+    return render_template('test_pure3.html')
+
+
+
+@app.route('/page1', methods=['GET', 'POST'])
+def page1():
+    return render_template('page1.html')
+
+@app.route('/page2', methods=['GET', 'POST'])
+def page2():
+    return render_template('page2.html')
+
+
 
 
 @app.route('/products', methods=['GET', 'POST'])

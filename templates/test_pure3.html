@@ -1,0 +1,18 @@
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+
+<a id="detailed" onclick="loadDoc()">LINK</a>
+<div id="main">Hello - This is my main Div that will be reloaded using Jquery.</div>
+
+
+<script type="text/javascript" language="javascript">
+    function loadDoc() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("main").innerHTML = this.responseText;
+            }
+        };
+        xhttp.open("GET", "page1", true);
+        xhttp.send();
+    }
+</script>

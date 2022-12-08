@@ -1,0 +1,23 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+<button id="btid">
+    my button
+</button>
+
+<div id="dashboard_page_content">
+<p>fsdfsd</p>
+</div>
+
+<script>
+    $('#btid').click(function () {
+        $.ajax({
+            url: "page1",
+            type: "GET",
+            dataType: "html",
+            success: function (data) {
+                $('#dashboard_page_content').html($('#dashboard_page_content', data).html());
+            },
+        })
+    })
+</script>

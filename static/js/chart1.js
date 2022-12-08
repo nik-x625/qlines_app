@@ -5,8 +5,6 @@ var series2 = [];
 
 
 $(document).ready(function () {
-
-
     // chart 1
     const chart1 = Highcharts.chart('chart-div1', {
         time: {
@@ -26,9 +24,12 @@ $(document).ready(function () {
         },
 
         series: [{
-            name: '',
+            name: 'CPU usage',
             data: []
-        }]
+        }],
+        title:{
+            text:'CPU'
+        }
     });
 
 
@@ -51,9 +52,12 @@ $(document).ready(function () {
         },
 
         series: [{
-            name: '',
+            name: 'Memory usage',
             data: []
-        }]
+        }],
+        title:{
+            text:'Memory'
+        }        
     });
 
     request_params = {
