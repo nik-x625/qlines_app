@@ -6,37 +6,35 @@
 	<ul class="list-unstyled components">
 
 		<li>
-			<a href="/">
-				<i class="glyphicon glyphicon-home"></i> Q-Lines Dashboard
+			<a href="{{url_for("dashboard") }}">  
+				<i class="glyphicon glyphicon-home"></i> Dashboard
 			</a>
 		</li>
 
 		<li>
-			<a href="#" onclick="load_page1()">
-				<i class="glyphicon glyphicon-wrench"></i> Page 1
+			<a href="{{url_for("devices") }}"> 
+				<i class="glyphicon glyphicon-wrench"></i> Devices
 			</a>
 		</li>
 
 		<li>
-			<a href="#" onclick="load_page2()">
-				<i class="glyphicon glyphicon-wrench"></i> Page 2 - charts
+			<a href="{{url_for("cli") }}"> 
+				<i class="glyphicon glyphicon-wrench"></i> Remote CLI
 			</a>
 		</li>
 
 
 		<li>
-			<a href="#">
+			<a href="{{url_for("settings") }}"> 
 				<i class="glyphicon glyphicon-wrench"></i> Settings
 			</a>
 		</li>
 
 		<li>
-			<a href="#">
+			<a href="{{url_for("logout") }}"> 
 				<i class="glyphicon glyphicon-log-out"></i> Log out
 			</a>
 		</li>
 
 	</ul>
 </nav>
-
-

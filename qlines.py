@@ -52,10 +52,43 @@ class User(UserMixin):
 users = [User(id) for id in range(1, 5)]
 
 
+
+
+
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     logger.debug('in flask, route is /')
     return render_template('index.html')
+
+
+@app.route('/dashboard', methods=['GET', 'POST'])
+def dashboard():
+    logger.debug('in flask, route is /dashboard')
+    return render_template('dash_main.html')
+
+@app.route('/devices', methods=['GET', 'POST'])
+def devices():
+    return render_template('dash_devices.html')
+
+@app.route('/cli', methods=['GET', 'POST'])
+def cli():
+    return render_template('dash_cli.html')
+
+@app.route('/settings', methods=['GET', 'POST'])
+def settings():
+    return render_template('dash_settings.html')
+
+@app.route("/logout")
+def logout():
+    logout_user()
+    return render_template('index.html')
+
+
+
+
+
+
 
 
 def sortFn(tpl):
@@ -187,36 +220,12 @@ def signup():
         return render_template('signup.html', message='Signing up is easy. It only takes a few steps')
 
 
-# somewhere to logout
-@app.route("/logout")
-def logout():
-    logger.debug('in flask, route is /logout')
-    logout_user()
-    return render_template('index.html')
-
-
-@app.route('/dashboard', methods=['GET', 'POST'])
-# @login_required
-def dashboard():
-    logger.debug('in flask, route is /dashboard')
-    # return render_template('dashboard.html')
-    return render_template('dashboard.html')
 
 
 
-@app.route('/test', methods=['GET', 'POST'])
-def test1():
-    return render_template('test_pure3.html')
 
 
 
-@app.route('/page1', methods=['GET', 'POST'])
-def page1():
-    return render_template('page1.html')
-
-@app.route('/page2', methods=['GET', 'POST'])
-def page2():
-    return render_template('page2.html')
 
 
 

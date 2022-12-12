@@ -27,16 +27,48 @@
         });
     </script>
 
+
+    <style>
+        .logout-nav {
+            position: absolute;
+            right: 10px;
+            top: 6px;
+            width: 90px;
+        }
+
+        content {
+            background-color: #ff6347
+        }
+    </style>
+
+
 </head>
 
 <body>
 
     <div class="wrapper">
-        <!-- Sidebar Holder -->
-        {% include 'sidebar.html' %}
+        {% include 'dash_sidebar.html' %}
 
-        <!-- Page Content Holder -->
-        {% include 'dashboard_home.html' %}
+        <div id="content" style="width:100%">
+            <nav class="navbar navbar-default">
+                <div class="container-fluid">
+
+                    <div class="navbar-header">
+
+                        <button type="button" id="sidebarCollapse" class="btn btn-info navbar-btn">
+                            <i class="glyphicon glyphicon-align-left"></i>
+                            <span></span>
+                        </button>
+                        <button type="button" class="btn btn-info logout-nav" onclick="window.location.href='/logout'">
+                            Log out
+                        </button>
+                    </div>
+                </div>
+            </nav>
+
+            {% block page_content %} {% endblock %}
+
+        </div>
     </div>
 
     <!-- <footer class="container-fluid">
