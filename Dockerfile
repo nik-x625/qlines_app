@@ -65,6 +65,11 @@ ADD _init_script_mongodb /tmp/
 RUN cp /tmp/_init_script_mongodb /etc/init.d/mongodb
 RUN chmod 755 /etc/init.d/mongodb
 
+# Clickhouse init script
+ADD _init_script_clickhouse /tmp/
+RUN cp /tmp/_init_script_clickhouse /etc/init.d/clickhouse
+RUN chmod 755 /etc/init.d/clickhouse
+
 
 # all_daemons init script
 ADD _init_script_all_daemons /tmp/

@@ -14,6 +14,7 @@ from flask import (Flask, Response, abort, current_app, json, jsonify,
 
 from flask_login import (LoginManager, UserMixin, login_required, login_user,
                          logout_user, LoginManager)
+from flask_login import current_user
 
 from email_module import *
 from flask_pager import Pager
@@ -56,6 +57,7 @@ users = [User(id) for id in range(1, 5)]
 
 
 
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     logger.debug('in flask, route is /')
@@ -63,19 +65,23 @@ def index():
 
 
 @app.route('/dashboard', methods=['GET', 'POST'])
+@login_required
 def dashboard():
-    logger.debug('in flask, route is /dashboard')
+    #logger.debug('in flask, route is /dashboard, the user id is: '+str(current_user))
     return render_template('dash_main.html')
 
 @app.route('/devices', methods=['GET', 'POST'])
+@login_required
 def devices():
     return render_template('dash_devices.html')
 
 @app.route('/cli', methods=['GET', 'POST'])
+@login_required
 def cli():
     return render_template('dash_cli.html')
 
 @app.route('/settings', methods=['GET', 'POST'])
+@login_required
 def settings():
     return render_template('dash_settings.html')
 
@@ -229,13 +235,6 @@ def signup():
 
 
 
-
-@app.route('/products', methods=['GET', 'POST'])
-def products():
-    logger.debug('in flask, route is /products')
-    return render_template('index.html')
-
-
 @app.route('/pricing', methods=['GET', 'POST'])
 def pricing():
     logger.debug('in flask, route is /pricing')
@@ -271,32 +270,19 @@ def contact():
 
     return render_template('contact.html', result=result)
 
-#
-#
-#
-#
-#
-#
 
-# handle login failed
 
 
 @app.errorhandler(401)
 def page_not_found(e):
     return Response('<p>Login failed</p>')
 
-
 # callback to reload the user object
 @login_manager.user_loader
 def load_user(userid):
     return User(userid)
 
-#
-#
-#
-#
-#
-#
+
 
 
 @app.route('/search_backend', methods=['GET', 'POST'])
@@ -323,46 +309,9 @@ def search_backend():
                            results=data_to_show,
                            pages=pages)
 
-#
-#
-#
-#
-#
-# By ML - for testing if he can do this
 
-
-@app.route('/sms-panel', methods=['GET', 'POST'])
-@login_required
-def smspanel():
-    return render_template('ml_sms-panel.html')
-
-
-@app.route('/mashin-panel', methods=['GET', 'POST'])
-@login_required
-def mashinpanel():
-    return render_template('ml_mashin-panel.html')
-
-
-@app.route('/call-panel', methods=['GET', 'POST'])
-@login_required
-def callpanel():
-    return render_template('ml_call-panel.html')
-
-
-@app.route('/more', methods=['GET', 'POST'])
-@login_required
-def more_func():
-    return render_template('ml_more.html')
-
-
-# test only
 users = {'foo@bar.tld': {'password': 'secret'}}
-#
-#
-#
-#
-#
-#
+
 
 
 if __name__ == "__main__":
