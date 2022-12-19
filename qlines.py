@@ -13,8 +13,7 @@ from flask import (Flask, Response, abort, current_app, json, jsonify,
                    url_for)
 
 from flask_login import (LoginManager, UserMixin, login_required, login_user,
-                         logout_user, LoginManager)
-from flask_login import current_user
+                         logout_user, LoginManager, current_user)
 
 from email_module import *
 from flask_pager import Pager
@@ -29,29 +28,42 @@ app.secret_key = os.urandom(42)
 app.config['PAGE_SIZE'] = 10
 app.config['VISIBLE_PAGE_COUNT'] = 5
 
-# initialise the flask_login
+
+
+##################################### initialise the flask_login
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
 
-# for long running functions
-r = redis.Redis()
-q = Queue('app1', connection=r)
-
+### not sure what are these
+# users = {'foo@bar.tld': {'password': 'secret'}}
+# create some users with ids 1 to 5
+# users = [User(id) for id in range(1, 5)]
 
 class User(UserMixin):
     def __init__(self, id):
         self.id = id
-        self.name = "user" + str(id)
+        self.name = str(id)
         self.password = self.name + "_secret"
 
     def __repr__(self):
         return "%d/%s/%s" % (self.id, self.name, self.password)
 
+@login_manager.user_loader
+def load_user(userid):
+    #logger.debug('# userid is: '+str(userid))
+    return User(userid)
+##################################### initialise the flask_login
 
-# create some users with ids 1 to 5
-users = [User(id) for id in range(1, 5)]
 
+
+
+
+
+
+# for long running functions
+r = redis.Redis()
+q = Queue('app1', connection=r)
 
 
 
@@ -68,22 +80,28 @@ def index():
 @login_required
 def dashboard():
     #logger.debug('in flask, route is /dashboard, the user id is: '+str(current_user))
+    logger.debug('# in dashboard route, the current user name is: '+str(current_user.name))
+    logger.debug('# in dashboard route, the current user id is: '+str(current_user.get_id()))
     return render_template('dash_main.html')
+
 
 @app.route('/devices', methods=['GET', 'POST'])
 @login_required
 def devices():
     return render_template('dash_devices.html')
 
+
 @app.route('/cli', methods=['GET', 'POST'])
 @login_required
 def cli():
     return render_template('dash_cli.html')
 
+
 @app.route('/settings', methods=['GET', 'POST'])
 @login_required
 def settings():
     return render_template('dash_settings.html')
+
 
 @app.route("/logout")
 def logout():
@@ -91,43 +109,39 @@ def logout():
     return render_template('index.html')
 
 
-
-
-
-
-
-
 def sortFn(tpl):
     return tpl[1]
 
 
-def fetch_data_per_param(client_handler, param_name, client_name, limit, table_name='table1'):
-    res = client_handler.query("SELECT param_name, ts, param_value FROM {} WHERE client_name='{}' and param_name='{}' ORDER BY ts DESC LIMIT {}".format(
-        table_name, client_name, param_name, limit))
+def fetch_data_per_param(client_handler, user_name, client_name, param_name, limit, table_name='table1'):
+    res = client_handler.query("SELECT param_name, ts, param_value FROM {} WHERE user_name={} and client_name='{}' and param_name='{}' ORDER BY ts DESC LIMIT {}".format(
+        table_name, user_name, client_name, param_name, limit))
     return res
 
 
 @app.route('/fetchdata', methods=["GET", "POST"])
+@login_required
 def fetchdata():
+    
     # logger.debug('# the fetching data api called')
 
     client_name = request.args.get('client_name', None)
 
     limit = 30
 
-    client = clickhouse_connect.get_client(
+    client_handler = clickhouse_connect.get_client(
         host='localhost', port='7010', username='default')
 
     parameter_list = ['param1', 'param2']
 
     data_to_revert = {}
-    for param in parameter_list:
-        res = fetch_data_per_param(client, param, client_name, limit)
+    
+    # the "current_user.name" identifies the user. This way the data for only this user is reverted back to js code in browser to render.
+    for param_name in parameter_list:
+        res = fetch_data_per_param(client_handler=client_handler, user_name=str(current_user.name), client_name=client_name, param_name=param_name, limit=limit)
         res = res.result_set
         res.sort(key=sortFn)
-        data_to_revert[param] = res
-
-    #logger.debug('data_to_revert: ', str(data_to_revert))
+        data_to_revert[param_name] = res
 
     return {'name': 'some name here', 'data': data_to_revert}
 
@@ -165,7 +179,7 @@ def login():
 
         if login_success:
             next = request.args.get('next')
-            login_user(User(2), remember=remember_me_flag)
+            login_user(User(email), remember=remember_me_flag)
             return redirect(next or url_for('dashboard'))
         else:
             return render_template('login.html', login_message='The password is not correct!')
@@ -226,15 +240,6 @@ def signup():
         return render_template('signup.html', message='Signing up is easy. It only takes a few steps')
 
 
-
-
-
-
-
-
-
-
-
 @app.route('/pricing', methods=['GET', 'POST'])
 def pricing():
     logger.debug('in flask, route is /pricing')
@@ -271,20 +276,6 @@ def contact():
     return render_template('contact.html', result=result)
 
 
-
-
-@app.errorhandler(401)
-def page_not_found(e):
-    return Response('<p>Login failed</p>')
-
-# callback to reload the user object
-@login_manager.user_loader
-def load_user(userid):
-    return User(userid)
-
-
-
-
 @app.route('/search_backend', methods=['GET', 'POST'])
 def search_backend():
     logger.debug('in flask, route is /search_backend')
@@ -309,8 +300,11 @@ def search_backend():
                            results=data_to_show,
                            pages=pages)
 
+@app.errorhandler(401)
+def page_not_found(e):
+    return Response('<p>Login failed</p>')
 
-users = {'foo@bar.tld': {'password': 'secret'}}
+
 
 
 

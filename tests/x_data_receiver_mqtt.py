@@ -14,7 +14,7 @@ dbclient = clickhouse_connect.get_client(
     host='localhost', port='7010', username='default')
 
 dbclient.command(
-    'CREATE TABLE IF NOT EXISTS table1 (ts DATETIME, client_name String, param_name String, param_value Float64) ENGINE MergeTree ORDER BY client_name')
+    'CREATE TABLE IF NOT EXISTS table1 (ts DATETIME, user_name String, client_name String, param_name String, param_value Float64) ENGINE MergeTree ORDER BY client_name')
 
 
 def on_connect(client, userdata, flags, rc):
@@ -38,7 +38,7 @@ def on_message(client, userdata, msg):
         print('# going to update db with: ', data)
 
         dbclient.insert('table1', [data], column_names=[
-            'ts', 'client_name', 'param_name', 'param_value'])
+            'ts', 'user_name', 'client_name', 'param_name', 'param_value'])
         print()
 
     except Exception as e:

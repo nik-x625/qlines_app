@@ -61,9 +61,10 @@ $(document).ready(function () {
     });
 
     request_params = {
-        client_name: 'cpe1',
+        client_name: 'client1',
     };
 
+    fetch_new_data();
     setInterval(fetch_new_data, 1000);
 
     function fetch_new_data() {
