@@ -2,24 +2,24 @@
 from rq import Queue
 import redis
 import os
-import requests
-
-import clickhouse_connect
-
 from datetime import datetime as dt
+from email_module import *
+from flask_pager import Pager
 
+# MongoDB handlers and methods
+from mongodb_module import *
+
+# ClickHouse handlers and methods
+from clickhouse_module import *
+
+from logger_custom import get_module_logger
+
+from flask_login import (LoginManager, UserMixin, login_required, login_user,
+                         logout_user, LoginManager, current_user)
 from flask import (Flask, Response, abort, current_app, json, jsonify,
                    make_response, redirect, render_template, request, session,
                    url_for)
 
-from flask_login import (LoginManager, UserMixin, login_required, login_user,
-                         logout_user, LoginManager, current_user)
-
-from email_module import *
-from flask_pager import Pager
-from mongodb_module import *
-
-from logger_custom import get_module_logger
 
 logger = get_module_logger(__name__)
 
@@ -29,16 +29,16 @@ app.config['PAGE_SIZE'] = 10
 app.config['VISIBLE_PAGE_COUNT'] = 5
 
 
-
-##################################### initialise the flask_login
+# initialise the flask_login
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
 
-### not sure what are these
+# not sure what are these
 # users = {'foo@bar.tld': {'password': 'secret'}}
 # create some users with ids 1 to 5
 # users = [User(id) for id in range(1, 5)]
+
 
 class User(UserMixin):
     def __init__(self, id):
@@ -49,25 +49,17 @@ class User(UserMixin):
     def __repr__(self):
         return "%d/%s/%s" % (self.id, self.name, self.password)
 
+
 @login_manager.user_loader
 def load_user(userid):
-    #logger.debug('# userid is: '+str(userid))
+    # logger.debug('# userid is: '+str(userid))
     return User(userid)
-##################################### initialise the flask_login
-
-
-
-
-
+# initialise the flask_login
 
 
 # for long running functions
 r = redis.Redis()
 q = Queue('app1', connection=r)
-
-
-
-
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -79,9 +71,7 @@ def index():
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
-    #logger.debug('in flask, route is /dashboard, the user id is: '+str(current_user))
-    logger.debug('# in dashboard route, the current user name is: '+str(current_user.name))
-    logger.debug('# in dashboard route, the current user id is: '+str(current_user.get_id()))
+
     return render_template('dash_main.html')
 
 
@@ -89,6 +79,20 @@ def dashboard():
 @login_required
 def devices():
     return render_template('dash_devices.html')
+
+
+# Devices overview table - data fetcher
+@app.route('/api/data')
+@login_required
+def table_data():
+    search = request.args.get('search[value]')
+    logger.debug('# search is: '+str(search))
+    
+    res = fetch_device_overview(current_user.name, 'table1', 10)
+    res['draw'] = request.args.get('draw', type=int)
+    logger.debug('# res is: '+str(res))
+
+    return res
 
 
 @app.route('/cli', methods=['GET', 'POST'])
@@ -113,32 +117,23 @@ def sortFn(tpl):
     return tpl[1]
 
 
-def fetch_data_per_param(client_handler, user_name, client_name, param_name, limit, table_name='table1'):
-    res = client_handler.query("SELECT param_name, ts, param_value FROM {} WHERE user_name={} and client_name='{}' and param_name='{}' ORDER BY ts DESC LIMIT {}".format(
-        table_name, user_name, client_name, param_name, limit))
-    return res
-
-
 @app.route('/fetchdata', methods=["GET", "POST"])
 @login_required
 def fetchdata():
-    
+
     # logger.debug('# the fetching data api called')
 
     client_name = request.args.get('client_name', None)
 
     limit = 30
 
-    client_handler = clickhouse_connect.get_client(
-        host='localhost', port='7010', username='default')
-
     parameter_list = ['param1', 'param2']
 
     data_to_revert = {}
-    
+
     # the "current_user.name" identifies the user. This way the data for only this user is reverted back to js code in browser to render.
     for param_name in parameter_list:
-        res = fetch_data_per_param(client_handler=client_handler, user_name=str(current_user.name), client_name=client_name, param_name=param_name, limit=limit)
+        res = fetch_data_per_param(user_name=str(current_user.name), client_name=client_name, param_name=param_name, limit=limit)
         res = res.result_set
         res.sort(key=sortFn)
         data_to_revert[param_name] = res
@@ -146,7 +141,6 @@ def fetchdata():
     return {'name': 'some name here', 'data': data_to_revert}
 
 
-# somewhere to login
 @app.route("/login", methods=["GET", "POST"])
 def login():
     logger.debug('in flask, route is /login')
@@ -168,14 +162,18 @@ def login():
         else:
             remember_me_flag = False
 
-        login_success = 0
+        # temporary, change it to 0 later
+        login_success = 1 # 0
 
-        user_doc = read_user_doc(email)
-        if not user_doc:
-            return render_template('login.html', login_message='The username does not exist!')
 
-        if user_doc.get('password', None) == password:
-            login_success = 1
+        # temporary, uncomment this block later
+        # user_doc = read_user_doc(email)
+        # if not user_doc:
+        #     return render_template('login.html', login_message='The username does not exist!')
+
+        # if user_doc.get('password', None) == password:
+        #     login_success = 1
+
 
         if login_success:
             next = request.args.get('next')
@@ -300,12 +298,10 @@ def search_backend():
                            results=data_to_show,
                            pages=pages)
 
+
 @app.errorhandler(401)
 def page_not_found(e):
     return Response('<p>Login failed</p>')
-
-
-
 
 
 if __name__ == "__main__":

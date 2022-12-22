@@ -6,8 +6,8 @@
 # Files with exactly that name (and executable flag set!) should be placed in
 # $SUBSERVICES_LOCATION (see below). By default, that should already be the
 # case.
-SUBSERVICES_START="mongodb redis-server rqworker apache2 clickhouse"
-SUBSERVICES_STOP="clickhouse apache2 rqworker redis-server mongodb"
+SUBSERVICES_START="mongodb redis-server rqworker apache2 clickhouse mosquitto"
+SUBSERVICES_STOP="mosquitto clickhouse apache2 rqworker redis-server mongodb"
 
 # This defines where this script looks for the other init-scripts. Must end
 # with a "/".

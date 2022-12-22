@@ -1,8 +1,8 @@
 # buster or bullseye
 FROM debian:bullseye
 RUN apt-get update -y
-RUN apt-get -y install ntp ssh vim net-tools python3 python3-pip wget tzdata git apache2 tcpdump tcpflow pylint iputils-ping curl unzip telnet
-RUN apt-get -y install redis lsb-release 
+RUN apt-get -y install ntp ssh vim net-tools python3 python3-pip wget tzdata git apache2 
+RUN apt-get -y install tcpdump tcpflow pylint iputils-ping curl unzip telnet redis lsb-release 
 
 
 # related to mysql
@@ -28,21 +28,18 @@ RUN ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime
 
 
 # bashrc content
-ADD _bashrc_append /tmp/
+ADD DockerConfigFiles/_bashrc_append /tmp/
 RUN cat /tmp/_bashrc_append >> /root/.bashrc
 
 
 # apache config
-ADD _apache_site.conf /tmp/
+ADD DockerConfigFiles/_apache_site.conf /tmp/
 RUN cp /tmp/_apache_site.conf /etc/apache2/sites-available/000-default.conf
 RUN echo "ServerName 127.0.0.1" >> /etc/apache2/apache2.conf
 RUN a2enmod rewrite
 #RUN sed -i 's/Listen 80/Listen 8080/g' /etc/apache2/ports.conf
 
 
-# RQ worker init script
-ADD _init_script_rq_worker_platx /tmp/
-RUN cp /tmp/_init_script_rq_worker_platx /etc/init.d/rqworker
 
 
 # MongoDB installation
@@ -60,21 +57,34 @@ RUN apt-get -y install mongodb-org mongodb-org-database mongodb-org-server mongo
 #RUN pip3 install python-ldap 
 
 
+
+########### INIT SCRIPTS ###########
+# RQ worker init script
+ADD DockerConfigFiles/_init_script_rq_worker_platx /tmp/
+RUN cp /tmp/_init_script_rq_worker_platx /etc/init.d/rqworker
+
+
 # MongoDB init script
-ADD _init_script_mongodb /tmp/
+ADD DockerConfigFiles/_init_script_mongodb /tmp/
 RUN cp /tmp/_init_script_mongodb /etc/init.d/mongodb
 RUN chmod 755 /etc/init.d/mongodb
 
 # Clickhouse init script
-ADD _init_script_clickhouse /tmp/
+ADD DockerConfigFiles/_init_script_clickhouse /tmp/
 RUN cp /tmp/_init_script_clickhouse /etc/init.d/clickhouse
 RUN chmod 755 /etc/init.d/clickhouse
 
+# Mosquitto init script
+ADD DockerConfigFiles/_init_script_mosquitto /tmp/
+RUN cp /tmp/_init_script_mosquitto /etc/init.d/mosquitto
+RUN chmod 755 /etc/init.d/mosquitto
 
 # all_daemons init script
-ADD _init_script_all_daemons /tmp/
+ADD DockerConfigFiles/_init_script_all_daemons /tmp/
 RUN cp /tmp/_init_script_all_daemons /etc/init.d/all_daemons
 RUN chmod 755 /etc/init.d/all_daemons
+########### INIT SCRIPTS ###########
+
 
 
 # to enable logging in mylogs files
