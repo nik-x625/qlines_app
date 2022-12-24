@@ -77,7 +77,7 @@ def send_data(clientname, username):
 
 
 if __name__ == "__main__":
-    cpe_count = 100
+    cpe_count = 30
     client_prefix = 'cpe'
     client_list = [client_prefix+str(x) for x in range(1,cpe_count)]
     

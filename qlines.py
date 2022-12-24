@@ -75,42 +75,27 @@ def dashboard():
     return render_template('dash_main.html')
 
 
+# Devices overview table - route
 @app.route('/devices', methods=['GET', 'POST'])
-@login_required
+#@login_required
 def devices():
     return render_template('dash_devices.html')
 
 
 # Devices overview table - data fetcher
 @app.route('/api/data')
-@login_required
+#@login_required
 def table_data():
+    temp_username = 'a@b.c'
+
     search = request.args.get('search[value]')
     logger.debug('# search is: '+str(search))
     
-    res = fetch_device_overview(current_user.name, 'table1', 10)
+    res = fetch_device_overview('table1', temp_username, 10)
     res['draw'] = request.args.get('draw', type=int)
     logger.debug('# res is: '+str(res))
 
     return res
-
-
-@app.route('/cli', methods=['GET', 'POST'])
-@login_required
-def cli():
-    return render_template('dash_cli.html')
-
-
-@app.route('/settings', methods=['GET', 'POST'])
-@login_required
-def settings():
-    return render_template('dash_settings.html')
-
-
-@app.route("/logout")
-def logout():
-    logout_user()
-    return render_template('index.html')
 
 
 def sortFn(tpl):
@@ -139,6 +124,27 @@ def fetchdata():
         data_to_revert[param_name] = res
 
     return {'name': 'some name here', 'data': data_to_revert}
+
+
+
+@app.route('/cli', methods=['GET', 'POST'])
+@login_required
+def cli():
+    return render_template('dash_cli.html')
+
+
+@app.route('/settings', methods=['GET', 'POST'])
+@login_required
+def settings():
+    return render_template('dash_settings.html')
+
+
+@app.route("/logout")
+def logout():
+    logout_user()
+    return render_template('index.html')
+
+
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -306,4 +312,4 @@ def page_not_found(e):
 
 if __name__ == "__main__":
     app.logger.setLevel(logging.DEBUG)
-    app.run(host='0.0.0.0', port=8080, debug=True)
+    app.run(host='0.0.0.0', port=80, debug=True)

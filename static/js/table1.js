@@ -5,8 +5,8 @@ $(document).ready(function () {
         columns: [
             { data: 'user_name' },
             { data: 'client_name' },
-            { data: 'last_message' },
-            { data: 'first_message' }
+            { data: 'first_message' },
+            { data: 'last_message' }
         ],
     });
 });

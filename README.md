@@ -38,6 +38,7 @@
 - change the logger file path. edit the file logger_custom.py and change from "/opt/qlines/mylogs.log" to "/var/www/site_platx/mylogs.log"
 - in apache might be needed to remove the tags: `<IfDefine IgnoreBlockComment> and </IfDefine>`
 
+
 **Installing the ClickHouse**
 - cd /tmp/
 - curl https://clickhouse.com/ | sh
