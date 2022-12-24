@@ -40,8 +40,6 @@ RUN a2enmod rewrite
 #RUN sed -i 's/Listen 80/Listen 8080/g' /etc/apache2/ports.conf
 
 
-
-
 # MongoDB installation
 RUN wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | apt-key add -
 RUN apt update
@@ -55,7 +53,6 @@ RUN apt-get -y install mongodb-org mongodb-org-database mongodb-org-server mongo
 # Required for python-ldap
 #RUN apt-get -y install build-essential python3-dev python2.7-dev libldap2-dev libsasl2-dev slapd ldap-utils tox lcov valgrind
 #RUN pip3 install python-ldap 
-
 
 
 ########### INIT SCRIPTS ###########

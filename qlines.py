@@ -69,10 +69,9 @@ def index():
 
 
 @app.route('/dashboard', methods=['GET', 'POST'])
-@login_required
+#@login_required
 def dashboard():
-
-    return render_template('dash_main.html')
+    return render_template('comingsoon.html')
 
 
 # Devices overview table - route
