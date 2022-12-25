@@ -1,4 +1,4 @@
-**Current Architecture**
+**About current architecture**
 - Apache => WSGI => Flask
 - Redis is involved for message queue use cases
 - "Init scripts" are used. No need to switch to "systemd". So far they work fine.
@@ -8,10 +8,10 @@
 - using redis as init script
 - using VSCODE in the docker folder in Mac local filesystem, then docker in the VPS
 - use aliases inside the container, use aliases outisde the container
-- Grafana running on port 8082 (temporary)
+- Clickhouse and Mosquitto only enabled in lab for the moment, refer to notes to install
 
 
-**Steps to build the environment - both Testbed and Production**
+**Steps to build the environment - both test and prod**
 - install docker engine on the production linux server. Ref: https://docs.docker.com/engine/install/debian/, start from the step "Set up the repository"
 - In case of Mac, go to the Docker folder of the Mac, probably it is in this folder: /Users/amc/Desktop/G/Docker
 - git clone git@gitlab.com:mehdifth/platform.git  (note: Gitlab must already have the ssh public keys)
@@ -33,11 +33,13 @@
 - in each host, update the git outside the docker container. This way you will have the SSH key on the Git.
 
 
-**Deployment to cloud vps** => deprecated because the production now is on Docker too, it is valid for chroot cases
-- add this to the apache config: 
-- python-path=/var/www/site_platx:/usr/local/lib/python3.7/dist-packages
-- change the logger file path. edit the file logger_custom.py and change from "/opt/qlines/mylogs.log" to "/var/www/site_platx/mylogs.log"
-- in apache might be needed to remove the tags: `<IfDefine IgnoreBlockComment> and </IfDefine>`
+
+**Deployment to production todos**
+- add this to the apache config if necessary: python-path=/var/www/site_platx:/usr/local/lib/python3.7/dist-packages
+- change the logger file path if necessary. edit the file logger_custom.py and change from "/opt/qlines/mylogs.log" to "/var/www/site_platx/mylogs.log"
+- manage the apache tags if necessary: `<IfDefine IgnoreBlockComment> and </IfDefine>`
+- enable the google analytics tag in all html filesystem
+- install mosquitto and clickhouse manually for the moment
 
 
 **Installing the ClickHouse**
