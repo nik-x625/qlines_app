@@ -40,6 +40,7 @@
 - manage the apache tags if necessary: `<IfDefine IgnoreBlockComment> and </IfDefine>`
 - enable the google analytics tag in all html filesystem
 - install mosquitto and clickhouse manually for the moment
+- Manage the SSL certificate/Letsencrypt
 
 
 **Installing the ClickHouse**
