@@ -2,6 +2,18 @@
 <html>
 
 <head>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0EQHPXFJRV"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-0EQHPXFJRV');
+    </script>
+
+
     {% include 'header.html' %}
 
     <style>
@@ -40,9 +52,12 @@
     <div id="page">
         {% include 'nav.html' %}
 
-        <section id="home" class="video-hero" style="height: 400px; background-image: url(static/images/cover_img_1.jpg);  background-size:cover; background-position: center center;background-attachment:fixed;" data-section="home">
+        <section id="home" class="video-hero"
+            style="height: 400px; background-image: url(static/images/cover_img_1.jpg);  background-size:cover; background-position: center center;background-attachment:fixed;"
+            data-section="home">
             <div class="overlay"></div>
-            <a class="player" data-property="{videoURL:'',containment:'#home', showControls:false, autoPlay:true, loop:true, mute:true, startAt:0, opacity:1, quality:'default'}"></a>
+            <a class="player"
+                data-property="{videoURL:'',containment:'#home', showControls:false, autoPlay:true, loop:true, mute:true, startAt:0, opacity:1, quality:'default'}"></a>
             <div class="display-t text-center">
                 <div class="display-tc">
                     <div class="container">
@@ -64,8 +79,8 @@
                     <div class="col-md-4 text-center animate-box">
                         <div class="services">
                             <span class="icon">
-								<i class="icon-envelop"></i>
-							</span>
+                                <i class="icon-envelop"></i>
+                            </span>
                             <div class="desc">
                                 <h3>Remote control through central web dashboard</h3>
                                 <p>If you travel to another continent or overseas, keep eyes on the statistics!</p>
@@ -76,11 +91,12 @@
                     <div class="col-md-4 text-center animate-box">
                         <div class="services">
                             <span class="icon">
-								<i class="icon-mobile"></i>
-							</span>
+                                <i class="icon-mobile"></i>
+                            </span>
                             <div class="desc">
                                 <h3>Cloud Integration</h3>
-                                <p>Manage and monitor your remote network centrally! Behind the NAT, Proxy, Firewal, etc.? Our cloud access helps to reach ouf the devices!</p>
+                                <p>Manage and monitor your remote network centrally! Behind the NAT, Proxy, Firewal,
+                                    etc.? Our cloud access helps to reach ouf the devices!</p>
                             </div>
                         </div>
                     </div>
@@ -88,8 +104,8 @@
                     <div class="col-md-4 text-center animate-box">
                         <div class="services">
                             <span class="icon">
-								<i class="icon-equalizer"></i>
-							</span>
+                                <i class="icon-equalizer"></i>
+                            </span>
                             <div class="desc">
                                 <h3>User friendly dashboard</h3>
                                 <p>Easy to use dashboard with analytics and statistics from your remote agents.</p>
