@@ -4,6 +4,8 @@ RUN apt-get update -y
 RUN apt-get -y install ntp ssh vim net-tools python3 python3-pip wget tzdata git apache2
 RUN apt-get -y install tcpdump tcpflow pylint iputils-ping curl unzip telnet redis lsb-release snapd
 
+# enable SSL/HTTPS on Apache
+RUN a2enmod ssl
 
 # related to mysql
 # RUN apt-get -y mysql-connector-python
