@@ -9,11 +9,7 @@ from flask_pager import Pager
 # MongoDB handlers and methods
 from mongodb_module import *
 
-# ClickHouse handlers and methods
-try:
-    from clickhouse_module import *
-except:
-    pass
+#from clickhouse_module import *
 
 from logger_custom import get_module_logger
 
