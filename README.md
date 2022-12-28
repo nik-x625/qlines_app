@@ -41,8 +41,9 @@
 - enable the google analytics tag in all html filesystem
 - install mosquitto and clickhouse manually for the moment
 - Manage the SSL certificate/Letsencrypt (was not possible to install in docker because of snapd)
---renew it in the host oustide of the docker container and move the files in /etc/letsencrypt to inside the docker
--- in running "certbot --apache" be careful to run it for 2 address "qlines.net" and "www.qlines.net"
+- renew it in the host oustide of the docker container and move the files in /etc/letsencrypt to inside the docker
+- in running "certbot --apache" be careful to run it for 2 address "qlines.net" and "www.qlines.net"
+- comment out this line in the qlines.py: "from clickhouse_module import *"
 
 
 **Installing the ClickHouse**
