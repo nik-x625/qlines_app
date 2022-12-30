@@ -8,6 +8,7 @@ from momentjs import momentjs
 #app.jinja_env.globals['momentjs'] = momentjs
 
 
+
 logger = get_module_logger(__name__)
 
 
