@@ -4,8 +4,8 @@ from datetime_converter import datetime_to_elapsed
 
 # for timezone management, ref: https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-xiii-dates-and-times
 from momentjs import momentjs
-from qlines import app
-app.jinja_env.globals['momentjs'] = momentjs
+#from qlines import app
+#app.jinja_env.globals['momentjs'] = momentjs
 
 
 logger = get_module_logger(__name__)

@@ -1,16 +1,20 @@
 #!/usr/bin/python
-from rq import Queue
-import redis
+'''
+main qlines flask app
+'''
+
 import os
 from datetime import datetime as dt
+import redis
+
 from email_module import *
 from flask_pager import Pager
-from pprint import pprint
+from rq import Queue
 
 # MongoDB handlers and methods
 from mongodb_module import *
 
-from clickhouse_module import *
+from clickhouse_module import fetch_data_per_param, fetch_device_overview
 
 from logger_custom import get_module_logger
 

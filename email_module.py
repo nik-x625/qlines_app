@@ -1,12 +1,16 @@
+'''
+bla bla doc here
+'''
+
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from logger_custom import get_module_logger
 
-default_address = 'mabolfathi@gmail.com'
+DEFAULT_ADDRESS = 'mabolfathi@gmail.com'
 
-fromaddr = "wpmessages1050@gmail.com"
-password = 'vqqfnnsdvcqshzrj' #'jthn5g_4bdf4nn224kbjshhive'
+FROMADDR = "wpmessages1050@gmail.com"
+PASSWORD = 'vqqfnnsdvcqshzrj'  # 'jthn5g_4bdf4nn224kbjshhive'
 
 logger = get_module_logger(__name__)
 
@@ -17,7 +21,7 @@ def send_email_contact(message_dict):
     '''
 
     try:
-        toaddr = default_address
+        toaddr = DEFAULT_ADDRESS
 
         logger.debug('picked from queue, in send_email_contact method')
 
@@ -37,13 +41,13 @@ def send_email_contact(message_dict):
         Message:
         {}
         '''.format("Q-Lines contact form",
-                message_dict['subject'],
-                message_dict['first_name'],
-                message_dict['last_name'],
-                message_dict['email'],
-                message_dict['datetime'],
-                message_dict['message']
-                )
+                   message_dict['subject'],
+                   message_dict['first_name'],
+                   message_dict['last_name'],
+                   message_dict['email'],
+                   message_dict['datetime'],
+                   message_dict['message']
+                   )
 
         logger.debug(
             'picked from queue, in send_email_contact method, going to login to gmail and submit the email')
@@ -55,18 +59,16 @@ def send_email_contact(message_dict):
         # login to gmail sender account
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()
-        
-        
+
         logger.debug('login - going to')
-        server.login(fromaddr, password)
+        server.login(FROMADDR, PASSWORD)
         logger.debug('login - done')
-        
 
         logger.debug(
             'picked from queue, in send_email_contact method, the login result is: '+str(text))
 
         # main sending action
-        server.sendmail(fromaddr, toaddr, text)
+        server.sendmail(FROMADDR, toaddr, text)
         server.quit()
         logger.debug(
             'picked from queue, in send_email_contact method, the email sending attempt done')
@@ -77,24 +79,23 @@ def send_email_contact(message_dict):
 
 
 def send_email_signup(message_dict):
-    
     '''
     This method is called by Flask route of '/signup'
-    
+
     message_dict =  {
                     'email':'test_email@abc.xxx,
                     'confirmation_link': 'https://qlines.net/confirmation/sdfsdfwekjfnwekrng'
                     }
     '''
-    
-    logger.debug('picked from queue, in send_email_signup method - start, message_dict: '+str(message_dict))
+
+    logger.debug(
+        'picked from queue, in send_email_signup \
+        method - start, message_dict: %f ' % message_dict)
 
     # todo: fix this later
     email = message_dict['email']
     if not email:
-        email = default_address
-
-    
+        email = DEFAULT_ADDRESS
 
     # create message metadata
     msg = MIMEMultipart()
@@ -123,13 +124,13 @@ def send_email_signup(message_dict):
     # login to gmail sender account
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.starttls()
-    server.login(fromaddr, password)
+    server.login(FROMADDR, PASSWORD)
 
     logger.debug(
         'picked from queue, in send_email_signup method, the login result is: '+str(text))
 
     # main sending action
-    server.sendmail(fromaddr, email, text)
+    server.sendmail(FROMADDR, email, text)
     server.quit()
     logger.debug(
         'picked from queue, in send_email_signup method, the email sending attempt done')
@@ -140,15 +141,15 @@ def send_email_signup(message_dict):
 def submit_email_for_newsletter(message_dict):
     msg = MIMEMultipart()
     msg['From'] = "Saya newsletter form"
-    msg['To'] = default_address
+    msg['To'] = DEFAULT_ADDRESS
     msg.attach(MIMEText(str(message_dict), 'plain'))
     msg['Subject'] = 'Request for newsletter'
 
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.starttls()
-    server.login(fromaddr, password)
+    server.login(FROMADDR, PASSWORD)
     text = msg.as_string()
-    server.sendmail(fromaddr, default_address, text)
+    server.sendmail(FROMADDR, DEFAULT_ADDRESS, text)
     server.quit()
     return True
 
@@ -159,18 +160,18 @@ def send_email_async(msg, toaddr=None):
     '''
 
     if not toaddr:
-        toaddr = default_address
+        toaddr = DEFAULT_ADDRESS
 
     logger.debug('# in async email func, start....')
 
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.starttls()
-    server.login(fromaddr, password)
+    server.login(FROMADDR, PASSWORD)
     text = msg.as_string()
-    server.sendmail(fromaddr, toaddr, text)
+    server.sendmail(FROMADDR, toaddr, text)
     server.quit()
 
-    logger.debug('# fromaddr: '+str(fromaddr))
+    logger.debug('# fromaddr: '+str(FROMADDR))
     logger.debug('# toaddr: '+str(toaddr))
     logger.debug('# text: '+str(text))
 
@@ -186,7 +187,7 @@ def send_email_contact__old(message_dict):
 
     msg = MIMEMultipart()
     msg['From'] = "QLines"
-    msg['To'] = default_address
+    msg['To'] = DEFAULT_ADDRESS
     msg['Subject'] = message_dict['subject']
 
     message_html = '''
@@ -224,4 +225,4 @@ def send_email_contact__old(message_dict):
 
 if __name__ == "__main__":
     send_email_contact({'first_name': '', 'last_name': '', 'email': '',
-                'subject': '', 'message': 'xx', 'datetime': 'fff'})
+                        'subject': '', 'message': 'xx', 'datetime': 'fff'})
