@@ -20,6 +20,7 @@ RUN pip3 install flask flask_login redis rq pymongo flake8 pyyaml markdown sqlal
 RUN useradd flask
 RUN echo "Europe/Berlin" > /etc/timezone
 RUN dpkg-reconfigure -f noninteractive tzdata
+RUN pip install jinja2==3.0
 
 # grafana packages
 RUN apt-get -y install apt-transport-https software-properties-common

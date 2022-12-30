@@ -1,12 +1,15 @@
 #!/usr/bin/python
-import paho.mqtt.client as mqtt
-from random import randrange, uniform
+'''
+module doc bla bla
+'''
 import time
-import numpy as np
 import datetime
 import json
 import sys
 import getopt
+import paho.mqtt.client as mqtt
+import numpy as np
+
 
 mqttBroker = "127.0.0.1"
 #mqttBroker = "broker.hivemq.com"

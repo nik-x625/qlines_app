@@ -12,8 +12,6 @@ from threading import Thread
 mqttBroker = "127.0.0.1"
 
 
-
-
 def create_random_data(user_name, client_name, param_name, u, sigma):
     ms = datetime.datetime.now()
     now = time.mktime(ms.timetuple())
@@ -28,12 +26,10 @@ def mqtt_establish(clientname):
     return client
 
 
-
 def send_data(clientname, username):
-    
+
     topic = 'topic1'
     client = None
-
 
     while True:
 
@@ -62,8 +58,8 @@ def send_data(clientname, username):
                       (res1.is_published()), ' and data is: ', data1)
                 print('The sending attempt has for data1 result: ',
                       (res2.is_published()), ' and data is: ', data2)
-                
-                sleeping_time = randrange(10,100)/10
+
+                sleeping_time = randrange(10, 100)/10
                 print('# going to sleep for {} seconds'.format(sleeping_time))
                 #print("Just published " + str(data) + " to broker")
                 #print('client obj: '+str(dir(client)))
@@ -79,16 +75,14 @@ def send_data(clientname, username):
 if __name__ == "__main__":
     cpe_count = 30
     client_prefix = 'cpe'
-    client_list = [client_prefix+str(x) for x in range(1,cpe_count)]
-    
+    client_list = [client_prefix+str(x) for x in range(1, cpe_count)]
+
     username = 'a@b.c'
-    
-    
-    for clientname in client_list:#[start:start+step]:
+
+    for clientname in client_list:  # [start:start+step]:
         try:
             t = Thread(target=send_data, args=(clientname, username))
             t.start()
         except KeyboardInterrupt:
             print("Ctrl-c pressed ...")
             sys.exit(1)
-        

@@ -5,6 +5,7 @@ import os
 from datetime import datetime as dt
 from email_module import *
 from flask_pager import Pager
+from pprint import pprint
 
 # MongoDB handlers and methods
 from mongodb_module import *
@@ -14,7 +15,7 @@ from clickhouse_module import *
 from logger_custom import get_module_logger
 
 from flask_login import (LoginManager, UserMixin, login_required, login_user,
-                         logout_user, LoginManager, current_user)
+                         logout_user, current_user)
 from flask import (Flask, Response, abort, current_app, json, jsonify,
                    make_response, redirect, render_template, request, session,
                    url_for)
@@ -68,30 +69,62 @@ def index():
 
 
 @app.route('/dashboard', methods=['GET', 'POST'])
-#@login_required
+# @login_required
 def dashboard():
     return render_template('dash_comingsoon.html')
 
 
 # Devices overview table - route
 @app.route('/devices', methods=['GET', 'POST'])
-#@login_required
+# @login_required
 def devices():
     return render_template('dash_devices.html')
 
 
 # Devices overview table - data fetcher
 @app.route('/api/data')
-#@login_required
+# @login_required
 def table_data():
-    temp_username = 'a@b.c'
 
-    search = request.args.get('search[value]')
-    logger.debug('# search is: '+str(search))
-    
-    res = fetch_device_overview('table1', temp_username, 10)
+    # temporary only
+    temp_username = 'a@b.c'
+    search_like = request.args.get('search[value]')
+
+    # sorting
+    order = []
+    order_item = {'column_name': '', 'direction': ''}
+
+    i = 0
+
+    # for multi-column sorting
+    while True:
+        col_index = request.args.get(f'order[{i}][column]')
+        if col_index is None:
+            break
+
+        # order column
+        col_name = request.args.get(f'columns[{col_index}][data]')
+        if col_name not in ['user_name', 'client_name', 'first_message', 'last_message']:
+            col_name = 'last_message'
+
+        # order direction
+        if request.args.get(f'order[{i}][dir]') == 'desc':
+            direction = 'desc'
+        else:
+            direction = 'asc'
+
+        order_item['column_name'] = col_name
+        order_item['direction'] = direction
+
+        order.append(order_item)
+        i += 1
+
+    length = request.args.get('length')
+    start = request.args.get('start')
+
+    res = fetch_device_overview(
+        'table1', temp_username, search_like, start, length, order)
     res['draw'] = request.args.get('draw', type=int)
-    logger.debug('# res is: '+str(res))
 
     return res
 
@@ -116,13 +149,13 @@ def fetchdata():
 
     # the "current_user.name" identifies the user. This way the data for only this user is reverted back to js code in browser to render.
     for param_name in parameter_list:
-        res = fetch_data_per_param(user_name=str(current_user.name), client_name=client_name, param_name=param_name, limit=limit)
+        res = fetch_data_per_param(user_name=str(
+            current_user.name), client_name=client_name, param_name=param_name, limit=limit)
         res = res.result_set
         res.sort(key=sortFn)
         data_to_revert[param_name] = res
 
     return {'name': 'some name here', 'data': data_to_revert}
-
 
 
 @app.route('/cli', methods=['GET', 'POST'])
@@ -141,8 +174,6 @@ def settings():
 def logout():
     logout_user()
     return render_template('index.html')
-
-
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -167,8 +198,7 @@ def login():
             remember_me_flag = False
 
         # temporary, change it to 0 later
-        login_success = 1 # 0
-
+        login_success = 1  # 0
 
         # temporary, uncomment this block later
         # user_doc = read_user_doc(email)
@@ -177,7 +207,6 @@ def login():
 
         # if user_doc.get('password', None) == password:
         #     login_success = 1
-
 
         if login_success:
             next = request.args.get('next')

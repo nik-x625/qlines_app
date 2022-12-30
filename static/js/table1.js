@@ -8,5 +8,6 @@ $(document).ready(function () {
             { data: 'first_message' },
             { data: 'last_message' }
         ],
+        order: [[3,'desc']]
     });
 });
