@@ -61,8 +61,8 @@ def send_data(clientname, username):
 
                 sleeping_time = randrange(10, 100)/10
                 print('# going to sleep for {} seconds'.format(sleeping_time))
-                #print("Just published " + str(data) + " to broker")
-                #print('client obj: '+str(dir(client)))
+                # print("Just published " + str(data) + " to broker")
+                # print('client obj: '+str(dir(client)))
 
         except Exception as e:
             print('The error occured: {}, skipping this data point...'.format(e))
