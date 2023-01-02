@@ -6,6 +6,7 @@ main qlines flask app
 import os
 from datetime import datetime as dt
 import redis
+import time
 
 from email_module import *
 from flask_pager import Pager
@@ -23,7 +24,6 @@ from flask_login import (LoginManager, UserMixin, login_required, login_user,
 from flask import (Flask, Response, abort, current_app, json, jsonify,
                    make_response, redirect, render_template, request, session,
                    url_for)
-
 
 logger = get_module_logger(__name__)
 
@@ -73,19 +73,31 @@ def index():
 
 
 @app.route('/dashboard', methods=['GET', 'POST'])
-# @login_required
+@login_required
 def dashboard():
-    return render_template('dash_comingsoon.html')
+    return render_template('dash_main.html')
 
 
 # Devices overview table - route
 @app.route('/devices', methods=['GET', 'POST'])
-# @login_required
+@login_required
 def devices():
     return render_template('dash_devices.html')
 
 
+# test - getting the broswer timezone
+@app.route("/getTime", methods=['GET'])
+def getTime():
+    username = 'a@b.c'
+    browsertz = request.args.get("browsertz")
+    logger.debug("browser time: %s" % (browsertz))
+    #logger.debug("server time : %s" % (time.strftime('%A %B, %d %Y %H:%M:%S')))
+    timezone_write(username, browsertz)
+    return "Done"
+
 # Devices overview table - data fetcher
+
+
 @app.route('/api/data')
 # @login_required
 def table_data():
@@ -185,14 +197,14 @@ def login():
     logger.debug('in flask, route is /login')
 
     logger.debug('')
-    logger.debug('# request.form: ' + str(request.form))
-    logger.debug('# request.args: ' + str(request.args))
+    logger.debug('# request.form: %s', str(request.form))
+    logger.debug('# request.args: %s', str(request.args))
     logger.debug('# request.args.get("next"): ' +
                  str(request.args.get("next")))
 
     if request.method == 'POST':
         email = request.form.get('email_holder', None)
-        password = request.form.get('password_holder', None)
+        # password = request.form.get('password_holder', None)
         keepsignedin = request.form.get('keepsignedin_holder', None)
 
         # To remember the user even if browser is closed
@@ -232,7 +244,7 @@ def signup():
     logger.debug('')
     logger.debug('# in signup, request.form: ' + str(request.form))
     logger.debug('# in signup, request.args: ' + str(request.args))
-    logger.debug('# in signup, request.args.get("next"): ' +
+    logger.debug('# in signup, request.args.get("next"): ',
                  str(request.args.get("next")))
 
     if request.method == 'POST':
@@ -249,7 +261,7 @@ def signup():
         if not agreeterms:
             return render_template('signup.html', message='Please read the terms and conditions.')
 
-        country = request.form.get('country', None)
+        # country = request.form.get('country', None)
         new_user_data = {
             'email': email,
             'password': password_main,

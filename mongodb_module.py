@@ -1,9 +1,9 @@
 from pymongo import MongoClient
 import logging
 import datetime
+from logger_custom import get_module_logger
 
-
-logger = logging.getLogger(__name__)
+logger = get_module_logger(__name__)
 
 client = MongoClient('127.0.0.1')
 db = client['platform']
@@ -12,8 +12,8 @@ db = client['platform']
 
 
 def update_profile_in_db(key, doc):
-    client = MongoClient('127.0.0.1', 22022)
-    db = client.platform
+    #client = MongoClient('127.0.0.1', 22022)
+    #db = client.platform
     coll = db.pages
     #contact_submission = db['contact_submission']
 
@@ -36,6 +36,19 @@ def write_to_user_doc(key, item):
             "$currentDate": {"lastModified": True}
         }
     )
+
+
+def timezone_write(username, tz):
+    logger.debug('# going to update the tz {} for user {}: '.format(tz, username))
+    write_to_user_doc({'email':username}, {'tz':tz})
+    return None
+    
+def timezone_read(username):
+    logger.debug('# in timezone_read, username: '+str(username))
+    user_doc = read_user_doc(username)
+    tz = user_doc['tz']
+    return tz
+
 
 
 def update_sensor_data(doc):

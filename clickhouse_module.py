@@ -1,19 +1,25 @@
 import clickhouse_connect
 from logger_custom import get_module_logger
 from datetime_converter import datetime_to_elapsed
-
+from mongodb_module import timezone_read
+from zoneinfo import ZoneInfo
+#from datetime import datetime
+from flask import session
 # for timezone management, ref: https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-xiii-dates-and-times
 from momentjs import momentjs
 #from qlines import app
-#app.jinja_env.globals['momentjs'] = momentjs
-
-
+from pprint import pprint
 
 logger = get_module_logger(__name__)
 
-
 client_handler = clickhouse_connect.get_client(
     host='localhost', port='7010', username='default', query_limit=0)
+
+
+def tz_converter(time, browser_timezone):
+    utc_time = time.replace(tzinfo=ZoneInfo('UTC'))
+    tz_time = utc_time.astimezone(ZoneInfo(browser_timezone))
+    return tz_time.strftime("%Y-%m-%d %H:%M:%S %Z")
 
 
 def fetch_data_per_param(user_name, client_name, param_name, limit, table_name='table1'):
@@ -23,6 +29,11 @@ def fetch_data_per_param(user_name, client_name, param_name, limit, table_name='
 
 
 def fetch_device_overview(table_name, user_name, like, start, length, order):
+
+    # logger.debug('# in fetch_device_overview, username: '+str(user_name))
+
+    browser_timezone = timezone_read(user_name)
+    logger.debug('# user_timezone: '+str(browser_timezone))
 
     order_by = order[0]['column_name']
     order_direction = order[0]['direction']
@@ -54,31 +65,26 @@ offset {start} rows fetch next {length} rows only"
         data_row = {}
         data_row['user_name'] = row[1]
         data_row['client_name'] = row[2]
-        # + ' - ' + datetime_to_elapsed(row[3])
-        data_row['first_message'] = (row[3])
-        # + ' - ' + datetime_to_elapsed(row[4])
-        data_row['last_message'] = row[4]
+        data_row['first_message'] = tz_converter(row[3], browser_timezone)
+        data_row['last_message'] = tz_converter(row[4], browser_timezone)
 
         count = row[0]
 
         data.append(data_row)
-
-    # print('# data (db) is: '+str(data))
 
     res = {
         'data': data,
         'recordsFiltered': count,  # recordsFiltered[0][0],
         'recordsTotal': recordsTotal[0][0],
     }
-
     return res
 
 
 if __name__ == '__main__':
-    res = fetch_device_overview('table1', 'a@b.c', 'cpe2', 10)
-    res1 = res.result_set
-
-    print('res is: '+str(res1))
+    # res = fetch_device_overview('table1', 'a@b.c', 'cpex66', 10
+    res = fetch_device_overview(
+        'table1', 'a@b.c', '', 0, 10, [{'column_name': 'last_message', 'direction': 'desc'}])
+    pprint('res is: '+str(res))
 
     ''' 
     clickhouse cli direct command here:

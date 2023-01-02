@@ -6,7 +6,6 @@ import numpy as np
 import datetime
 import json
 import sys
-import getopt
 from threading import Thread
 
 mqttBroker = "127.0.0.1"
