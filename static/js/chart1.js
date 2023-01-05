@@ -27,8 +27,8 @@ $(document).ready(function () {
             name: 'CPU usage',
             data: []
         }],
-        title:{
-            text:'CPU'
+        title: {
+            text: 'CPU'
         }
     });
 
@@ -55,13 +55,13 @@ $(document).ready(function () {
             name: 'Memory usage',
             data: []
         }],
-        title:{
-            text:'Memory'
-        }        
+        title: {
+            text: 'Memory'
+        }
     });
 
     request_params = {
-        client_name: 'client1',
+        client_name: 'cpex66',
     };
 
     fetch_new_data();

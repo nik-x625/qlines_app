@@ -8,6 +8,6 @@ $(document).ready(function () {
             { data: 'first_message' },
             { data: 'last_message' }
         ],
-        order: [[3,'desc']]
+        order: [[3, 'desc']]
     });
 });

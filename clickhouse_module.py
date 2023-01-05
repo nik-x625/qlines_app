@@ -64,7 +64,7 @@ offset {start} rows fetch next {length} rows only"
     for row in query_res:
         data_row = {}
         data_row['user_name'] = row[1]
-        data_row['client_name'] = row[2]
+        data_row['client_name'] = "<a href='/device/{}'>{}</a>".format(row[2], row[2])
         data_row['first_message'] = tz_converter(row[3], browser_timezone)
         data_row['last_message'] = tz_converter(row[4], browser_timezone)
 
