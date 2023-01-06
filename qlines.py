@@ -6,7 +6,6 @@ main qlines flask app
 import os
 from datetime import datetime as dt
 import redis
-import time
 
 from email_module import *
 from flask_pager import Pager
@@ -72,10 +71,15 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/dashboard', methods=['GET', 'POST'])
-@login_required
-def dashboard():
-    return render_template('dash_main.html')
+@app.route('/device/<client_name>', methods=['GET', 'POST'])
+#@login_required
+def device_single(client_name):
+    return render_template('dash_device_single.html', client_name=client_name)
+
+@app.route('/dashboardx/ppp', methods=['GET', 'POST'])
+#@login_required
+def device_dashx():
+    return render_template('dash_mainx.html') #, client_name=client_name)
 
 
 # Devices overview table - route
@@ -227,7 +231,7 @@ def login():
         if login_success:
             next = request.args.get('next')
             login_user(User(email), remember=remember_me_flag)
-            return redirect(next or url_for('dashboard'))
+            return redirect(next or url_for('devices'))
         else:
             return render_template('login.html', login_message='The password is not correct!')
 

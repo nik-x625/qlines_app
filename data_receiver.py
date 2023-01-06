@@ -25,10 +25,10 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
 
     data = []
-    
-    #print('# mqtt received: ', msg.payload)
+
+    # print('# mqtt received: ', msg.payload)
     print('# mqtt received: ', msg.payload.decode())
-    #print('# mqtt received - type: ', type(msg.payload.decode()))
+    # print('# mqtt received - type: ', type(msg.payload.decode()))
 
     try:
         data = msg.payload.decode()
