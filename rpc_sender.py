@@ -1,12 +1,8 @@
 #!/usr/bin/python
 '''
-module doc bla bla
+This is sitting in central Qlines and connects to topic to send the RPC commands to remote Clients
 '''
-import time
-import datetime
 import json
-import sys
-import getopt
 import paho.mqtt.client as mqtt
 import numpy as np
 

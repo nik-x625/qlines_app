@@ -18,15 +18,11 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     data = []
     
-    #print('# mqtt received: ', msg.payload)
-    print('# mqtt received: ', msg.payload.decode())
-    #print('# mqtt received - type: ', type(msg.payload.decode()))
-
     try:
+        
         data = msg.payload.decode()
         data = json.loads(data)
-        data[0] = datetime.fromtimestamp(data[0])
-
+        
         print('# command received from server to client is: '+str(data))
         print()
 

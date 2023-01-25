@@ -63,3 +63,4 @@ alias ch='clickhouse-server --config-file /etc/clickhouse-server/config.xml --pi
 
 # Git shortcuts
 alias gitall='git add .;git commit -m \"update\";git push origin master'
+alias gitl='git log --graph --format="%C(red)%h%Creset %cr %C(blue)%<(7,trunc)%cn%Creset -%C(auto)%d%Creset %<(80,trunc)%s" --all'

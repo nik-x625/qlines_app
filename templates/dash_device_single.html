@@ -1,5 +1,18 @@
 {% extends 'dash_base_template.html' %}
 
+
+{% block header_content %}
+
+<script type="text/javascript">
+    var client_name_from_flask = '{{ client_name }}'
+</script>
+
+<script src="/static/js/chart1.js"></script>
+<script src="/static/js/cli.js"></script>
+
+{% endblock %}
+
+
 {% block page_content %}
 <p>This is the main dashboard page for device {{client_name}}</p>
 
@@ -18,6 +31,25 @@
         </figure>
     </div>
 </div>
+
+<div class="container-fluid  col-md-5">
+    <form id="myForm" role="form">
+
+        <div class="form-group">
+            <label for="url">Wiki page URL</label>
+            <input class="form-control" id="id_url" placeholder="" name="url">
+        </div>
+
+        <button type="button" class="btn btn-default" id="submitBtn">Send</button>
+        <img id="wait" style="display:none;padding:3px" src='static/loading.gif' width="25" height="25" />
+        <br>
+        <br>
+        <span id=result></span>
+    </form>
+
+
+</div>
+
 
 
 {% endblock %}

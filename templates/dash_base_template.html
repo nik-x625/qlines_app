@@ -25,9 +25,11 @@
         src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap5.css">
 
-    <script src="/static/js/chart1.js"></script>
+
     <script src="/static/js/table1.js"></script>
     <script src="/static/js/browser_tz_scan.js"></script>
+
+    {% block header_content %} {% endblock %}
 
     <style>
         .logout-nav {
@@ -43,7 +45,6 @@
     </style>
 
     {% include 'google_analytics_tag.html' %}
-
 
 </head>
 
