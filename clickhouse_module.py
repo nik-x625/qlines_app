@@ -28,7 +28,8 @@ def fetch_data_per_param(user_name, client_name, param_name, limit, table_name='
     return res
 
 
-def fetch_device_overview(table_name, user_name, like, start, length, order):
+def fetch_device_overview_clickhouse(table_name, user_name, like, start, length, order):
+    #todo: add try/except here
 
     # logger.debug('# in fetch_device_overview, username: '+str(user_name))
 

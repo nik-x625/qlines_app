@@ -3,6 +3,8 @@ import logging
 import datetime
 from logger_custom import get_module_logger
 
+
+
 logger = get_module_logger(__name__)
 
 client = MongoClient('127.0.0.1')
@@ -71,6 +73,17 @@ def create_new_user(doc):
         users.insert_one(doc)
         return True
 
+def create_new_device(device_name, user_name, device_token):
+    devices = db['devices']
+    if devices.find_one({'device_name': device_name}):
+        return False
+    else:
+        devices.insert_one({'device_name':device_name, 'user_name':user_name, 'device_token':device_token})
+        return True
+    
+def fetch_device_overview_mongo(username, search_like, start, length, order):
+    pass
+    
 
 def read_users_collection():
     return db['users'].find()
@@ -105,4 +118,5 @@ if __name__ == '__main__':
         print
         "Items from users collection: ", i
     '''
-    update_sensor_data({'aa': 10, 'bb': 20})
+    #update_sensor_data({'aa': 10, 'bb': 20})
+    create_new_device('fff')

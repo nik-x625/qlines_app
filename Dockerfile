@@ -1,7 +1,7 @@
 # buster or bullseye
 FROM debian:bullseye
 RUN apt-get update -y
-RUN apt-get -y install ntp ssh vim net-tools python3 python3-pip wget tzdata git apache2
+RUN apt-get -y install ntp ssh vim net-tools python3 python3-pip wget tzdata git apache2 nodejs npm sudo
 RUN apt-get -y install tcpdump tcpflow pylint iputils-ping curl unzip telnet redis lsb-release snapd
 
 # enable SSL/HTTPS on Apache

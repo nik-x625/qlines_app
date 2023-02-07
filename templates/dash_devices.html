@@ -1,5 +1,20 @@
 {% extends 'dash_base_template.html' %}
 
+
+{% block header_content %}
+<!-- <link rel="stylesheet" href="/static/css/add_device.css"> -->
+
+<link href="static/css/add_device.css" rel="stylesheet">
+<script src="static/js/add_device.js"></script>
+
+
+<script>
+    $SCRIPT_ROOT = {{ request.script_root | tojson }};
+</script>
+
+{% endblock %}
+
+
 {% block page_content %}
 
 <table id="data" class="table table-striped">
@@ -14,5 +29,62 @@
     <tbody>
     </tbody>
 </table>
+
+<br>
+<br>
+
+<div>
+    <p>To manage and monitor a client, it must be added first to the platform. You might use the CSV import to add
+        multiple devices together.</p>
+
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
+        Add client
+    </button>
+
+    <button type="button" class="btn btn-primary" id="add_device_submit2">Submit</button>
+</div>
+
+<!-- The Modal -->
+<div class="modal" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Modal Heading</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+
+                <div class="container">
+                    <div class="form-group row">
+                        <div class="col-xs-2">
+                            <label for="ex1">Enter client name:</label>
+                            <input name='device_name' class="form-control" id="ex1" type="text">
+                        </div>
+                    </div>
+
+                    <img id="wait" style="display:none;padding:3px" src='static/images/loading.gif' width="25"
+                        height="25" />
+
+                    <br>
+                    <br>
+                    <span id=result></span>
+
+                </div>
+
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="add_device_submit">Submit</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 {% endblock %}

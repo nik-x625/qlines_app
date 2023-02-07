@@ -31,7 +31,7 @@
 - alias platform="docker exec -it $(docker ps  | grep 'debian_platform_image' | awk '{print $1}') /bin/bash"
 - alias p="ps -ef | egrep 'apache|sql|mongo|python'"
 - in each host, update the git outside the docker container. This way you will have the SSH key on the Git.
-
+- install nodejs manually, follow this: https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-debian-10, refer to my iNotes for more details
 
 
 **Deployment to production todos**

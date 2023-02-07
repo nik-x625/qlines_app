@@ -6,15 +6,18 @@ main qlines flask app
 import os
 from datetime import datetime as dt
 import redis
+import time
 
 from email_module import *
 from flask_pager import Pager
 from rq import Queue
 
 # MongoDB handlers and methods
-from mongodb_module import *
+from mongodb_module import create_new_user
 
-from clickhouse_module import fetch_data_per_param, fetch_device_overview
+from clickhouse_module import fetch_data_per_param
+
+from token_creator import build_token
 
 from logger_custom import get_module_logger
 
@@ -30,7 +33,7 @@ app = Flask(__name__)
 app.secret_key = os.urandom(42)
 app.config['PAGE_SIZE'] = 10
 app.config['VISIBLE_PAGE_COUNT'] = 5
-
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 # initialise the flask_login
 login_manager = LoginManager()
@@ -76,10 +79,10 @@ def index():
 def device_single(client_name):
     return render_template('dash_device_single.html', client_name=client_name)
 
-@app.route('/dashboardx/ppp', methods=['GET', 'POST'])
-#@login_required
+@app.route('/dashboard', methods=['GET', 'POST'])
+@login_required
 def device_dashx():
-    return render_template('dash_mainx.html') #, client_name=client_name)
+    return render_template('dash_devices.html') #, client_name=client_name)
 
 
 # Devices overview table - route
@@ -87,6 +90,55 @@ def device_dashx():
 @login_required
 def devices():
     return render_template('dash_devices.html')
+
+# Add devices (provision)
+@app.route('/device_add', methods=['GET', 'POST'])
+#@login_required
+def device_add():
+    try:
+        missing_params_list = []
+
+        params_to_fetch = ['device_name']
+
+        params_dict = {}
+        for param in params_to_fetch:
+
+            param_val = request.form.get(param, 0)
+
+            if not param_val:
+                missing_params_list.append(param)
+
+            else:
+                params_dict[param] = param_val
+                
+        logger.debug('# params_dict: '+str(params_dict)+'  missing_params_list: '+str(missing_params_list))
+
+        if len(missing_params_list) > 0:
+            return render_template('missing_params.html', missing_params=missing_params_list)
+
+        #timestr = time.strftime("%Y%m%d_%H%M%S")
+        #rand_str = str(random.randint(1000000, 9999999))
+        #file_name = timestr + '_' + rand_str + '.pdf'
+        
+        
+        device_name = params_dict['device_name']
+        device_token = build_token(20)
+        client_creation_result = create_new_device(device_name, current_user.name, device_token)
+        
+        
+        if client_creation_result == False:
+            return "The device is already created!"
+        else:
+            return "The device created successfully! Token: "+str(device_token)
+
+    except Exception as e:
+        logger.debug('# exception: '+str(e))
+
+
+
+
+
+
 
 
 # test - getting the broswer timezone
@@ -103,11 +155,11 @@ def getTime():
 
 
 @app.route('/api/data')
-# @login_required
+@login_required
 def table_data():
 
-    # temporary only
-    temp_username = 'a@b.c'
+    username = current_user.name
+    #username = 'a@b.c'
     search_like = request.args.get('search[value]')
 
     # sorting
@@ -142,8 +194,8 @@ def table_data():
     length = request.args.get('length')
     start = request.args.get('start')
 
-    res = fetch_device_overview(
-        'table1', temp_username, search_like, start, length, order)
+    res = fetch_device_overview_mongo(
+        'table1', username, search_like, start, length, order)
     res['draw'] = request.args.get('draw', type=int)
 
     return res
@@ -359,4 +411,16 @@ def page_not_found(e):
 
 if __name__ == "__main__":
     app.logger.setLevel(logging.DEBUG)
-    app.run(host='0.0.0.0', port=80, debug=True)
+    
+    # to restart the flask when template htmls or static files are changed
+    from os import path, walk
+    extra_dirs = ['./templates/','./static/']
+    extra_files = extra_dirs[:]
+    for extra_dir in extra_dirs:
+        for dirname, dirs, files in walk(extra_dir):
+            for filename in files:
+                filename = path.join(dirname, filename)
+                if path.isfile(filename):
+                    extra_files.append(filename)
+                    
+    app.run(extra_files=extra_files, host='0.0.0.0', port=80, debug=True)
