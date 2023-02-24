@@ -1,76 +1,89 @@
 **About current architecture**
 - Apache => WSGI => Flask
 - Redis is involved for message queue use cases
-- "Init scripts" are used. No need to switch to "systemd". So far they work fine.
+- "Init scripts" are used. So far ok but need to make a better approach for Docker.
 - Dockerfile will be updated with the configuration steps
 - For tests (on python packages or OS packages) use current container, the Dockerfile helps to create from scratch later
-- using rq worker as init script
-- using redis as init script
-- using VSCODE in the docker folder in Mac local filesystem, then docker in the VPS
-- use aliases inside the container, use aliases outisde the container
+- Using VSCODE in the docker folder in Mac local filesystem, then docker in the VPS
+- Using aliases inside the container, use aliases outisde the container
 - Clickhouse and Mosquitto only enabled in lab for the moment, refer to notes to install
 
 
 **Steps to build the environment - both test and prod**
 - install docker engine on the production linux server. Ref: https://docs.docker.com/engine/install/debian/, start from the step "Set up the repository"
-- In case of Mac, go to the Docker folder of the Mac, probably it is in this folder: /Users/amc/Desktop/G/Docker
-- git clone git@gitlab.com:mehdifth/platform.git  (note: Gitlab must already have the ssh public keys)
+- in case of Mac, go to the Docker folder of the Mac, probably it is in this folder: /Users/amc/Desktop/G/Docker
+- git clone git@github.com:mehdifth/platform.git  (note: Github must already have the ssh public keys)
 - rename the platform to "qlines" to be able to use more apps with this platform
 - mv platform qlines
 - mkdir platform
 - mv qlines ./platform/
 - now there is one platform folder which could include folders like qlines, app1, app2, ...
 - cd ./platform
-- docker build -t debian_platform_image_v1 ./qlines/  (the Dockerfile content is read here)
+- docker build -t debian_platform_image_v1 ./qlines/
 - in dev platform: docker run -d -p80:80 -p443:443 -p 7000-7100:7000-7100 --shm-size 2g --privileged -v "$(pwd)":/opt/ debian_platform_image_v1
 - in prod platform: docker run -d -p80:80 -p443:443 --restart always --shm-size 2g --privileged -v "$(pwd)":/opt/ debian_platform_image_v1
-- now the docker container and the app should be running
-- Find the container id with "docker ps -a"
 - docker exec -it a5ff9cec9f2e /bin/bash
-- or use the alias "platform", for this you need to define this alias in mac/host as below:
-- alias platform="docker exec -it $(docker ps  | grep 'debian_platform_image' | awk '{print $1}') /bin/bash"
+- or use the alias "plt", for this you need to define this alias in mac/host as below:
+- alias plt="docker exec -it $(docker ps  | grep 'debian_platform_image' | awk '{print $1}') /bin/bash"
 - alias p="ps -ef | egrep 'apache|sql|mongo|python'"
 - in each host, update the git outside the docker container. This way you will have the SSH key on the Git.
 - install nodejs manually, follow this: https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-debian-10, refer to my iNotes for more details
 
 
 **Deployment to production todos**
-- add this to the apache config if necessary: python-path=/var/www/site_platx:/usr/local/lib/python3.7/dist-packages
-- change the logger file path if necessary. edit the file logger_custom.py and change from "/opt/qlines/mylogs.log" to "/var/www/site_platx/mylogs.log"
-- manage the apache tags if necessary: `<IfDefine IgnoreBlockComment> and </IfDefine>`
 - enable the google analytics tag in all html filesystem
-- install mosquitto and clickhouse manually for the moment
-- Manage the SSL certificate/Letsencrypt (was not possible to install in docker because of snapd). Renew it in the host oustide of the docker container and move the files in /etc/letsencrypt to inside the docker
-- in running "certbot --apache" be careful to run it for 2 address "qlines.net" and "www.qlines.net"
-- comment out this line in the qlines.py: "from clickhouse_module import *"
-- SSH public keys need to be created inside the container and added to git server
+- Manage the SSL certificate/Letsencrypt 
+As it was not possible to install in docker because of snapd, renew it in the host oustide of the docker container and move the files in /etc/letsencrypt to inside the docker.
+
+Install NGINX outside of the container and use following config in /etc/nginx/sites-enable (no need to link from sites-available):
+
+server {
+        listen 80;
+        listen [::]:80;
+
+        root /var/www/your_domain/html;
+        index index.html index.htm index.nginx-debian.html;
+
+        server_name blog.qlines.net qlines.net www.qlines.net;
+
+        location / {
+                try_files $uri $uri/ =404;
+        }
+}
+
+remove all other files in this folder
+this covers all the 3 domains of "qlines.net", "www.qlines.net" and "blog.qlines.net"
+then run the "certbot --nginx" outside of the docker container for 3 times
+stop the nginx outside of the docker
+copy the /etc/letsencrypt to inside the docker to /etc/letsencrypt
+restart the nginx inside the docker
+done!
 
 
-**Installing the ClickHouse**
-- cd /tmp/
-- curl https://clickhouse.com/ | sh
-- ./clickhouse install
-- vi /etc/clickhouse-server/config.xml and change the port from 8123 to something like 7010 which is exposed also in the container
-- chown -R root:root /var/lib/clickhouse
-- create /etc/clickhouse-server/config.d/docker_related_config.xml and add following content:
-```
-<clickhouse>
-     <!-- Listen wildcard address to allow accepting connections from other containers and host network. -->
-    <listen_host>::</listen_host>
-    <listen_host>0.0.0.0</listen_host>
-    <listen_try>1</listen_try>
+- insdie docker, vi ~/.bashrc => change LAB to PROD in PS1
+- inside docker, chmod 777 /opt/qlines/mylogs.log
 
-    <!--
-    <logger>
-        <console>1</console>
-    </logger>
-    -->
-</clickhouse>
-```
 
-- run with command:
-clickhouse-server --config-file /etc/clickhouse-server/config.xml --pid-file /var/run/clickhouse-server/clickhouse-server.pid --daemon
-or use alias 'ch'
+**How the HA is designed
+VM1: 
+- LB1, Blog1, App1
+VM2: 
+- LB2, Blog2, App2
+LB1 has a docker container to offload SSL and distribute the load, based on available app servers and subdomains (for blog versus app)
+LB1 sees all the containers but sends only to 1. If one container fails sends the single one to 2
+LB2 sees all the containers, but it is standby
+
+DNS is switching between LB1 and LB2
+
+High traffic will result in spawning the app containers. It means VM1 is big enough for this.
+DB1 and DB2 are in separate VM servers because of sensitivies. All the nodes see DB1 and DB2 at the same time but send only to one of them.
+TODO: Need arbiter here!
+
+for MVP, I will go with big VM and backup/restore approach and later will have a sophisticated approach like above or use AWS!
+for MVP, I will have nginx proxy in front (outside of containers) to SSL offload, route based on subnet (blog or app), etc.
+Having 2 container behind it. Wordpress blog will use the official image with docker-compose: https://www.hostinger.com/tutorials/run-docker-wordpress
+
+
 
 
 

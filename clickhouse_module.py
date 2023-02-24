@@ -29,55 +29,67 @@ def fetch_data_per_param(user_name, client_name, param_name, limit, table_name='
 
 
 def fetch_device_overview_clickhouse(table_name, user_name, like, start, length, order):
-    #todo: add try/except here
+    
+    try:
+        #todo: add try/except here
 
-    # logger.debug('# in fetch_device_overview, username: '+str(user_name))
+        # logger.debug('# in fetch_device_overview, username: '+str(user_name))
 
-    browser_timezone = timezone_read(user_name)
-    logger.debug('# user_timezone: '+str(browser_timezone))
+        browser_timezone = timezone_read(user_name)
+        logger.debug('# user_timezone: '+str(browser_timezone))
 
-    order_by = order[0]['column_name']
-    order_direction = order[0]['direction']
+        order_by = order[0]['column_name']
+        order_direction = order[0]['direction']
 
-    # to get the number for 'recordsTotal'
-    res_total = client_handler.query(
-        "select count(distinct(client_name)) from table1 where user_name='{}'".format(user_name))
-    recordsTotal = res_total.result_set
+        # to get the number for 'recordsTotal'
+        res_total = client_handler.query(
+            "select count(distinct(client_name)) from table1 where user_name='{}'".format(user_name))
+        recordsTotal = res_total.result_set
 
-    # to do the main query to get the filtered data
-    # res_filtered = client_handler.query("select count(*) OVER () AS TotalRecords, user_name, client_name, min(ts) as first_message, max(ts) as last_message \
-    # from {} where user_name='{}' and (client_name like '%{}%' OR user_name like '%{}%') group by client_name, user_name order by {} {} offset {} rows fetch next {} rows only"
-    #                                    .format(table_name, user_name, like, like, order_by, order_direction, start, length))
+        # to do the main query to get the filtered data
+        # res_filtered = client_handler.query("select count(*) OVER () AS TotalRecords, user_name, client_name, min(ts) as first_message, max(ts) as last_message \
+        # from {} where user_name='{}' and (client_name like '%{}%' OR user_name like '%{}%') group by client_name, user_name order by {} {} offset {} rows fetch next {} rows only"
+        #                                    .format(table_name, user_name, like, like, order_by, order_direction, start, length))
 
-    # to do the main query to get the filtered data
-    query_string = f"select count(*) OVER () AS TotalRecords, user_name, client_name, min(ts) \
-as first_message, max(ts) as last_message from {table_name} where \
-user_name='{user_name}' and (client_name like '%{like}%' \
-OR user_name like '%{like}%') group by client_name, user_name \
-order by {order_by} {order_direction} \
-offset {start} rows fetch next {length} rows only"
+        # to do the main query to get the filtered data
+        query_string = f"select count(*) OVER () AS TotalRecords, user_name, client_name, min(ts) \
+    as first_message, max(ts) as last_message from {table_name} where \
+    user_name='{user_name}' and (client_name like '%{like}%' \
+    OR user_name like '%{like}%') group by client_name, user_name \
+    order by {order_by} {order_direction} \
+    offset {start} rows fetch next {length} rows only"
 
-    res_filtered = client_handler.query(query_string)
-    query_res = res_filtered.result_set
+        res_filtered = client_handler.query(query_string)
+        query_res = res_filtered.result_set
 
-    data = []
-    count = 0
-    for row in query_res:
-        data_row = {}
-        data_row['user_name'] = row[1]
-        data_row['client_name'] = "<a href='/device/{}'>{}</a>".format(row[2], row[2])
-        data_row['first_message'] = tz_converter(row[3], browser_timezone)
-        data_row['last_message'] = tz_converter(row[4], browser_timezone)
+        data = []
+        count = 0
+        for row in query_res:
+            data_row = {}
+            data_row['user_name'] = row[1]
+            data_row['client_name'] = "<a href='/device/{}'>{}</a>".format(row[2], row[2])
+            data_row['first_message'] = tz_converter(row[3], browser_timezone)
+            data_row['last_message'] = tz_converter(row[4], browser_timezone)
 
-        count = row[0]
+            count = row[0]
 
-        data.append(data_row)
+            data.append(data_row)
 
-    res = {
-        'data': data,
-        'recordsFiltered': count,  # recordsFiltered[0][0],
-        'recordsTotal': recordsTotal[0][0],
-    }
+        res = {
+            'data': data,
+            'recordsFiltered': count,  # recordsFiltered[0][0],
+            'recordsTotal': recordsTotal[0][0],
+        }
+        
+        
+    except Exception as e:
+        res = {
+            'data': [],
+            'recordsFiltered': 0,
+            'recordsTotal': 0,
+            
+        }    
+    
     return res
 
 

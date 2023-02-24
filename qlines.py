@@ -7,20 +7,17 @@ import os
 from datetime import datetime as dt
 import redis
 import time
+import logging
 
 from email_module import *
 from flask_pager import Pager
 from rq import Queue
 
 # MongoDB handlers and methods
-from mongodb_module import create_new_user
-
-from clickhouse_module import fetch_data_per_param
-
+from mongodb_module import create_new_user, timezone_write, create_new_device, read_user_doc
+from clickhouse_module import fetch_data_per_param, fetch_device_overview_clickhouse
 from token_creator import build_token
-
 from logger_custom import get_module_logger
-
 from flask_login import (LoginManager, UserMixin, login_required, login_user,
                          logout_user, current_user)
 from flask import (Flask, Response, abort, current_app, json, jsonify,
@@ -70,19 +67,19 @@ q = Queue('app1', connection=r)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    logger.debug('in flask, route is /')
     return render_template('index.html')
 
 
 @app.route('/device/<client_name>', methods=['GET', 'POST'])
-#@login_required
+# @login_required
 def device_single(client_name):
     return render_template('dash_device_single.html', client_name=client_name)
+
 
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def device_dashx():
-    return render_template('dash_devices.html') #, client_name=client_name)
+    return render_template('dash_devices.html')  # , client_name=client_name)
 
 
 # Devices overview table - route
@@ -92,8 +89,10 @@ def devices():
     return render_template('dash_devices.html')
 
 # Add devices (provision)
+
+
 @app.route('/device_add', methods=['GET', 'POST'])
-#@login_required
+@login_required
 def device_add():
     try:
         missing_params_list = []
@@ -110,8 +109,9 @@ def device_add():
 
             else:
                 params_dict[param] = param_val
-                
-        logger.debug('# params_dict: '+str(params_dict)+'  missing_params_list: '+str(missing_params_list))
+
+        logger.debug('# params_dict: '+str(params_dict) +
+                     '  missing_params_list: '+str(missing_params_list))
 
         if len(missing_params_list) > 0:
             return render_template('missing_params.html', missing_params=missing_params_list)
@@ -119,13 +119,12 @@ def device_add():
         #timestr = time.strftime("%Y%m%d_%H%M%S")
         #rand_str = str(random.randint(1000000, 9999999))
         #file_name = timestr + '_' + rand_str + '.pdf'
-        
-        
+
         device_name = params_dict['device_name']
         device_token = build_token(20)
-        client_creation_result = create_new_device(device_name, current_user.name, device_token)
-        
-        
+        client_creation_result = create_new_device(
+            device_name, current_user.name, device_token)
+
         if client_creation_result == False:
             return "The device is already created!"
         else:
@@ -133,12 +132,6 @@ def device_add():
 
     except Exception as e:
         logger.debug('# exception: '+str(e))
-
-
-
-
-
-
 
 
 # test - getting the broswer timezone
@@ -194,7 +187,7 @@ def table_data():
     length = request.args.get('length')
     start = request.args.get('start')
 
-    res = fetch_device_overview_mongo(
+    res = fetch_device_overview_clickhouse(
         'table1', username, search_like, start, length, order)
     res['draw'] = request.args.get('draw', type=int)
 
@@ -208,8 +201,6 @@ def sortFn(tpl):
 @app.route('/fetchdata', methods=["GET", "POST"])
 @login_required
 def fetchdata():
-
-    # logger.debug('# the fetching data api called')
 
     client_name = request.args.get('client_name', None)
 
@@ -250,7 +241,6 @@ def logout():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    logger.debug('in flask, route is /login')
 
     logger.debug('')
     logger.debug('# request.form: %s', str(request.form))
@@ -260,7 +250,7 @@ def login():
 
     if request.method == 'POST':
         email = request.form.get('email_holder', None)
-        # password = request.form.get('password_holder', None)
+        password = request.form.get('password_holder', None)
         keepsignedin = request.form.get('keepsignedin_holder', None)
 
         # To remember the user even if browser is closed
@@ -269,16 +259,12 @@ def login():
         else:
             remember_me_flag = False
 
-        # temporary, change it to 0 later
-        login_success = 1  # 0
-
-        # temporary, uncomment this block later
-        # user_doc = read_user_doc(email)
-        # if not user_doc:
-        #     return render_template('login.html', login_message='The username does not exist!')
-
-        # if user_doc.get('password', None) == password:
-        #     login_success = 1
+        login_success = 0
+        user_doc = read_user_doc(email)
+        if not user_doc:
+            return render_template('login.html', login_message='The username does not exist!')
+        if user_doc.get('password', None) == password:
+            login_success = 1
 
         if login_success:
             next = request.args.get('next')
@@ -300,8 +286,7 @@ def signup():
     logger.debug('')
     logger.debug('# in signup, request.form: ' + str(request.form))
     logger.debug('# in signup, request.args: ' + str(request.args))
-    logger.debug('# in signup, request.args.get("next"): ',
-                 str(request.args.get("next")))
+    logger.debug('# in signup, request.args.get("next"): '+str(request.args.get("next",'')))
 
     if request.method == 'POST':
         logger.debug('# post method arrived, going to update mongo')
@@ -411,10 +396,10 @@ def page_not_found(e):
 
 if __name__ == "__main__":
     app.logger.setLevel(logging.DEBUG)
-    
+
     # to restart the flask when template htmls or static files are changed
     from os import path, walk
-    extra_dirs = ['./templates/','./static/']
+    extra_dirs = ['./templates/', './static/']
     extra_files = extra_dirs[:]
     for extra_dir in extra_dirs:
         for dirname, dirs, files in walk(extra_dir):
@@ -422,5 +407,5 @@ if __name__ == "__main__":
                 filename = path.join(dirname, filename)
                 if path.isfile(filename):
                     extra_files.append(filename)
-                    
+
     app.run(extra_files=extra_files, host='0.0.0.0', port=80, debug=True)

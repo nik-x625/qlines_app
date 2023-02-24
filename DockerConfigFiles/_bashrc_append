@@ -47,16 +47,12 @@ alias start='/etc/init.d/all_daemons start'
 alias stop='/etc/init.d/all_daemons stop'
 alias status='/etc/init.d/all_daemons status'
 
-# Apache
-alias whox="tail /var/log/apache2/*.log -f | grep -v '95.91.255.30' | grep -v '127.0.0.1 - -'"
-alias apstart='/etc/init.d/apache2 start'
-alias apstop='/etc/init.d/apache2 stop'
-#alias res='/etc/init.d/apache2 stop;apachectl -f /etc/apache2/apache2.conf'
-alias res='/etc/init.d/apache2 restart'
+# Web server
+alias res='/etc/init.d/nginx restart'
 
 # Miscel
-alias p='ps -ef | egrep '\''apache|sql|mongo|python|rqworker'\'''
-alias log='tail /var/log/apache2/*.log /opt/pdf_export/mylogs.log /var/log/redis/redis-server.log /opt/blog/mylogs.log /opt/qlines/mylogs.log -f'
+alias p='ps -ef | egrep '\''nginx|sql|mongo|python|rqworker'\'''
+alias log='tail /var/log/nginx/*.log /var/log/redis/redis-server.log /opt/blog/mylogs.log /opt/qlines/mylogs.log -f'
 alias mongo='mongo platform'
 alias pip='pip3'
 alias ch='clickhouse-server --config-file /etc/clickhouse-server/config.xml --pid-file /var/run/clickhouse-server/clickhouse-server.pid --daemon'
