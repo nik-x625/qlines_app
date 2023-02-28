@@ -5,7 +5,7 @@ RUN apt-get -y install ntp ssh vim net-tools python3 python3-pip python3-dev wge
 RUN apt-get -y install tcpdump tcpflow pylint iputils-ping curl unzip telnet redis lsb-release snapd
 RUN apt-get -y install mosquitto
 RUN apt-get -y install build-essential libssl-dev libffi-dev python3-setuptools python3-venv
-RUN apt-get -y install nginx
+#RUN apt-get -y install nginx
 
 # enable SSL/HTTPS on Apache
 #RUN a2enmod ssl
@@ -18,7 +18,7 @@ RUN apt-get -y install nginx
 # Debian 11 (bullseye) => python 3.9
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.9 1
 #RUN apt-get -y install libapache2-mod-wsgi-py3
-RUN pip3 install flask flask_login redis rq pymongo flake8 pyyaml markdown sqlalchemy flask_principal slugify feedwerk shortuuid psutil clickhouse_connect requests numpy
+RUN pip3 install flask flask_login redis rq pymongo flake8 pyyaml markdown sqlalchemy flask_principal slugify feedwerk shortuuid psutil clickhouse_connect requests numpy pandas
 RUN useradd flask
 RUN echo "Europe/Berlin" > /etc/timezone
 RUN dpkg-reconfigure -f noninteractive tzdata
@@ -28,8 +28,8 @@ RUN pip install jinja2==3.0
 RUN pip install gunicorn
 
 # NGINX config
-COPY DockerConfigFiles/_nginx_qlines_main.conf /etc/nginx/sites-enabled/qlines_main.conf
-COPY DockerConfigFiles/_nginx_qlines_blog.conf /etc/nginx/sites-enabled/qlines_blog.conf
+#COPY DockerConfigFiles/_nginx_qlines_main.conf /etc/nginx/sites-enabled/qlines_main.conf
+#COPY DockerConfigFiles/_nginx_qlines_blog.conf /etc/nginx/sites-enabled/qlines_blog.conf
 
 
 # grafana packages

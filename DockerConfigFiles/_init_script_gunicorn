@@ -1,6 +1,6 @@
 #!/bin/sh
-cd /opt/qlines
+cd /opt/qlines_app
 gunicorn --bind 0.0.0.0:5000 qlines:app --daemon
 
-cd /opt/blog
-gunicorn --bind 0.0.0.0:6000 blog:app --daemon
+#cd /opt/blog
+#gunicorn --bind 0.0.0.0:6000 blog:app --daemon

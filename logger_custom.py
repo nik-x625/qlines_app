@@ -4,7 +4,7 @@ import yaml
 def get_module_logger(mod_name):
     
     # this part needs optimisation
-    with open("/opt/qlines/config.yml", "r") as ymlfile:
+    with open("/opt/qlines_app/config.yml", "r") as ymlfile:
         cfg = yaml.safe_load(ymlfile)
     
     logger = logging.getLogger(mod_name)
