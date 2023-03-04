@@ -328,10 +328,10 @@ def signup():
         return render_template('signup.html', message='Signing up is easy. It only takes a few steps')
 
 
-@app.route('/pricing', methods=['GET', 'POST'])
-def pricing():
-    logger.debug('in flask, route is /pricing')
-    return render_template('pricing.html')
+# @app.route('/pricing', methods=['GET', 'POST'])
+# def pricing():
+#     logger.debug('in flask, route is /pricing')
+#     return render_template('pricing.html')
 
 
 # Used to show the contact page and also POST method to submit the message
