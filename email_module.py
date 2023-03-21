@@ -26,7 +26,7 @@ def send_email_contact(message_dict):
         logger.debug('picked from queue, in send_email_contact method')
 
         msg = MIMEMultipart()
-        msg['From'] = "Q-Lines Contact Page"
+        msg['From'] = "QLines Contact Page"
         msg['To'] = toaddr
         msg['Subject'] = message_dict['subject']
 
@@ -40,7 +40,7 @@ def send_email_contact(message_dict):
 
         Message:
         {}
-        '''.format("Q-Lines contact form",
+        '''.format("QLines contact form",
                    message_dict['subject'],
                    message_dict['first_name'],
                    message_dict['last_name'],
@@ -99,7 +99,7 @@ def send_email_signup(message_dict):
 
     # create message metadata
     msg = MIMEMultipart()
-    msg['From'] = "Q-Lines sign-up"
+    msg['From'] = "QLines sign-up"
     msg['To'] = email
     msg['Subject'] = "Confirm your email address!"
 
