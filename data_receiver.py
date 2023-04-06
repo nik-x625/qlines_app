@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import asyncio
-import websockets
 import json
 import clickhouse_connect
 from datetime import datetime

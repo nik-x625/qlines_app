@@ -1,19 +1,16 @@
 {% extends 'dash_base_template.html' %}
 
-
 {% block header_content %}
 <!-- <link rel="stylesheet" href="/static/css/add_device.css"> -->
 
 <link href="static/css/add_device.css" rel="stylesheet">
 <script src="static/js/add_device.js"></script>
 
-
 <script>
     $SCRIPT_ROOT = {{ request.script_root | tojson }};
 </script>
 
 {% endblock %}
-
 
 {% block page_content %}
 
@@ -34,14 +31,13 @@
 <br>
 
 <div>
-    <p>To manage and monitor a client, it must be added first to the platform. You might use the CSV import to add
-        multiple devices together.</p>
+    <p>To manage and monitor a client, it must be added first to the platform.</p>
 
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
         Add client
     </button>
 
-    <button type="button" class="btn btn-primary" id="add_device_submit2">Submit</button>
+    <!-- <button type="button" class="btn btn-primary" id="add_device_submit2">Submit</button> -->
 </div>
 
 <!-- The Modal -->
@@ -68,7 +64,6 @@
 
                     <img id="wait" style="display:none;padding:3px" src='static/images/loading.gif' width="25"
                         height="25" />
-
                     <br>
                     <br>
                     <span id=result></span>

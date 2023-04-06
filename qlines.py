@@ -71,7 +71,7 @@ def index():
 
 
 @app.route('/device/<client_name>', methods=['GET', 'POST'])
-# @login_required
+@login_required
 def device_single(client_name):
     return render_template('dash_device_single.html', client_name=client_name)
 
@@ -86,7 +86,7 @@ def device_dashx():
 @app.route('/devices', methods=['GET', 'POST'])
 @login_required
 def devices():
-    return render_template('dash_devices.html')
+    return render_template('dash_devices.html', current_username = current_user.name)
 
 # Add devices (provision)
 
@@ -137,7 +137,7 @@ def device_add():
 # test - getting the broswer timezone
 @app.route("/getTime", methods=['GET'])
 def getTime():
-    username = 'a@b.c'
+    username = current_user.name #'a@a.a'
     browsertz = request.args.get("browsertz")
     logger.debug("browser time: %s" % (browsertz))
     #logger.debug("server time : %s" % (time.strftime('%A %B, %d %Y %H:%M:%S')))
@@ -184,19 +184,48 @@ def table_data():
         order.append(order_item)
         i += 1
 
+
+ 
+        
+    
     length = request.args.get('length')
     start = request.args.get('start')
 
+    #res = fetch_device_overview_clickhouse(
+    #    'table1', username, search_like, start, length, order)
+    
     res = fetch_device_overview_clickhouse(
-        'table1', username, search_like, start, length, order)
+    'table1', username, search_like, start, length, order
+    )
+    
     res['draw'] = request.args.get('draw', type=int)
 
     return res
 
 
+
+def test_common_prefix():
+    return
+
+    
 def sortFn(tpl):
     return tpl[1]
 
+def test_common_prefix():
+    """
+    The function to test the common prefix function.__base__
+    """
+    # test 1
+    # write the mqtt data write to mongodb
+    
+    
+    
+    
+    
+    
+    return
+    
+    
 
 @app.route('/fetchdata', methods=["GET", "POST"])
 @login_required
@@ -408,4 +437,4 @@ if __name__ == "__main__":
                 if path.isfile(filename):
                     extra_files.append(filename)
 
-    app.run(extra_files=extra_files, host='0.0.0.0', port=80, debug=True)
+    app.run(extra_files=extra_files, host='0.0.0.0', port=5000, debug=True)

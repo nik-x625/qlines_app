@@ -18,7 +18,7 @@ RUN apt-get -y install build-essential libssl-dev libffi-dev python3-setuptools 
 # Debian 11 (bullseye) => python 3.9
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.9 1
 #RUN apt-get -y install libapache2-mod-wsgi-py3
-RUN pip3 install flask flask_login redis rq pymongo flake8 pyyaml markdown sqlalchemy flask_principal slugify feedwerk shortuuid psutil clickhouse_connect requests numpy pandas
+RUN pip3 install flask flask_login redis rq pymongo flake8 pyyaml markdown sqlalchemy flask_principal slugify feedwerk shortuuid psutil clickhouse_connect requests numpy pandas paho-mqtt
 RUN useradd flask
 RUN echo "Europe/Berlin" > /etc/timezone
 RUN dpkg-reconfigure -f noninteractive tzdata

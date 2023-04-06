@@ -36,7 +36,7 @@ def fetch_device_overview_clickhouse(table_name, user_name, like, start, length,
         # logger.debug('# in fetch_device_overview, username: '+str(user_name))
 
         browser_timezone = timezone_read(user_name)
-        logger.debug('# user_timezone: '+str(browser_timezone))
+        logger.debug('# in fetch_device_overview_clickhouse function, user_timezone is: '+str(browser_timezone))
 
         order_by = order[0]['column_name']
         order_direction = order[0]['direction']
@@ -81,14 +81,16 @@ def fetch_device_overview_clickhouse(table_name, user_name, like, start, length,
             'recordsTotal': recordsTotal[0][0],
         }
         
+        logger.debug('# in fetch_device_overview_clickhouse, res: '+str(res))
+        
         
     except Exception as e:
+        logger.debug('# in fetch_device_overview_clickhouse, exception: '+str(e))
         res = {
             'data': [],
             'recordsFiltered': 0,
             'recordsTotal': 0,
-            
-        }    
+        }
     
     return res
 

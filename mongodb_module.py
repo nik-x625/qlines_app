@@ -46,12 +46,16 @@ def timezone_write(username, tz):
 
 def timezone_read(username):
     logger.debug('# in timezone_read, username: '+str(username))
-    user_doc = read_user_doc(username)
-    if user_doc:
-        tz = user_doc['tz']
-        return tz
-    else:
-        return ''
+    try:
+        user_doc = read_user_doc(username)
+        if user_doc:
+            tz = user_doc['tz']
+            return tz
+        else:
+            return ''
+    except Exception as e:
+        logger.debug('# in timezone_read, exception: '+str(timezone_read))
+        return ;
 
 
 def update_sensor_data(doc):
