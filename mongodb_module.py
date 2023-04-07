@@ -82,18 +82,22 @@ def create_new_user(doc):
 
 
 def verify_and_notify(clickhouse_data):
-    logger.debug('# in verify_and_notify, clickhouse_data: '+str(clickhouse_data))
-    collection = db['devices']
+    logger.debug('# in verify_and_notify, clickhouse_data: ' +
+                 str(clickhouse_data))
+    device_collection = db['devices']
     unregistered_devices = []
+
+    # Go through the found devices in clickhouse and check if it is registered in MongoDB
     for data in clickhouse_data:
         user_name = data[1]
         client_name = data[2]
-        existing_device = collection.find_one(
+        existing_device = device_collection.find_one(
             {'client_name': client_name, 'user_name': user_name})
         if existing_device is None:
-            
-            logger.debug('# in verify_and_notify, client_name: '+str(client_name) + ' is missing in MongoDB for user: '+str(user_name))
-            
+
+            logger.debug('# in verify_and_notify, client_name: '+str(client_name) +
+                         ' is missing in MongoDB for user: '+str(user_name))
+
             # Device not found in MongoDB, add to list of unregistered devices
             unregistered_devices.append(client_name)
 
@@ -101,15 +105,68 @@ def verify_and_notify(clickhouse_data):
     clickhouse_data = [
         data for data in clickhouse_data if data[2] not in unregistered_devices]
 
+    # Some devices are registered in MongoDB but not in found ClickHouse, these also
+    # should be displayed in the device overview but with None values for the
+    # first_message and last_message
+    devices = device_collection.find({'user_name': user_name})
+
+    clickhouse_client_names = set([row[2] for row in clickhouse_data])
+    device_client_names = [device['client_name'] for device in devices]
+    logger.debug('# in verify_and_notify, devices: '+str(device_client_names))
+
+    new_rows = []
+    for name in device_client_names:
+        if name not in clickhouse_client_names:
+            new_row = ('', user_name, name, '', '')
+            new_rows.append(new_row)
+
+    clickhouse_data.extend(new_rows)
+
+    # notify the admin about the unregistered devices
     if unregistered_devices:
-        email_message_text=f"clients: {str(unregistered_devices)} \
+        email_message_text = f"clients: {str(unregistered_devices)} \
         user_name: {user_name} \
         is not registered in MongoDB"
-        enqueue_long_running_function(send_general_text_email, email_message_text, 'Unregistered devices found in ClickHouse')
-
+        enqueue_long_running_function(
+            send_general_text_email, email_message_text, 'Unregistered devices found in ClickHouse')
 
     # Return the shortened list of clickhouse_data
     return clickhouse_data
+
+
+
+def verify_and_notify_v2(clickhouse_data):
+    logger.debug('# in verify_and_notify, clickhouse_data: ' + str(clickhouse_data))
+    device_collection = db['devices']
+    unregistered_devices = []
+
+    # Go through the found devices in clickhouse and check if it is registered in MongoDB
+    for data in clickhouse_data:
+        user_name = data[1]
+        client_name = data[2]
+        existing_device = device_collection.find_one({'client_name': client_name, 'user_name': user_name})
+        if existing_device is None:
+            logger.debug('# in verify_and_notify, client_name: ' + str(client_name) + ' is missing in MongoDB for user: ' + str(user_name))
+            # Device not found in MongoDB, add to list of unregistered devices
+            unregistered_devices.append(client_name)
+
+    # Remove any unregistered devices from the clickhouse_data list
+    clickhouse_data = [data for data in clickhouse_data if data[2] not in unregistered_devices]
+
+    # Add devices in the `devices` collection that aren't in `clickhouse_data` yet
+    user_name = clickhouse_data[0][1]
+    device_client_names = [device['client_name'] for device in device_collection.find({'user_name': user_name})]
+    new_rows = [(None, user_name, name, None, None) for name in set(device_client_names) - set(clickhouse_data)]
+    clickhouse_data.extend(new_rows)
+
+    # Notify the admin about the unregistered devices
+    if unregistered_devices:
+        email_message_text = f"clients: {str(unregistered_devices)} user_name: {user_name} is not registered in MongoDB"
+        enqueue_long_running_function(send_general_text_email, email_message_text, 'Unregistered devices found in ClickHouse')
+
+    # Return the shortened list of clickhouse_data
+    return clickhouse_data
+
 
 
 def create_new_device(client_name, user_name, device_token):
@@ -120,10 +177,6 @@ def create_new_device(client_name, user_name, device_token):
         devices.insert_one({'client_name': client_name,
                            'user_name': user_name, 'device_token': device_token})
         return True
-
-
-def fetch_device_overview_mongo(username, search_like, start, length, order):
-    pass
 
 
 def read_users_collection():
