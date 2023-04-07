@@ -44,9 +44,13 @@ def fetch_device_overview_clickhouse(table_name, user_name, like, start, length,
         order_direction = order[0]['direction']
 
         # to get the number for 'recordsTotal'
-        res_total = client_handler.query(
-            "select count(distinct(client_name)) from table1 where user_name='{}'".format(user_name))
-        recordsTotal = res_total.result_set
+        try:
+            res_total = client_handler.query(
+                f"select count(distinct(client_name)) from {table_name} where user_name='{user_name}'")
+            recordsTotal = res_total.result_set
+        except Exception as e:
+            recordsTotal = [[0]]
+            
 
         # to do the main query to get the filtered data
         # res_filtered = client_handler.query("select count(*) OVER () AS TotalRecords, user_name, client_name, min(ts) as first_message, max(ts) as last_message \
@@ -61,12 +65,17 @@ def fetch_device_overview_clickhouse(table_name, user_name, like, start, length,
                         order by {order_by} {order_direction} \
                         offset {start} rows fetch next {length} rows only"
 
-        res_filtered = client_handler.query(query_string)
-        query_res = res_filtered.result_set
+        try:
+            res_filtered = client_handler.query(query_string)
+            query_res = res_filtered.result_set
+        except Exception as e:
+            logger.debug(
+                '# in fetch_device_overview_clickhouse, exception: '+str(e))
+            query_res = []
 
         # verify with MongoDB if the devices are already registered, otherwise removes it from the list and notifies the admin by email
         logger.debug('# before verify_and_notify,  query_res: '+str(query_res))
-        query_res = verify_and_notify(query_res)
+        query_res = verify_and_notify(query_res, user_name)
         logger.debug('# after verify_and_notify,  query_res: '+str(query_res))
 
         data = []

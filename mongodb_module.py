@@ -81,15 +81,15 @@ def create_new_user(doc):
         return True
 
 
-def verify_and_notify(clickhouse_data):
-    logger.debug('# in verify_and_notify, clickhouse_data: ' +
-                 str(clickhouse_data))
+def verify_and_notify(clickhouse_data, user_name):
+    #logger.debug('# in verify_and_notify, clickhouse_data: ' +
+    #             str(clickhouse_data))
     device_collection = db['devices']
     unregistered_devices = []
 
     # Go through the found devices in clickhouse and check if it is registered in MongoDB
     for data in clickhouse_data:
-        user_name = data[1]
+        #user_name = data[1]
         client_name = data[2]
         existing_device = device_collection.find_one(
             {'client_name': client_name, 'user_name': user_name})

@@ -1,5 +1,4 @@
 version: '1'
-
 services:
   qlines_app_service:
     build:
@@ -8,11 +7,11 @@ services:
     image: qlines_app_image
     container_name: qlines_app_container
     restart: unless-stopped
-    #ports:
+    ports:
     #  - "80:80" # http
     #  - "443:443" # https
     #  - "7000-7100:7000-7100" # for mqtt and dbs
-    #  - "5000:5000"  # gunicorn
+      - "5000:5000"  # gunicorn
     volumes:
       - ./:/opt/qlines_app/
     networks:
