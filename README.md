@@ -31,6 +31,7 @@
 
 
 **Deployment to production todos**
+- make sure to use latest and same version of docker and docker-compose in Lab and Prod servers
 - enable the google analytics tag in all html filesystem
 - Manage the SSL certificate/Letsencrypt 
 As it was not possible to install in docker because of snapd, renew it in the host oustide of the docker container and move the files in /etc/letsencrypt to inside the docker.
