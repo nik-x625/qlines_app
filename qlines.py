@@ -3,18 +3,18 @@
 main qlines flask app
 '''
 
+from redis_utils import enqueue_long_running_function
+
 import os
 from datetime import datetime as dt
-import redis
-import time
 import logging
 
 from email_module import *
 from flask_pager import Pager
-from rq import Queue
 
 # MongoDB handlers and methods
 from mongodb_module import create_new_user, timezone_write, create_new_device, read_user_doc
+
 from clickhouse_module import fetch_data_per_param, fetch_device_overview_clickhouse
 from token_creator import build_token
 from logger_custom import get_module_logger
@@ -60,11 +60,6 @@ def load_user(userid):
 # initialise the flask_login
 
 
-# for long running functions
-r = redis.Redis()
-q = Queue('app1', connection=r)
-
-
 @app.route('/', methods=['GET', 'POST'])
 def index():
     return render_template('index.html')
@@ -86,7 +81,7 @@ def device_dashx():
 @app.route('/devices', methods=['GET', 'POST'])
 @login_required
 def devices():
-    return render_template('dash_devices.html', current_username = current_user.name)
+    return render_template('dash_devices.html', current_username=current_user.name)
 
 # Add devices (provision)
 
@@ -97,7 +92,7 @@ def device_add():
     try:
         missing_params_list = []
 
-        params_to_fetch = ['device_name']
+        params_to_fetch = ['client_name']
 
         params_dict = {}
         for param in params_to_fetch:
@@ -120,10 +115,10 @@ def device_add():
         #rand_str = str(random.randint(1000000, 9999999))
         #file_name = timestr + '_' + rand_str + '.pdf'
 
-        device_name = params_dict['device_name']
+        client_name = params_dict['client_name']
         device_token = build_token(20)
         client_creation_result = create_new_device(
-            device_name, current_user.name, device_token)
+            client_name, current_user.name, device_token)
 
         if client_creation_result == False:
             return "The device is already created!"
@@ -137,7 +132,7 @@ def device_add():
 # test - getting the broswer timezone
 @app.route("/getTime", methods=['GET'])
 def getTime():
-    username = current_user.name #'a@a.a'
+    username = current_user.name  # 'a@a.a'
     browsertz = request.args.get("browsertz")
     logger.debug("browser time: %s" % (browsertz))
     #logger.debug("server time : %s" % (time.strftime('%A %B, %d %Y %H:%M:%S')))
@@ -184,32 +179,28 @@ def table_data():
         order.append(order_item)
         i += 1
 
-
- 
-        
-    
     length = request.args.get('length')
     start = request.args.get('start')
 
-    #res = fetch_device_overview_clickhouse(
+    # res = fetch_device_overview_clickhouse(
     #    'table1', username, search_like, start, length, order)
-    
+
     res = fetch_device_overview_clickhouse(
-    'table1', username, search_like, start, length, order
+        'table1', username, search_like, start, length, order
     )
-    
+
     res['draw'] = request.args.get('draw', type=int)
 
     return res
 
 
-
 def test_common_prefix():
     return
 
-    
+
 def sortFn(tpl):
     return tpl[1]
+
 
 def test_common_prefix():
     """
@@ -217,15 +208,9 @@ def test_common_prefix():
     """
     # test 1
     # write the mqtt data write to mongodb
-    
-    
-    
-    
-    
-    
+
     return
-    
-    
+
 
 @app.route('/fetchdata', methods=["GET", "POST"])
 @login_required
@@ -271,11 +256,11 @@ def logout():
 @app.route("/login", methods=["GET", "POST"])
 def login():
 
-    logger.debug('')
-    logger.debug('# request.form: %s', str(request.form))
-    logger.debug('# request.args: %s', str(request.args))
-    logger.debug('# request.args.get("next"): ' +
-                 str(request.args.get("next")))
+    #logger.debug('')
+    #logger.debug('# request.form: %s', str(request.form))
+    #logger.debug('# request.args: %s', str(request.args))
+    #logger.debug('# request.args.get("next"): ' +
+    #             str(request.args.get("next")))
 
     if request.method == 'POST':
         email = request.form.get('email_holder', None)
@@ -310,12 +295,13 @@ def login():
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
 
-    logger.debug('in flask, route is /signup, method: ' + str(request.method))
+    #logger.debug('in flask, route is /signup, method: ' + str(request.method))
 
-    logger.debug('')
-    logger.debug('# in signup, request.form: ' + str(request.form))
-    logger.debug('# in signup, request.args: ' + str(request.args))
-    logger.debug('# in signup, request.args.get("next"): '+str(request.args.get("next",'')))
+    #logger.debug('')
+    #logger.debug('# in signup, request.form: ' + str(request.form))
+    #logger.debug('# in signup, request.args: ' + str(request.args))
+    #logger.debug('# in signup, request.args.get("next"): ' +
+    #             str(request.args.get("next", '')))
 
     if request.method == 'POST':
         logger.debug('# post method arrived, going to update mongo')
@@ -339,14 +325,27 @@ def signup():
             'time-formatted': dt.now().strftime("%Y-%m-%d %H:%M:%S"),
             'time': dt.now()
         }
+        
 
-        message_dict = {'email': email,
-                        'confirmation_link': 'https://www.qlines.net/confirmation/wertgwekjnekrg'}
+        new_user_data_in_separate_lines = json.dumps(new_user_data, indent=4)
+        # message_dict = {'email': email,
+        #                'confirmation_link': 'https://www.qlines.net/confirmation/wertgwekjnekrg'}
 
+        logger.debug(
+            '# going to create mongodb entry for a new user creation with info: '+str(new_user_data_in_separate_lines))
         create_user_result = create_new_user(new_user_data)
+        logger.debug('# mongodb create_new_user result: ' +
+                     str(create_user_result))
 
         if create_user_result:
+            # notify admin about the creation of new user
+            email_result = enqueue_long_running_function(
+                send_general_text_email, new_user_data_in_separate_lines, 'New user registered')
+            logger.debug(
+                '# email_result from submitting to redis: ' + str(email_result))
+
             return render_template('confirm_registration.html')
+
         else:
             return render_template('signup.html', message='The user already exists!')
 
@@ -384,8 +383,11 @@ def contact():
             'message': message,
             'datetime': dt.now().strftime("%Y-%m-%d %H:%M:%S")}
 
-        email_result = q.enqueue(send_email_contact, message_dict)
-        logger.debug('# email_result: ' + str(email_result))
+        #email_result = q.enqueue(send_email_contact, message_dict)
+        email_result = enqueue_long_running_function(
+            send_email_contact, message_dict)
+        logger.debug(
+            '# email_result from submitting to redis: ' + str(email_result))
 
         if email_result:
             result = 'Your message sent successfully. Thank you!'

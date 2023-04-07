@@ -74,7 +74,7 @@ $(function () {
 				'dataType': 'html',
 				'url': $SCRIPT_ROOT + "/device_add",
 				'data': {
-					device_name: $('input[name="device_name"]').val(),
+					client_name: $('input[name="client_name"]').val(),
 					//username: $('input[name="username"]').val(),
 					//password: $('input[name="password"]').val(),
 					//title: $('input[name="title"]').val(),

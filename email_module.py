@@ -140,10 +140,25 @@ def send_email_signup(message_dict):
 
 def submit_email_for_newsletter(message_dict):
     msg = MIMEMultipart()
-    msg['From'] = "Saya newsletter form"
+    msg['From'] = "QLines newsletter form"
     msg['To'] = DEFAULT_ADDRESS
     msg.attach(MIMEText(str(message_dict), 'plain'))
     msg['Subject'] = 'Request for newsletter'
+
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.starttls()
+    server.login(FROMADDR, PASSWORD)
+    text = msg.as_string()
+    server.sendmail(FROMADDR, DEFAULT_ADDRESS, text)
+    server.quit()
+    return True
+
+def send_general_text_email(message_text, subject):
+    msg = MIMEMultipart()
+    msg['From'] = "QLines alerting form"
+    msg['To'] = DEFAULT_ADDRESS
+    msg.attach(MIMEText(message_text, 'plain'))
+    msg['Subject'] = subject
 
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.starttls()
@@ -224,5 +239,7 @@ def send_email_contact__old(message_dict):
 
 
 if __name__ == "__main__":
-    send_email_contact({'first_name': '', 'last_name': '', 'email': '',
-                        'subject': '', 'message': 'xx', 'datetime': 'fff'})
+    #send_email_contact({'first_name': '', 'last_name': '', 'email': '',
+    #                    'subject': '', 'message': 'xx', 'datetime': 'fff'})
+    
+    send_general_text_email('some simple email test', 'test subject')

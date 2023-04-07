@@ -1,6 +1,8 @@
 from pymongo import MongoClient
 import datetime
 from logger_custom import get_module_logger
+from email_module import send_general_text_email
+from redis_utils import enqueue_long_running_function
 
 logger = get_module_logger(__name__)
 
@@ -55,7 +57,7 @@ def timezone_read(username):
             return ''
     except Exception as e:
         logger.debug('# in timezone_read, exception: '+str(timezone_read))
-        return ;
+        return
 
 
 def update_sensor_data(doc):
@@ -79,12 +81,43 @@ def create_new_user(doc):
         return True
 
 
-def create_new_device(device_name, user_name, device_token):
+def verify_and_notify(clickhouse_data):
+    logger.debug('# in verify_and_notify, clickhouse_data: '+str(clickhouse_data))
+    collection = db['devices']
+    unregistered_devices = []
+    for data in clickhouse_data:
+        user_name = data[1]
+        client_name = data[2]
+        existing_device = collection.find_one(
+            {'client_name': client_name, 'user_name': user_name})
+        if existing_device is None:
+            
+            logger.debug('# in verify_and_notify, client_name: '+str(client_name) + ' is missing in MongoDB for user: '+str(user_name))
+            
+            # Device not found in MongoDB, add to list of unregistered devices
+            unregistered_devices.append(client_name)
+
+    # Remove any unregistered devices from the clickhouse_data list
+    clickhouse_data = [
+        data for data in clickhouse_data if data[2] not in unregistered_devices]
+
+    if unregistered_devices:
+        email_message_text=f"clients: {str(unregistered_devices)} \
+        user_name: {user_name} \
+        is not registered in MongoDB"
+        enqueue_long_running_function(send_general_text_email, email_message_text, 'Unregistered devices found in ClickHouse')
+
+
+    # Return the shortened list of clickhouse_data
+    return clickhouse_data
+
+
+def create_new_device(client_name, user_name, device_token):
     devices = db['devices']
-    if devices.find_one({'device_name': device_name}):
+    if devices.find_one({'client_name': client_name}):
         return False
     else:
-        devices.insert_one({'device_name': device_name,
+        devices.insert_one({'client_name': client_name,
                            'user_name': user_name, 'device_token': device_token})
         return True
 

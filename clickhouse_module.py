@@ -2,6 +2,7 @@ import clickhouse_connect
 from logger_custom import get_module_logger
 from datetime_converter import datetime_to_elapsed
 from mongodb_module import timezone_read
+from mongodb_module import verify_and_notify
 from zoneinfo import ZoneInfo
 #from datetime import datetime
 from flask import session
@@ -61,6 +62,11 @@ def fetch_device_overview_clickhouse(table_name, user_name, like, start, length,
 
         res_filtered = client_handler.query(query_string)
         query_res = res_filtered.result_set
+        
+        # verify with MongoDB if the devices are already registered, otherwise removes it from the list and notifies the admin by email
+        logger.debug('# before verify_and_notify,  query_res: '+str(query_res))
+        query_res = verify_and_notify(query_res)
+        logger.debug('# after verify_and_notify,  query_res: '+str(query_res))
 
         data = []
         count = 0
