@@ -83,8 +83,6 @@ def device_dashx():
 def devices():
     return render_template('dash_devices.html', current_username=current_user.name)
 
-# Add devices (provision)
-
 
 @app.route('/device_add', methods=['GET', 'POST'])
 @login_required
