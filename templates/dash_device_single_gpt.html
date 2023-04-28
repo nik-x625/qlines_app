@@ -1,0 +1,118 @@
+{% extends 'dash_base_template.html' %}
+{% block header_content %}
+
+<script type="text/javascript">
+    var client_name_from_flask = '{{ client_name }}'
+</script>
+
+<script src="/static/js/chart1.js"></script>
+<script src="/static/js/cli.js"></script>
+
+{% endblock %}
+
+{% block page_content %}
+<p>This is the main dashboard page for device {{client_name}}</p>
+
+<div class="row">
+    <div class="col-md-6 p-3 bg-light text-white">
+        <figure class="highcharts-figure">
+            <div id="chart-div1"></div>
+        </figure>
+    </div>
+
+    <div class="col-md-6 p-3 bg-light text-white">
+        <figure class="highcharts-figure">
+            <div id="chart-div2"></div>
+        </figure>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-4 mx-auto">
+            <table class="table table-bordered table-hover table-sm">
+                <thead>
+                    <tr>
+                        <th>Parameter Name</th>
+                        <th>Parameter Value</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Registered on</td>
+                        <td>01/04/2012</td>
+                        <td>Default</td>
+                    </tr>
+                    <tr class="table-active">
+                        <td>TB - Monthly</td>
+                        <td>01/04/2012</td>
+                        <td>Approved</td>
+                    </tr>
+                    <tr class="table-success">
+                        <td>First message</td>
+                        <td>02/04/2012</td>
+                        <td>Declined</td>
+                    </tr>
+                    <tr class="table-warning">
+                        <td>Last message</td>
+                        <td>03/04/2012</td>
+                        <td>Pending</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-md-4 mx-auto">
+            <form role="form">
+                <div class="form-group">
+                    <label for="exampleInputEmail1">CLI command</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1">
+                </div>
+                <br>
+                <button type="submit" class="btn btn-primary">Send</button>
+            </form>
+            <br>
+            <label for="exampleInputEmail1">CLI result</label>
+            <br>
+            <br>
+            <p>
+                Lorem ipsum dolor sit amet, <strong>consectetur adipiscing elit</strong>. Aliquam eget sapien
+                sapien. Curabitur in metus urna. In hac habitasse platea dictumst. Phasellus eu sem sapien, sed
+                vestibulum velit. Nam purus nibh, lacinia non faucibus et, pharetra in dolor. Sed iaculis posuere
+                diam ut cursus. <em>Morbi commodo sodales nisi id sodales. Proin consectetudfgr, nisi id commodo
+                    imperdiet, metus nunc consequat lectus, id bibendum diam velit et dui.</em> Proin massa magna,
+                vulputate nec bibendum nec, posuere nec lacus. <small>Aliquam mi erat, aliquam vel luctus eu,
+                    pharetra quis elit. Nulla euismod ultrices massa, et feugiat ipsum consequat eu.</small>
+                </p>
+            </div>
+            <div class="col-md-4">
+                <div class="dropdown">
+
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton"
+                        data-toggle="dropdown">
+                        Device_Actions
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item disabled" href="#">Action</a> <a class="dropdown-item" href="#">Another
+                            action</a> <a class="dropdown-item" href="#">Something else here</a>
+                    </div>
+                </div>
+                <p>
+                    Lorem ipsum dolor sit amet, <strong>consectetur adipiscing elit</strong>. Aliquam eget sapien
+                    sapien. Curabitur in metus urna. In hac habitasse platea dictumst. Phasellus eu sem sapien, sed
+                    vestibulum velit. Nam purus nibh, lacinia non faucibus et, pharetra in dolor. Sed iaculis posuere
+                    diam ut cursus. <em>Morbi commodo sodales nisi id sodales. 
+                </p>
+            </div>
+        </div>
+    </div>
+
+
+
+
+</div>
+
+
+
+{% endblock %}

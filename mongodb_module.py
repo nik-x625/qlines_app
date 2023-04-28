@@ -81,7 +81,7 @@ def create_new_user(doc):
         return True
 
 
-def verify_and_notify(clickhouse_data, user_name):
+def verify_and_notify(clickhouse_data, user_name, search_like):
     #logger.debug('# in verify_and_notify, clickhouse_data: ' +
     #             str(clickhouse_data))
     device_collection = db['devices']
@@ -111,7 +111,7 @@ def verify_and_notify(clickhouse_data, user_name):
     devices = device_collection.find({'user_name': user_name})
 
     clickhouse_client_names = set([row[2] for row in clickhouse_data])
-    device_client_names = [device['client_name'] for device in devices]
+    device_client_names = [device['client_name'] for device in devices if search_like in device['client_name']]
     logger.debug('# in verify_and_notify, devices: '+str(device_client_names))
 
     new_rows = []

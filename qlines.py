@@ -24,6 +24,10 @@ from flask import (Flask, Response, abort, current_app, json, jsonify,
                    make_response, redirect, render_template, request, session,
                    url_for)
 
+
+
+
+
 logger = get_module_logger(__name__)
 
 app = Flask(__name__)
@@ -52,6 +56,61 @@ class User(UserMixin):
     def __repr__(self):
         return "%d/%s/%s" % (self.id, self.name, self.password)
 
+#### temporary - for prod remove this
+# and change '#@login_required' to '@login_required' in the routes below
+# class User:
+#     def __init__(self):
+#         self.name = None
+# current_user = User()
+# current_user.name = 'a@a.a'        
+#### temporary - for prod remove this
+
+
+# route to handle the /update_user route, to get 4 parameters from the user and update it in mongodb
+# and then redirect to the dashboard
+@app.route('/update_user', methods=['GET', 'POST'])
+@login_required
+def update_user():
+    try:
+        missing_params_list = []
+
+        params_to_fetch = ['email', 'name', 'phone', 'tz']
+
+        params_dict = {}
+        for param in params_to_fetch:
+
+            param_val = request.form.get(param, 0)
+
+            if not param_val:
+                missing_params_list.append(param)
+
+            else:
+                params_dict[param] = param_val
+
+        logger.debug('# params_dict: '+str(params_dict))
+
+        if missing_params_list:
+            logger.debug('# missing_params_list: '+str(missing_params_list))
+            return render_template('dash_devices.html', current_username=current_user.name, missing_params_list=missing_params_list)
+
+        else:
+            logger.debug('# going to update the user: '+str(params_dict))
+            create_new_user(params_dict)
+            return redirect(url_for('device_dashx'))
+
+    except Exception as e:
+        logger.debug('# in update_user, exception: '+str(e))
+        return render_template('dash_devices.html', current_username=current_user.name)
+    
+def test_update_user():
+    params_dict = {}
+    params_dict['email'] = 'aa@bb.cc'
+    params_dict['name'] = 'aa'
+    params_dict['phone'] = '123456789'
+    params_dict['tz'] = 'Europe/Berlin'
+    create_new_user(params_dict)
+
+
 
 @login_manager.user_loader
 def load_user(userid):
@@ -66,7 +125,7 @@ def index():
 
 
 @app.route('/device/<client_name>', methods=['GET', 'POST'])
-@login_required
+#@login_required
 def device_single(client_name):
     return render_template('dash_device_single.html', client_name=client_name)
 
@@ -79,7 +138,7 @@ def device_dashx():
 
 # Devices overview table - route
 @app.route('/devices', methods=['GET', 'POST'])
-@login_required
+#@login_required
 def devices():
     return render_template('dash_devices.html', current_username=current_user.name)
 
@@ -141,7 +200,7 @@ def getTime():
 
 
 @app.route('/api/data')
-@login_required
+#@login_required
 def table_data():
 
     username = current_user.name
@@ -211,7 +270,7 @@ def test_common_prefix():
 
 
 @app.route('/fetchdata', methods=["GET", "POST"])
-@login_required
+#@login_required
 def fetchdata():
 
     client_name = request.args.get('client_name', None)
@@ -392,30 +451,6 @@ def contact():
 
     return render_template('contact.html', result=result)
 
-
-@app.route('/search_backend', methods=['GET', 'POST'])
-def search_backend():
-    logger.debug('in flask, route is /search_backend')
-
-    results = []  # sample_insta_data_maker()
-
-    page = request.form.get('page', 1)
-
-    if not page.isdigit():
-        page = 1
-    page = int(page)
-
-    count = len(results)
-    pager = Pager(page, count)
-    pages = pager.get_pages()
-
-    skip = (page - 1) * current_app.config['PAGE_SIZE']
-    limit = current_app.config['PAGE_SIZE']
-    data_to_show = results[skip:skip + limit]
-
-    return render_template('search_result.html',
-                           results=data_to_show,
-                           pages=pages)
 
 
 @app.errorhandler(401)

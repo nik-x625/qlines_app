@@ -22,6 +22,8 @@ def on_connect(client, userdata, flags, rc):
 
 
 def on_message(client, userdata, msg):
+    
+    print('# in on_message function')
 
     data = []
 
@@ -44,10 +46,12 @@ def on_message(client, userdata, msg):
         print('# error in processing the recevied mqtt message: ', e)
 
 
-client = mqtt.Client('xxx receiver')
+client = mqtt.Client('xxx_receiver1')
 client.connect(mqttBroker, 1883, 60)
 
 client.on_connect = on_connect
 client.on_message = on_message
 
-client.loop_forever()
+print('# before loop_forever')
+client.loop_start()
+print('# after loop_forever')

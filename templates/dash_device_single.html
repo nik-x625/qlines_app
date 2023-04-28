@@ -11,35 +11,22 @@
 {% endblock %}
 
 {% block page_content %}
-<p>This is the main dashboard page for device {{client_name}}</p>
 
-<div class="row">
-    <div class="col p-3 bg-light text-white">
-        <figure class="highcharts-figure">
-            <div id="chart-div1"></div>
-        </figure>
-    </div>
-</div>
 
-<div class="row">
-    <div class="col p-3 bg-light text-white">
-        <figure class="highcharts-figure">
-            <div id="chart-div2"></div>
-        </figure>
-    </div>
-</div>
+
+<p>Client ID: {{client_name}}</p>
+
 
 <div class="container-fluid">
 
+    <div class="row">
 
-
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-4">
+        <!-- first column on page-->
+        <div class="col-md-6 p-1 bg-light">
+            <div class="col-md-10">
                 <table class="table table-bordered table-hover table-sm">
                     <thead>
                         <tr>
-
                             <th>
                                 Parameter Name
                             </th>
@@ -47,67 +34,54 @@
                                 Parameter Value
                             </th>
                             <th>
-                                Action
+                                Status
                             </th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-
                             <td>
-                                TB - Monthly
+                                Registered on
                             </td>
                             <td>
                                 01/04/2012
                             </td>
                             <td>
-                                Default
-                            </td>
-                        </tr>
-                        <tr class="table-active">
-
-                            <td>
-                                TB - Monthly
-                            </td>
-                            <td>
-                                01/04/2012
-                            </td>
-                            <td>
-                                Approved
+                                Updated
                             </td>
                         </tr>
                         <tr class="table-success">
 
                             <td>
-                                TB - Monthly
+                                First message
                             </td>
                             <td>
                                 02/04/2012
                             </td>
                             <td>
-                                Declined
+                                Updated
                             </td>
                         </tr>
                         <tr class="table-warning">
 
                             <td>
-                                TB - Monthly
+                                Last message
                             </td>
                             <td>
                                 03/04/2012
                             </td>
                             <td>
-                                Pending
+                                Updated
                             </td>
                         </tr>
-
                     </tbody>
                 </table>
             </div>
-            <div class="col-md-4">
+
+            <div class="col-md-10 pt-5">
                 <form role="form">
                     <div class="form-group">
-
+    
                         <label for="exampleInputEmail1">
                             CLI command
                         </label>
@@ -122,45 +96,41 @@
                 <label for="exampleInputEmail1">
                     CLI result
                 </label>
-                <br>      
-                <br>       
+                <br>
+                <br>
                 <p>
-                    Lorem ipsum dolor sit amet, <strong>consectetur adipiscing elit</strong>. Aliquam eget sapien
-                    sapien. Curabitur in metus urna. In hac habitasse platea dictumst. Phasellus eu sem sapien, sed
-                    vestibulum velit. Nam purus nibh, lacinia non faucibus et, pharetra in dolor. Sed iaculis posuere
-                    diam ut cursus. <em>Morbi commodo sodales nisi id sodales. Proin consectetudfgr, nisi id commodo
-                        imperdiet, metus nunc consequat lectus, id bibendum diam velit et dui.</em> Proin massa magna,
-                    vulputate nec bibendum nec, posuere nec lacus. <small>Aliquam mi erat, aliquam vel luctus eu,
-                        pharetra quis elit. Nulla euismod ultrices massa, et feugiat ipsum consequat eu.</small>
-                </p>
-            </div>
-            <div class="col-md-4">
-                <div class="dropdown">
-
-                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton"
-                        data-toggle="dropdown">
-                        Device_Actions
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item disabled" href="#">Action</a> <a class="dropdown-item" href="#">Another
-                            action</a> <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
-                </div>
-                <p>
-                    Lorem ipsum dolor sit amet, <strong>consectetur adipiscing elit</strong>. Aliquam eget sapien
-                    sapien. Curabitur in metus urna. In hac habitasse platea dictumst. Phasellus eu sem sapien, sed
-                    vestibulum velit. Nam purus nibh, lacinia non faucibus et, pharetra in dolor. Sed iaculis posuere
-                    diam ut cursus. <em>Morbi commodo sodales nisi id sodales. 
+                    Lorem ipsum dolor sit amet,in massa magna, adssdf sdf dsf ds
+                    vulputate nec bibendum nec, posuere nec laculiquam mi erat, aliquam vel luctus eu,
+                    pharetra quis elit. Nulla euismod ultrices massa, et feugiat ipsum consequat eu.
                 </p>
             </div>
         </div>
+
+        <!-- second column on page-->
+        <div class="col-md-6 p-1 bg-light text-white">
+            <figure class="highcharts-figure">
+                <div id="chart-div1"></div>
+            </figure>
+            <figure class="highcharts-figure">
+                <div id="chart-div2"></div>
+            </figure>
+        </div>
     </div>
-
-
-
 
 </div>
 
+
+
+<!-- <div class="dropdown">
+    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton"
+        data-toggle="dropdown">
+        Device_Actions
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item disabled" href="#">Action</a> <a class="dropdown-item" href="#">Another
+            action</a> <a class="dropdown-item" href="#">Something else here</a>
+    </div>
+</div> -->
 
 
 {% endblock %}

@@ -29,7 +29,7 @@ def fetch_data_per_param(user_name, client_name, param_name, limit, table_name='
     return res
 
 
-def fetch_device_overview_clickhouse(table_name, user_name, like, start, length, order):
+def fetch_device_overview_clickhouse(table_name, user_name, search_like, start, length, order):
 
     try:
         # todo: add try/except here
@@ -55,13 +55,13 @@ def fetch_device_overview_clickhouse(table_name, user_name, like, start, length,
         # to do the main query to get the filtered data
         # res_filtered = client_handler.query("select count(*) OVER () AS TotalRecords, user_name, client_name, min(ts) as first_message, max(ts) as last_message \
         # from {} where user_name='{}' and (client_name like '%{}%' OR user_name like '%{}%') group by client_name, user_name order by {} {} offset {} rows fetch next {} rows only"
-        #                                    .format(table_name, user_name, like, like, order_by, order_direction, start, length))
+        #                                    .format(table_name, user_name, search_like, search_like, order_by, order_direction, start, length))
 
         # to do the main query to get the filtered data
         query_string = f"select count(*) OVER () AS TotalRecords, user_name, client_name, min(ts) \
                         as first_message, max(ts) as last_message from {table_name} where \
-                        user_name='{user_name}' and (client_name like '%{like}%' \
-                        OR user_name like '%{like}%') group by client_name, user_name \
+                        user_name='{user_name}' and client_name like '%{search_like}%' \
+                        group by client_name, user_name \
                         order by {order_by} {order_direction} \
                         offset {start} rows fetch next {length} rows only"
 
@@ -75,7 +75,7 @@ def fetch_device_overview_clickhouse(table_name, user_name, like, start, length,
 
         # verify with MongoDB if the devices are already registered, otherwise removes it from the list and notifies the admin by email
         logger.debug('# before verify_and_notify,  query_res: '+str(query_res))
-        query_res = verify_and_notify(query_res, user_name)
+        query_res = verify_and_notify(query_res, user_name, search_like)
         logger.debug('# after verify_and_notify,  query_res: '+str(query_res))
 
         data = []
