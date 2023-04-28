@@ -125,9 +125,9 @@ def index():
 
 
 @app.route('/device/<client_name>', methods=['GET', 'POST'])
-#@login_required
+@login_required
 def device_single(client_name):
-    return render_template('dash_device_single.html', client_name=client_name)
+    return render_template('dash_device_single.html', current_username=current_user.name, client_name=client_name)
 
 
 @app.route('/dashboard', methods=['GET', 'POST'])
