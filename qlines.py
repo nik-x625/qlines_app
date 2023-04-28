@@ -138,7 +138,7 @@ def device_dashx():
 
 # Devices overview table - route
 @app.route('/devices', methods=['GET', 'POST'])
-#@login_required
+@login_required
 def devices():
     return render_template('dash_devices.html', current_username=current_user.name)
 
