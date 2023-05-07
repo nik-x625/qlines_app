@@ -10,12 +10,12 @@ from datetime import datetime as dt
 import logging
 
 from email_module import *
-from flask_pager import Pager
+#from flask_pager import Pager
 
 # MongoDB handlers and methods
 from mongodb_module import create_new_user, timezone_write, create_new_device, read_user_doc
 
-from clickhouse_module import fetch_data_per_param, fetch_device_overview_clickhouse
+from clickhouse_module import fetch_ts_data_per_param, fetch_device_overview_clickhouse
 from token_creator import build_token
 from logger_custom import get_module_logger
 from flask_login import (LoginManager, UserMixin, login_required, login_user,
@@ -23,9 +23,6 @@ from flask_login import (LoginManager, UserMixin, login_required, login_user,
 from flask import (Flask, Response, abort, current_app, json, jsonify,
                    make_response, redirect, render_template, request, session,
                    url_for)
-
-
-
 
 
 logger = get_module_logger(__name__)
@@ -56,14 +53,14 @@ class User(UserMixin):
     def __repr__(self):
         return "%d/%s/%s" % (self.id, self.name, self.password)
 
-#### temporary - for prod remove this
+# temporary - for prod remove this
 # and change '#@login_required' to '@login_required' in the routes below
 # class User:
 #     def __init__(self):
 #         self.name = None
 # current_user = User()
-# current_user.name = 'a@a.a'        
-#### temporary - for prod remove this
+# current_user.name = 'a@a.a'
+# temporary - for prod remove this
 
 
 # route to handle the /update_user route, to get 4 parameters from the user and update it in mongodb
@@ -101,15 +98,6 @@ def update_user():
     except Exception as e:
         logger.debug('# in update_user, exception: '+str(e))
         return render_template('dash_devices.html', current_username=current_user.name)
-    
-def test_update_user():
-    params_dict = {}
-    params_dict['email'] = 'aa@bb.cc'
-    params_dict['name'] = 'aa'
-    params_dict['phone'] = '123456789'
-    params_dict['tz'] = 'Europe/Berlin'
-    create_new_user(params_dict)
-
 
 
 @login_manager.user_loader
@@ -127,6 +115,8 @@ def index():
 @app.route('/device/<client_name>', methods=['GET', 'POST'])
 @login_required
 def device_single(client_name):
+    # TODO: to filter if the user has access to this device
+
     return render_template('dash_device_single.html', current_username=current_user.name, client_name=client_name)
 
 
@@ -189,7 +179,7 @@ def device_add():
 # test - getting the broswer timezone
 @app.route("/getTime", methods=['GET'])
 def getTime():
-    username = current_user.name  # 'a@a.a'
+    username = current_user.name
     browsertz = request.args.get("browsertz")
     logger.debug("browser time: %s" % (browsertz))
     #logger.debug("server time : %s" % (time.strftime('%A %B, %d %Y %H:%M:%S')))
@@ -200,7 +190,7 @@ def getTime():
 
 
 @app.route('/api/data')
-#@login_required
+# @login_required
 def table_data():
 
     username = current_user.name
@@ -259,31 +249,21 @@ def sortFn(tpl):
     return tpl[1]
 
 
-def test_common_prefix():
-    """
-    The function to test the common prefix function.__base__
-    """
-    # test 1
-    # write the mqtt data write to mongodb
-
-    return
-
-
 @app.route('/fetchdata', methods=["GET", "POST"])
-#@login_required
+@login_required
 def fetchdata():
 
     client_name = request.args.get('client_name', None)
 
     limit = 30
 
-    parameter_list = ['param1', 'param2']
+    parameter_list = ['device_info', 'param1', 'param2']
 
     data_to_revert = {}
 
     # the "current_user.name" identifies the user. This way the data for only this user is reverted back to js code in browser to render.
     for param_name in parameter_list:
-        res = fetch_data_per_param(user_name=str(
+        res = fetch_ts_data_per_param(user_name=str(
             current_user.name), client_name=client_name, param_name=param_name, limit=limit)
         res = res.result_set
         res.sort(key=sortFn)
@@ -313,10 +293,10 @@ def logout():
 @app.route("/login", methods=["GET", "POST"])
 def login():
 
-    #logger.debug('')
-    #logger.debug('# request.form: %s', str(request.form))
-    #logger.debug('# request.args: %s', str(request.args))
-    #logger.debug('# request.args.get("next"): ' +
+    # logger.debug('')
+    # logger.debug('# request.form: %s', str(request.form))
+    # logger.debug('# request.args: %s', str(request.args))
+    # logger.debug('# request.args.get("next"): ' +
     #             str(request.args.get("next")))
 
     if request.method == 'POST':
@@ -354,10 +334,10 @@ def signup():
 
     #logger.debug('in flask, route is /signup, method: ' + str(request.method))
 
-    #logger.debug('')
-    #logger.debug('# in signup, request.form: ' + str(request.form))
-    #logger.debug('# in signup, request.args: ' + str(request.args))
-    #logger.debug('# in signup, request.args.get("next"): ' +
+    # logger.debug('')
+    # logger.debug('# in signup, request.form: ' + str(request.form))
+    # logger.debug('# in signup, request.args: ' + str(request.args))
+    # logger.debug('# in signup, request.args.get("next"): ' +
     #             str(request.args.get("next", '')))
 
     if request.method == 'POST':
@@ -382,7 +362,6 @@ def signup():
             'time-formatted': dt.now().strftime("%Y-%m-%d %H:%M:%S"),
             'time': dt.now()
         }
-        
 
         new_user_data_in_separate_lines = json.dumps(new_user_data, indent=4)
         # message_dict = {'email': email,
@@ -450,7 +429,6 @@ def contact():
             result = 'Your message sent successfully. Thank you!'
 
     return render_template('contact.html', result=result)
-
 
 
 @app.errorhandler(401)

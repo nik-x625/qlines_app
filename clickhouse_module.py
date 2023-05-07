@@ -23,7 +23,7 @@ def tz_converter(time, browser_timezone):
     return tz_time.strftime("%Y-%m-%d %H:%M:%S %Z")
 
 
-def fetch_data_per_param(user_name, client_name, param_name, limit, table_name='table1'):
+def fetch_ts_data_per_param(user_name, client_name, param_name, limit, table_name='table1'):
     res = client_handler.query("SELECT param_name, ts, param_value FROM {} WHERE user_name='{}' and client_name='{}' and param_name='{}' ORDER BY ts DESC LIMIT {}".format(
         table_name, user_name, client_name, param_name, limit))
     return res
@@ -50,7 +50,6 @@ def fetch_device_overview_clickhouse(table_name, user_name, search_like, start, 
             recordsTotal = res_total.result_set
         except Exception as e:
             recordsTotal = [[0]]
-            
 
         # to do the main query to get the filtered data
         # res_filtered = client_handler.query("select count(*) OVER () AS TotalRecords, user_name, client_name, min(ts) as first_message, max(ts) as last_message \
@@ -85,9 +84,11 @@ def fetch_device_overview_clickhouse(table_name, user_name, search_like, start, 
             data_row['user_name'] = row[1]
             data_row['client_name'] = "<a href='/device/{}'>{}</a>".format(
                 row[2], row[2])
-            data_row['first_message'] = tz_converter(row[3], browser_timezone) if row[3] is not '' else 'No contact yet'
-            data_row['last_message'] = tz_converter(row[4], browser_timezone) if row[4] is not '' else 'No contact yet'
-            
+            data_row['first_message'] = tz_converter(
+                row[3], browser_timezone) if row[3] is not '' else 'No contact yet'
+            data_row['last_message'] = tz_converter(
+                row[4], browser_timezone) if row[4] is not '' else 'No contact yet'
+
             count = row[0]
 
             data.append(data_row)
