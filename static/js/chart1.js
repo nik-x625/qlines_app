@@ -69,28 +69,35 @@ $(document).ready(function () {
 
     function fetch_new_data() {
         $.getJSON('/fetchdata', request_params, function (data_received) {
+            if (data_received.data.ts_data) { // check if data_received is not empty
 
-            var data = data_received.data
-            var data1 = data.param1;
-            var data2 = data.param2;
+                console.log(typeof(data_received.data))
 
-            var chartdata1 = [];
-            var chartdata2 = [];
+                var data = data_received.data
+                var data1 = data.ts_data.param1;
+                var data2 = data.ts_data.param2;
 
-            for (var i = 0; i < data1.length; i++) {
-                chartdata1.push([
-                    Date.parse(data1[i][1]), data1[i][2]
-                ])
+                var chartdata1 = [];
+                var chartdata2 = [];
+
+                for (var i = 0; i < data1.length; i++) {
+                    chartdata1.push([
+                        Date.parse(data1[i][1]), data1[i][2]
+                    ])
+                }
+
+                for (var i = 0; i < data2.length; i++) {
+                    chartdata2.push([
+                        Date.parse(data2[i][1]), data2[i][2]
+                    ])
+                }
+
+                chart1.series[0].setData(chartdata1)
+                chart2.series[0].setData(chartdata2)
+                document.getElementById('ts_registered').innerHTML = data.meta_data.ts_registered;
+                document.getElementById('ts_first_message').innerHTML = data.meta_data.ts_first_message;
+                document.getElementById('ts_last_message').innerHTML = data.meta_data.ts_last_message;
             }
-
-            for (var i = 0; i < data2.length; i++) {
-                chartdata2.push([
-                    Date.parse(data2[i][1]), data2[i][2]
-                ])
-            }
-
-            chart1.series[0].setData(chartdata1)
-            chart2.series[0].setData(chartdata2)
         });
     }
 

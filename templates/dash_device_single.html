@@ -6,12 +6,13 @@
 </script>
 
 <script src="/static/js/chart1.js"></script>
-<script src="/static/js/cli.js"></script>
+<!-- <script src="/static/js/cli.js"></script> -->
 
 {% endblock %}
 
 {% block page_content %}
 
+<p>Username: {{current_username}}</p>
 <p>Client ID: {{client_name}}</p>
 
 <div class="container-fluid">
@@ -30,21 +31,15 @@
                             <th>
                                 Parameter Value
                             </th>
-                            <th>
-                                Status
-                            </th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <tr class="table-success">
                             <td>
                                 Registered on
                             </td>
                             <td>
-                                01/04/2012
-                            </td>
-                            <td>
-                                Updated
+                                <p id="ts_registered"></p>
                             </td>
                         </tr>
                         <tr class="table-success">
@@ -53,22 +48,16 @@
                                 First message
                             </td>
                             <td>
-                                02/04/2012
-                            </td>
-                            <td>
-                                Updated
+                                <p id="ts_first_message"></p>
                             </td>
                         </tr>
-                        <tr class="table-warning">
+                        <tr class="table-success">
 
                             <td>
                                 Last message
                             </td>
                             <td>
-                                03/04/2012
-                            </td>
-                            <td>
-                                Updated
+                                <p id="ts_last_message"></p>
                             </td>
                         </tr>
                     </tbody>

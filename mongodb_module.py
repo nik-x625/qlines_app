@@ -169,13 +169,13 @@ def verify_and_notify_v2(clickhouse_data):
 
 
 
-def create_new_device(client_name, user_name, device_token):
+def create_new_device(client_name, user_name, device_token, ts_registered):
     devices = db['devices']
     if devices.find_one({'client_name': client_name}):
         return False
     else:
         devices.insert_one({'client_name': client_name,
-                           'user_name': user_name, 'device_token': device_token})
+                           'user_name': user_name, 'device_token': device_token,'ts_registered':ts_registered})
         return True
 
 

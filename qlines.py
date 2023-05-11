@@ -164,8 +164,9 @@ def device_add():
 
         client_name = params_dict['client_name']
         device_token = build_token(20)
+        ts_registered = dt.now()
         client_creation_result = create_new_device(
-            client_name, current_user.name, device_token)
+            client_name, current_user.name, device_token, ts_registered)
 
         if client_creation_result == False:
             return "The device is already created!"
@@ -186,9 +187,8 @@ def getTime():
     timezone_write(username, browsertz)
     return "Done"
 
+
 # Devices overview table - data fetcher
-
-
 @app.route('/api/data')
 # @login_required
 def table_data():
@@ -249,27 +249,40 @@ def sortFn(tpl):
     return tpl[1]
 
 
+# the api call in single device page, for e.g., http://www.../device/mydevice01
 @app.route('/fetchdata', methods=["GET", "POST"])
 @login_required
 def fetchdata():
 
     client_name = request.args.get('client_name', None)
 
-    limit = 30
-
-    parameter_list = ['device_info', 'param1', 'param2']
-
-    data_to_revert = {}
+    ts_param_list = ['param1', 'param2']
 
     # the "current_user.name" identifies the user. This way the data for only this user is reverted back to js code in browser to render.
-    for param_name in parameter_list:
+    limit = 30
+    ts_data = {}
+    for param_name in ts_param_list:
         res = fetch_ts_data_per_param(user_name=str(
             current_user.name), client_name=client_name, param_name=param_name, limit=limit)
-        res = res.result_set
-        res.sort(key=sortFn)
-        data_to_revert[param_name] = res
 
-    return {'name': 'some name here', 'data': data_to_revert}
+        if res:
+            res = res.result_set
+            res.sort(key=sortFn)
+            ts_data[param_name] = res
+        else:
+            pass
+        
+    fetch_device_overview_clickhouse(table_name, user_name, search_like, start, length, order)
+    res = fetch_device_overview_clickhouse(
+        'table1', current_user.name, '', start, length, order
+    )
+
+
+    meta_data = {'ts_registered': dt.now(),
+                 'ts_first_message': dt.now(),
+                 'ts_last_message': dt.now()}
+
+    return {'name': 'some name here', 'data': {'meta_data': meta_data, 'ts_data': ts_data}}
 
 
 @app.route('/cli', methods=['GET', 'POST'])

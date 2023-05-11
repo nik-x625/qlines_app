@@ -24,9 +24,19 @@ def tz_converter(time, browser_timezone):
 
 
 def fetch_ts_data_per_param(user_name, client_name, param_name, limit, table_name='table1'):
-    res = client_handler.query("SELECT param_name, ts, param_value FROM {} WHERE user_name='{}' and client_name='{}' and param_name='{}' ORDER BY ts DESC LIMIT {}".format(
-        table_name, user_name, client_name, param_name, limit))
-    return res
+    try:
+        query_string = "SELECT param_name, ts, param_value FROM {} WHERE user_name='{}' and client_name='{}' and param_name='{}' ORDER BY ts DESC LIMIT {}".format(
+            table_name, user_name, client_name, param_name, limit)
+
+        #logger.debug('# query string: '+str(query_string))
+        res = client_handler.query(query_string)
+        #logger.debug('# query res: '+str(res.result_set))
+        
+        return res
+    
+    except Exception as e:
+        logger.debug('# fetch_ts_data_per_param error: '+str(e))
+        return ''
 
 
 def fetch_device_overview_clickhouse(table_name, user_name, search_like, start, length, order):

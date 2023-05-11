@@ -56,6 +56,7 @@ alias log='tail /var/log/nginx/*.log /var/log/redis/redis-server.log /opt/blog/m
 alias mongo='mongo platform'
 alias pip='pip3'
 alias ch='clickhouse-server --config-file /etc/clickhouse-server/config.xml --pid-file /var/run/clickhouse-server/clickhouse-server.pid --daemon'
+alias ql='cd /opt/qlines_app'
 
 # Git shortcuts
 alias gitall='git add .;git commit -m \"update\";git push origin master'
