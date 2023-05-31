@@ -543,23 +543,33 @@ def my_ping():
 def background_thread(username=''):
     """Example of how to send server generated events to clients."""
     count = 0
+    
+    print('# before loop, the username is: '+str(username))
     while True:
         socketio.sleep(1)
         count += 1
 
-        print('# in background_thread, going to emit: '+str(username))
+        print('# in background_thread, going to emit: '+username+'_'+str(count))
         param_value = ''
         
-        socketio.emit('my_response',
-                      {'data': 'Server generated event', 'count': count, 'user_specific_info':username+'_'+str(count)})
+        #socketio.emit('my_response',
+        #              {'data': 'Server generated event', 'count': count, 'user_specific_info':username+'_'+str(count)}, to=username)
+        
+        
+        socketio.emit('my_response', {'data': 'Server generated event', 'count': count, 'user_specific_info':'some message to a1 - '+str(count)}, to='a@a.a')
+        socketio.emit('my_response', {'data': 'Server generated event', 'count': count, 'user_specific_info':'some message to a2 - '+str(count)}, to='a2@a.a')
 
 
 @socketio.event
 def connect():
     print('in connect')
+    
+    
 
     try:
         username = current_user.name
+        join_room(username)
+        print('# in rooms: '+str('In rooms: ' + ', '.join(rooms())))
         print('# in connect, the username is: '+str(username))
     except Exception as e:
         print('# exception: '+str(e)+'   username is: '+str(current_user))
@@ -569,7 +579,7 @@ def connect():
     with thread_lock:
         if thread is None:
             thread = socketio.start_background_task(
-                background_thread,username)
+                background_thread, username)
     print('in connect, going to emit my_response')
     emit('my_response', {'data': 'Connected', 'count': 0})
 
