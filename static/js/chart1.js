@@ -64,8 +64,9 @@ $(document).ready(function () {
         client_name: client_name_from_flask,
     };
 
-    fetch_new_data();
-    setInterval(fetch_new_data, 1000);
+    // commented out to be replaced by the websocket (socket.io)
+    //fetch_new_data();
+    //setInterval(fetch_new_data, 1000);
 
     function fetch_new_data() {
         $.getJSON('/fetchdata', request_params, function (data_received) {
@@ -96,7 +97,7 @@ $(document).ready(function () {
                 chart2.series[0].setData(chartdata2)
                 document.getElementById('ts_registered').innerHTML = data.meta_data.ts_registered;
                 document.getElementById('ts_first_message').innerHTML = data.meta_data.ts_first_message;
-                document.getElementById('ts_last_message').innerHTML = data.meta_data.ts_last_message;
+                //document.getElementById('ts_last_message').innerHTML = data.meta_data.ts_last_message;
             }
         });
     }

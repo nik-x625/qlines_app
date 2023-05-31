@@ -10,7 +10,6 @@ from datetime import datetime as dt
 import logging
 
 from email_module import *
-#from flask_pager import Pager
 
 # MongoDB handlers and methods
 from mongodb_module import create_new_user, timezone_write, create_new_device, read_user_doc
@@ -25,13 +24,31 @@ from flask import (Flask, Response, abort, current_app, json, jsonify,
                    url_for)
 
 
+# for socketio
+from threading import Lock
+
+from flask import Flask, render_template, session, request, \
+    copy_current_request_context
+from flask_socketio import SocketIO, emit, join_room, leave_room, \
+    close_room, rooms, disconnect
+async_mode = None
+
+#app.config['SECRET_KEY'] = 'secret!'
+thread = None
+thread_lock = Lock()
+
+
 logger = get_module_logger(__name__)
 
 app = Flask(__name__)
+socketio = SocketIO(app, async_mode=async_mode)
+
+
 app.secret_key = os.urandom(42)
 app.config['PAGE_SIZE'] = 10
 app.config['VISIBLE_PAGE_COUNT'] = 5
 app.config['TEMPLATES_AUTO_RELOAD'] = True
+app.config['SECRET_KEY'] = 'secret!'
 
 # initialise the flask_login
 login_manager = LoginManager()
@@ -271,12 +288,6 @@ def fetchdata():
             ts_data[param_name] = res
         else:
             pass
-        
-    fetch_device_overview_clickhouse(table_name, user_name, search_like, start, length, order)
-    res = fetch_device_overview_clickhouse(
-        'table1', current_user.name, '', start, length, order
-    )
-
 
     meta_data = {'ts_registered': dt.now(),
                  'ts_first_message': dt.now(),
@@ -345,14 +356,6 @@ def login():
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
 
-    #logger.debug('in flask, route is /signup, method: ' + str(request.method))
-
-    # logger.debug('')
-    # logger.debug('# in signup, request.form: ' + str(request.form))
-    # logger.debug('# in signup, request.args: ' + str(request.args))
-    # logger.debug('# in signup, request.args.get("next"): ' +
-    #             str(request.args.get("next", '')))
-
     if request.method == 'POST':
         logger.debug('# post method arrived, going to update mongo')
 
@@ -405,12 +408,6 @@ def signup():
         return render_template('signup.html', message='Signing up is easy. It only takes a few steps')
 
 
-# @app.route('/pricing', methods=['GET', 'POST'])
-# def pricing():
-#     logger.debug('in flask, route is /pricing')
-#     return render_template('pricing.html')
-
-
 # Used to show the contact page and also POST method to submit the message
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
@@ -447,6 +444,139 @@ def contact():
 @app.errorhandler(401)
 def page_not_found(e):
     return Response('<p>Login failed</p>')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@socketio.event
+def my_event(message):
+    print('in my_event')
+    session['receive_count'] = session.get('receive_count', 0) + 1
+    emit('my_response',
+         {'data': message['data'], 'count': session['receive_count']})
+
+
+@socketio.event
+def my_broadcast_event(message):
+    print('in my_broadcast_event')
+    session['receive_count'] = session.get('receive_count', 0) + 1
+    emit('my_response',
+         {'data': message['data'], 'count': session['receive_count']},
+         broadcast=True)
+
+
+@socketio.event
+def join(message):
+    print('# in join')
+    join_room(message['room'])
+    session['receive_count'] = session.get('receive_count', 0) + 1
+    emit('my_response',
+         {'data': 'In rooms: ' + ', '.join(rooms()),
+          'count': session['receive_count']})
+
+
+@socketio.event
+def leave(message):
+    print('in message')
+    leave_room(message['room'])
+    session['receive_count'] = session.get('receive_count', 0) + 1
+    emit('my_response',
+         {'data': 'In rooms: ' + ', '.join(rooms()),
+          'count': session['receive_count']})
+
+
+@socketio.on('close_room')
+def on_close_room(message):
+    print('# in on_close_room')
+    session['receive_count'] = session.get('receive_count', 0) + 1
+    emit('my_response', {'data': 'Room ' + message['room'] + ' is closing.',
+                         'count': session['receive_count']},
+         to=message['room'])
+    close_room(message['room'])
+
+
+@socketio.event
+def my_room_event(message):
+    print('# in my_room_event')
+    session['receive_count'] = session.get('receive_count', 0) + 1
+    emit('my_response',
+         {'data': message['data'], 'count': session['receive_count']},
+         to=message['room'])
+
+
+@socketio.event
+def disconnect_request():
+    print('in my_disconnect_requestping')
+
+    @copy_current_request_context
+    def can_disconnect():
+        disconnect()
+
+    session['receive_count'] = session.get('receive_count', 0) + 1
+    # for this emit we use a callback function
+    # when the callback function is invoked we know that the message has been
+    # received and it is safe to disconnect
+    print('# going to callback')
+    emit('my_response',
+         {'data': 'Disconnected!', 'count': session['receive_count']},
+         callback=can_disconnect)
+
+
+@socketio.event
+def my_ping():
+    print('in my_ping')
+    emit('my_pong')
+
+
+
+
+def background_thread(username=''):
+    """Example of how to send server generated events to clients."""
+    count = 0
+    while True:
+        socketio.sleep(1)
+        count += 1
+
+        print('# in background_thread, going to emit: '+str(username))
+        param_value = ''
+        
+        socketio.emit('my_response',
+                      {'data': 'Server generated event', 'count': count, 'user_specific_info':username+'_'+str(count)})
+
+
+@socketio.event
+def connect():
+    print('in connect')
+
+    try:
+        username = current_user.name
+        print('# in connect, the username is: '+str(username))
+    except Exception as e:
+        print('# exception: '+str(e)+'   username is: '+str(current_user))
+        username = 'NO_USERNAME'
+
+    global thread
+    with thread_lock:
+        if thread is None:
+            thread = socketio.start_background_task(
+                background_thread,username)
+    print('in connect, going to emit my_response')
+    emit('my_response', {'data': 'Connected', 'count': 0})
+
+
+@socketio.on('disconnect')
+def test_disconnect():
+    print('Client disconnected', request.sid)
 
 
 if __name__ == "__main__":
