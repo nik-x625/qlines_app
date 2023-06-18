@@ -27,6 +27,12 @@ RUN pip install jinja2==3.0
 # for NGINX
 RUN pip install gunicorn
 
+# related to Socketio
+# make sure to install the exact version. The evetlet 0.30.2 is necessary here. If not mentioned, the conflict happens
+RUN pip install eventlet==0.30.2  
+RUN pip install flask_socketio
+
+
 # NGINX config
 #COPY DockerConfigFiles/_nginx_qlines_main.conf /etc/nginx/sites-enabled/qlines_main.conf
 #COPY DockerConfigFiles/_nginx_qlines_blog.conf /etc/nginx/sites-enabled/qlines_blog.conf
@@ -45,7 +51,8 @@ COPY DockerConfigFiles/_bashrc_append /root/.bashrc
 RUN apt-get -y install default-jre
 RUN apt-get -y install default-jdk
 RUN curl "https://downloads.apache.org/kafka/3.5.0/kafka_2.13-3.5.0.tgz" -o /opt/kafka.tgz
-RUN mkdir /opt/kafka && cd /opt/kafka && tar -xvzf /opt/kafka.tgz --strip 1
+RUN mkdir /opt/kafka
+RUN tar -xvzf /opt/kafka.tgz --directory /opt/kafka/ --strip 1
 COPY DockerConfigFiles/_init_script_kafka /etc/init.d/kafka
 RUN chmod 755 /etc/init.d/kafka
 # apache config
@@ -65,6 +72,7 @@ RUN wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | apt-key add -
 RUN echo "deb http://repo.mongodb.org/apt/debian buster/mongodb-org/5.0 main" | tee /etc/apt/sources.list.d/mongodb-org-5.0.list
 RUN apt-get update
 RUN apt-get -y install mongodb-org mongodb-org-database mongodb-org-server mongodb-org-shell mongodb-org-mongos mongodb-org-tools
+
 
 
 # RQ worker init script
