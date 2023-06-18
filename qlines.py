@@ -460,10 +460,11 @@ def page_not_found(e):
 
 @socketio.event
 def my_event(message):
-    print('in my_event')
+    print('in my_event, message: '+str(message))
     session['receive_count'] = session.get('receive_count', 0) + 1
     emit('my_response',
          {'data': message['data'], 'count': session['receive_count']})
+
 
 
 @socketio.event
@@ -475,6 +476,7 @@ def my_broadcast_event(message):
          broadcast=True)
 
 
+
 @socketio.event
 def join(message):
     print('# in join')
@@ -483,6 +485,7 @@ def join(message):
     emit('my_response',
          {'data': 'In rooms: ' + ', '.join(rooms()),
           'count': session['receive_count']})
+
 
 
 @socketio.event

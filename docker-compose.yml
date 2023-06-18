@@ -6,6 +6,7 @@ services:
       dockerfile: Dockerfile
     image: qlines_app_image
     container_name: qlines_app_container
+    privileged: true
     restart: unless-stopped
     ports:
     #  - "80:80" # http

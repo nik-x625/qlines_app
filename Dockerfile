@@ -42,6 +42,14 @@ RUN ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime
 ADD DockerConfigFiles/_bashrc_append /tmp/
 RUN cat /tmp/_bashrc_append >> /root/.bashrc
 
+# Kafka requirements
+RUN apt-get -y install default-jre
+RUN apt-get -y install default-jdk
+RUN curl "https://downloads.apache.org/kafka/3.5.0/kafka_2.13-3.5.0.tgz" -o /opt/kafka.tgz
+RUN mkdir /opt/kafka && cd /opt/kafka
+RUN tar -xvzf /opt/kafka.tgz --strip 1
+COPY DockerConfigFiles/_init_script_kafka /etc/init.d/kafka
+RUN chmod 755 /etc/init.d/kafka
 # apache config
 #ADD DockerConfigFiles/_apache_site.conf /tmp/
 #RUN cp /tmp/_apache_site.conf /etc/apache2/sites-available/000-default.conf
@@ -51,6 +59,7 @@ RUN cat /tmp/_bashrc_append >> /root/.bashrc
 #RUN sed -i 's/Listen 80/Listen 8080/g' /etc/apache2/ports.conf
 
 # MongoDB installation
+RUN cd /opt/
 RUN wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | apt-key add -
 RUN apt update
 RUN apt-get -y install gnupg2
