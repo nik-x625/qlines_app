@@ -28,6 +28,7 @@ RUN pip install jinja2==3.0
 RUN pip install gunicorn
 
 # related to Socketio
+# gunicorn is needed to enable the websocket. The websocket works only with eventlet. Check documentation for details.
 # make sure to install the exact version. The evetlet 0.30.2 is necessary here. If not mentioned, the conflict happens
 RUN pip install eventlet==0.30.2  
 RUN pip install flask_socketio
