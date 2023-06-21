@@ -24,6 +24,12 @@ from flask import (Flask, Response, abort, current_app, json, jsonify,
                    url_for)
 
 
+# Kafka interface to produce/consume the messages
+from confluent_kafka import Consumer
+kafka_consumer=Consumer({'bootstrap.servers':'localhost:9092','group.id':'python-consumer','auto.offset.reset':'earliest'})
+logger.debug('Available topics to consume: ', kafka_consumer.list_topics().topics)
+kafka_consumer.subscribe(['user-tracker'])
+
 # for socketio
 from threading import Lock
 
@@ -552,6 +558,7 @@ def background_thread(username=''):
     while True:
         socketio.sleep(1)
         count += 1
+        
 
         logger.debug('# in background_thread, going to emit: '+username+'_'+str(count))
         param_value = ''
@@ -559,6 +566,14 @@ def background_thread(username=''):
         #socketio.emit('my_response',
         #              {'data': 'Server generated event', 'count': count, 'user_specific_info':username+'_'+str(count)}, to=username)
         
+        msg=kafka_consumer.poll(1.0)
+        if msg is None:
+            continue
+        if msg.error():
+            logger.debug('Error: {}'.format(msg.error()))
+            continue
+        data=msg.value().decode('utf-8')
+        print(data)        
         
         socketio.emit('my_response', {'data': 'Server generated event', 'count': count, 'user_specific_info':'some message to a1 - '+str(count)}, to='a@a.a')
         socketio.emit('my_response', {'data': 'Server generated event', 'count': count, 'user_specific_info':'some message to a2 - '+str(count)}, to='a2@a.a')
@@ -568,8 +583,6 @@ def background_thread(username=''):
 def connect():
     print('in connect')
     
-    
-
     try:
         username = current_user.name
         join_room(username)
