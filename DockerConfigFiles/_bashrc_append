@@ -53,6 +53,9 @@ alias res='/etc/init.d/nginx restart'
 # Miscel
 alias p='ps -ef | egrep '\''nginx|sql|mongo|python|rqworker'\'''
 alias log='tail /var/log/nginx/*.log /var/log/redis/redis-server.log /opt/blog/mylogs.log /opt/qlines/mylogs.log -f'
+
+alias log='tail /opt/qlines_app/mylogs.log -f'
+
 alias mongo='mongo platform'
 alias pip='pip3'
 alias ch='clickhouse-server --config-file /etc/clickhouse-server/config.xml --pid-file /var/run/clickhouse-server/clickhouse-server.pid --daemon'
