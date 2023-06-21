@@ -48,12 +48,11 @@ alias stop='/etc/init.d/all_daemons stop'
 alias status='/etc/init.d/all_daemons status'
 
 # Web server
-alias res='/etc/init.d/nginx restart'
+alias res='/etc/init.d/gunicorn restart'
 
 # Miscel
 alias p='ps -ef | egrep '\''nginx|sql|mongo|python|rqworker'\'''
-alias log='tail /var/log/nginx/*.log /var/log/redis/redis-server.log /opt/blog/mylogs.log /opt/qlines/mylogs.log -f'
-
+#alias log='tail /var/log/nginx/*.log /var/log/redis/redis-server.log /opt/blog/mylogs.log /opt/qlines/mylogs.log -f'
 alias log='tail /opt/qlines_app/mylogs.log -f'
 
 alias mongo='mongo platform'
