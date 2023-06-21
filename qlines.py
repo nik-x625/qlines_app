@@ -41,7 +41,8 @@ thread_lock = Lock()
 logger = get_module_logger(__name__)
 
 app = Flask(__name__)
-socketio = SocketIO(app, async_mode=async_mode)
+socketio = SocketIO(app, async_mode=async_mode, cors_allowed_origins="*")
+
 
 
 app.secret_key = os.urandom(42)
@@ -552,7 +553,7 @@ def background_thread(username=''):
         socketio.sleep(1)
         count += 1
 
-        print('# in background_thread, going to emit: '+username+'_'+str(count))
+        logger.debug('# in background_thread, going to emit: '+username+'_'+str(count))
         param_value = ''
         
         #socketio.emit('my_response',
@@ -572,10 +573,10 @@ def connect():
     try:
         username = current_user.name
         join_room(username)
-        print('# in rooms: '+str('In rooms: ' + ', '.join(rooms())))
-        print('# in connect, the username is: '+str(username))
+        logger.debug('# in rooms: '+str('In rooms: ' + ', '.join(rooms())))
+        logger.debug('# in connect, the username is: '+str(username))
     except Exception as e:
-        print('# exception: '+str(e)+'   username is: '+str(current_user))
+        logger.debug('# exception: '+str(e)+'   username is: '+str(current_user))
         username = 'NO_USERNAME'
 
     global thread
