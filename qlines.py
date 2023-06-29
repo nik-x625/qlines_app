@@ -549,7 +549,6 @@ def my_ping():
 
 
 
-
 def background_thread(username=''):
     """Example of how to send server generated events to clients."""
     count = 0
@@ -559,7 +558,6 @@ def background_thread(username=''):
         socketio.sleep(1)
         count += 1
         
-
         logger.debug('# in background_thread, going to emit: '+username+'_'+str(count))
         param_value = ''
         
@@ -567,13 +565,17 @@ def background_thread(username=''):
         #              {'data': 'Server generated event', 'count': count, 'user_specific_info':username+'_'+str(count)}, to=username)
         
         msg=kafka_consumer.poll(1.0)
+        
         if msg is None:
+            logger.debug('# fetching Kafka resulted in None')
             continue
+        
         if msg.error():
             logger.debug('Error: {}'.format(msg.error()))
             continue
-        data=msg.value().decode('utf-8')
-        print(data)        
+        
+        data=msg.value()#.decode('utf-8')
+        logger.debug('data is: '+str(data))#['user_name']))
         
         socketio.emit('my_response', {'data': 'Server generated event', 'count': count, 'user_specific_info':'some message to a1 - '+str(count)}, to='a@a.a')
         socketio.emit('my_response', {'data': 'Server generated event', 'count': count, 'user_specific_info':'some message to a2 - '+str(count)}, to='a2@a.a')

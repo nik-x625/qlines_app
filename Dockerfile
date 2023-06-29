@@ -58,7 +58,7 @@ COPY DockerConfigFiles/_init_script_kafka /etc/init.d/kafka
 RUN chmod 755 /etc/init.d/kafka
 
 # Python interface with Kafka
-RUN pip install confluent-kafka 
+RUN pip install confluent-kafka faker
 
 # apache config
 #ADD DockerConfigFiles/_apache_site.conf /tmp/

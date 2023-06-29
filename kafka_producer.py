@@ -29,19 +29,33 @@ def receipt(err,msg):
         
 #####################
 def main():
-    for i in range(10):
+    count = 0
+    while True: #for i in range(10):
+        print('')
+        print('going to create the data.........................')
         data={
            'user_id': fake.random_int(min=20000, max=100000),
            'user_name':fake.name(),
-           'user_address':fake.street_address() + ' | ' + fake.city() + ' | ' + fake.country_code(),
-           'platform': random.choice(['Mobile', 'Laptop', 'Tablet']),
-           'signup_at': str(fake.date_time_this_month())    
+           #'user_address':fake.street_address() + ' | ' + fake.city() + ' | ' + fake.country_code(),
+           #'platform': random.choice(['Mobile', 'Laptop', 'Tablet']),
+           #'signup_at': str(fake.date_time_this_month()),
+           'count' : str(count)
            }
+        count = count +1
         m=json.dumps(data)
-        p.poll(1)
-        p.produce('user-tracker', m.encode('utf-8'),callback=receipt)
+        print('going to poll')
+        #p.poll(1)
+        
+        print('poll done')
+        
+        p.produce('topic_x7', m.encode('utf-8'),callback=receipt)
+        
+        print('produce done for count: '+str(count))
+        
         p.flush()
-        time.sleep(3)
+        
+        print('flush done')
+        time.sleep(0.5)
         
 if __name__ == '__main__':
     main()
