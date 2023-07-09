@@ -1,58 +1,64 @@
-#!/bin/sh
+#! /bin/bash
 ### BEGIN INIT INFO
-# Provides:          gunicorn-qlines
-# Required-Start:    $remote_fs $syslog
-# Required-Stop:     $remote_fs $syslog
+# Provides:          theapp
+# Required-Start:    
+# Required-Stop:
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: Gunicorn init script for qlines app
-# Description:       Gunicorn init script for running the qlines app with Gunicorn
+# Short-Description: 
+# Description:       The gunicorn process
+#                    from nginx
+#
 ### END INIT INFO
+#
+#
+APPNAME=qlines
+#USER=youruser
+PATH=/sbin:/bin:/usr/sbin:/usr/bin #/bin:/usr/bin:/sbin:/usr/sbin
+#ACTIVATE=/home/www/project/env/bin/activate
 
-PATH=/sbin:/bin:/usr/sbin:/usr/bin
-DESC="Gunicorn Qlines App"
-NAME=gunicorn-qlines
 APP_PATH="/opt/qlines_app"
-GUNICORN_EXEC="/usr/local/bin/gunicorn"  # Adjust this to the path of your gunicorn executable
-GUNICORN_ARGS="--worker-class eventlet -w 1 qlines:app --bind 0.0.0.0:5000 --chdir $APP_PATH"
-PIDFILE="/var/run/$NAME.pid"
-#USER="your_username"  # Adjust this to the user you want to run Gunicorn as
-#GROUP="your_groupname"  # Adjust this to the group you want to run Gunicorn as
+DAEMON="/usr/local/bin/gunicorn"  # Adjust this to the path of your gunicorn executable
+GUNICORN_ARGS="--worker-class eventlet -w 1 qlines:app --chdir $APP_PATH"
 
-set -e
+#APPMODULE=yourproject.wsgi:application
+#DAEMON=gunicorn
+BIND="127.0.0.1:5000"
+PIDFILE=/var/run/gunicorn.pid
+LOGFILE=/var/log/gunicorn.log
+WORKERS=2
 
 . /lib/lsb/init-functions
 
-start() {
-    echo "Starting $DESC"
-    start-stop-daemon --start --background --pidfile "$PIDFILE" --make-pidfile --exec "$GUNICORN_EXEC" -- $GUNICORN_ARGS
-    log_end_msg $?
-}
+if [ -e "/etc/default/$APPNAME" ]
+then
+    . /etc/default/$APPNAME
+fi
 
-stop() {
-    echo "Stopping $DESC"
-    start-stop-daemon --stop --pidfile "$PIDFILE" --retry 10
-    log_end_msg $?
-    rm -f "$PIDFILE"
-}
 
 case "$1" in
-    start)
-        start
-        ;;
-    stop)
-        stop
-        ;;
-    restart|reload)
-        stop
-        sleep 1
-        start
-        ;;
-    *)
-        echo "Usage: $0 {start|stop|restart}"
-        exit 1
-        ;;
+  start)
+        log_daemon_msg "Starting gunicorn for the app" "$APPNAME"
+        #source $ACTIVATE
+        $DAEMON --daemon --bind=$BIND --pid=$PIDFILE --workers=$WORKERS --log-file=$LOGFILE $GUNICORN_ARGS
+        log_end_msg $?
+    ;;
+  stop)
+        log_daemon_msg "Starting gunicorn for the app" "$APPNAME"
+        killproc -p $PIDFILE $DAEMON
+        log_end_msg $?
+    ;;
+  force-reload|restart)
+    $0 stop
+    $0 start
+    ;;
+  status)
+    status_of_proc -p $PIDFILE $DAEMON && exit 0 || exit $?
+    ;;
+  *)
+    echo "Usage: /etc/init.d/$APPNAME {start|stop|restart|force-reload|status}"
+    exit 1
+    ;;
 esac
 
 exit 0
-

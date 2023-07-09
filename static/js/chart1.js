@@ -65,8 +65,8 @@ $(document).ready(function () {
     };
 
     // commented out to be replaced by the websocket (socket.io)
-    //fetch_new_data();
-    //setInterval(fetch_new_data, 1000);
+    fetch_new_data();
+    setInterval(fetch_new_data, 1000);
 
     function fetch_new_data() {
         $.getJSON('/fetchdata', request_params, function (data_received) {

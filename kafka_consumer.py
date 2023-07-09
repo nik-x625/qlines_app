@@ -1,3 +1,5 @@
+"""original script here: https://github.com/anbento0490/tutorials/tree/master/kafka_demo"""
+
 from confluent_kafka import Consumer
 import time
 ################
