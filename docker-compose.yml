@@ -10,7 +10,7 @@ services:
     restart: unless-stopped
     ports:
     #  - "7000-7100:7000-7100" # for mqtt and dbs
-      - "5000:5000"  # gunicorn
+    #  - "5000:5000"  # gunicorn
       - "127.0.0.1:8000:8000"
       - "127.0.0.1:8001:8001"
      

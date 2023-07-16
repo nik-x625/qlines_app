@@ -23,7 +23,7 @@ GUNICORN_ARGS="--worker-class eventlet -w 1 qlines:app --chdir $APP_PATH"
 
 #APPMODULE=yourproject.wsgi:application
 #DAEMON=gunicorn
-BIND="127.0.0.1:5000"
+BIND="0.0.0.0:5000"
 PIDFILE=/var/run/gunicorn.pid
 LOGFILE=/var/log/gunicorn.log
 WORKERS=2

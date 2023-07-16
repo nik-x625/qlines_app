@@ -26,9 +26,18 @@ from flask import (Flask, Response, abort, current_app, json, jsonify,
 
 # Kafka interface to produce/consume the messages
 from confluent_kafka import Consumer
-kafka_consumer=Consumer({'bootstrap.servers':'localhost:9092','group.id':'python-consumer','auto.offset.reset':'earliest'})
-logger.debug('Available topics to consume: ', kafka_consumer.list_topics().topics)
-kafka_consumer.subscribe(['user-tracker'])
+
+logger.debug('going to call kafka handler')
+try:
+    kafka_consumer=Consumer({'bootstrap.servers':'localhost:9092','group.id':'python-consumer','auto.offset.reset':'earliest'})
+    logger.debug('Available topics to consume: ', kafka_consumer.list_topics().topics)
+    kafka_consumer.subscribe(['user-tracker'])
+except Exception as e:
+    logger.debug('Error: '+str(e))
+
+logger.debug('passed the kafka section')
+
+
 
 # for socketio
 from threading import Lock
