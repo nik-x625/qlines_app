@@ -119,4 +119,4 @@ COPY DockerConfigFiles/_clickhouse_docker_related_config.xml /etc/clickhouse-ser
 
 
 # To keep container alive
-CMD /etc/init.d/all_daemons restart;tail -f /dev/null
+CMD /etc/init.d/all_daemons start;tail -f /dev/null
