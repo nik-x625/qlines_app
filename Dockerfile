@@ -81,7 +81,7 @@ RUN apt-get -y install mongodb-org mongodb-org-database mongodb-org-server mongo
 
 
 # RQ worker init script
-COPY DockerConfigFiles/_init_script_rq_worker_platx /etc/init.d/rqworker
+COPY DockerConfigFiles/_init_script_rqworker /etc/init.d/rqworker
 
 # MongoDB init script
 COPY DockerConfigFiles/_init_script_mongodb /etc/init.d/mongodb
