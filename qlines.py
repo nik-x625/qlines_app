@@ -473,13 +473,15 @@ def page_not_found(e):
 
 
 
+
+
 @socketio.event
 def my_event(message):
-    print('in my_event, message: '+str(message))
+    logger.debug('in socketio, function my_event, message: '+str(message))
+    print('in socketio, function my_event, message: '+str(message))
     session['receive_count'] = session.get('receive_count', 0) + 1
     emit('my_response',
          {'data': message['data'], 'count': session['receive_count']})
-
 
 
 @socketio.event
@@ -491,7 +493,6 @@ def my_broadcast_event(message):
          broadcast=True)
 
 
-
 @socketio.event
 def join(message):
     print('# in join')
@@ -500,7 +501,6 @@ def join(message):
     emit('my_response',
          {'data': 'In rooms: ' + ', '.join(rooms()),
           'count': session['receive_count']})
-
 
 
 @socketio.event
@@ -566,7 +566,7 @@ def background_thread(username=''):
         socketio.sleep(1)
         count += 1
         
-        logger.debug('# in background_thread, going to emit: '+username+'_'+str(count))
+        #logger.debug('# in background_thread, going to emit: '+username+'_'+str(count))
         #param_value = ''
         
         #socketio.emit('my_response',
@@ -590,8 +590,11 @@ def background_thread(username=''):
 
 
 @socketio.event
-def connect():
-    print('in connect')
+def connect(data):
+    print('in connect, data is: '+str(data))
+    
+    page_data = request.args.get('page_data')
+    print(f'New client connected with pageData: {page_data}')
     
     try:
         username = current_user.name

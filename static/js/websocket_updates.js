@@ -1,10 +1,13 @@
 $(document).ready(function() {
+    const urlParams_initial = window.location.href;
     var socket = io({
         transports: ["websocket"],
+        query: { page_data: urlParams_initial }
         });
 
     socket.on('connect', function() {
-        socket.emit('my_event', {data: 'I\'m connected! - sent from browser'});  // my_event triggers the my_event method in backend
+        const urlParams_connect = window.location.href;
+        socket.emit('my_event', {data: urlParams_connect});  // my_event triggers the my_event method in backend
     });
 
     socket.on('my_response', function(msg, cb) {
@@ -13,5 +16,3 @@ $(document).ready(function() {
 
 }
 )
-
-
