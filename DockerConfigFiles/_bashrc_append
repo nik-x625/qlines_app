@@ -34,8 +34,8 @@ cyan='\[\033[0;36m\]'
 CYAN='\[\033[1;36m\]'
 NC='\[\033[0m\]'
 
-PS1="$yellow[$BLUE\t$yellow][LAB-$red\H$yellow][$blue\w$grey$yellow]$NC# "
-#PS1="$yellow[$BLUE\t$yellow][PROD-$red\H$yellow][$blue\w$grey$yellow]$NC# "
+#PS1="$yellow[$BLUE\t$yellow][LAB-$red\H$yellow][$blue\w$grey$yellow]$NC# "
+PS1="$yellow[$BLUE\t$yellow][PROD-$red\H$yellow][$blue\w$grey$yellow]$NC# "
 
 export LC_ALL=C LANG=C
 export HISTTIMEFORMAT="%d/%m/%y %T "
@@ -51,7 +51,7 @@ alias status='/etc/init.d/all_daemons status'
 alias res='/etc/init.d/gunicorn restart'
 
 # Miscel
-alias p='ps -ef | egrep '\''nginx|sql|mongo|python|rqworker'\'''
+alias p='/opt/qlines_app/check_processes_and_ports.py' #'ps -ef | egrep '\''nginx|sql|mongo|python|rqworker'\'''
 #alias log='tail /var/log/nginx/*.log /var/log/redis/redis-server.log /opt/blog/mylogs.log /opt/qlines/mylogs.log -f'
 alias log='tail /opt/qlines_app/mylogs.log -f'
 
