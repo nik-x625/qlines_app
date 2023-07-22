@@ -110,6 +110,6 @@ if __name__ == "__main__":
 
     for ip, port, process in expected_ips_and_ports:
         if (ip, port) in open_ports:
-            print(f"Port {port} is open on {ip}.")
+            print(f"Port {port} is open on {ip}.    Process: {process}")
         else:
             print(f"Port {port} is closed or unreachable on {ip}. The missing process: {process}")
