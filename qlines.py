@@ -591,10 +591,9 @@ def background_thread(username=''):
 
 @socketio.event
 def connect(data):
-    print('in connect, data is: '+str(data))
-    
     page_data = request.args.get('page_data')
-    print(f'New client connected with pageData: {page_data}')
+    print('in connect, data is: '+str(data))
+    print('in connect, page_data is: '+str(page_data))
     
     try:
         username = current_user.name
@@ -611,7 +610,7 @@ def connect(data):
             thread = socketio.start_background_task(
                 background_thread, username)
     print('in connect, going to emit my_response')
-    emit('my_response', {'data': 'Connected', 'count': 0})
+    emit('my_response', {'data': 'Connected to server!', 'count': 0})
 
 
 @socketio.on('disconnect')
