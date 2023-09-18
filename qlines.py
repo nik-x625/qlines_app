@@ -38,24 +38,12 @@ from flask import (Flask, Response, abort, current_app, json, jsonify,
 
 
 
-# for socketio
-from threading import Lock
-
-from flask import Flask, render_template, session, request, \
-    copy_current_request_context
-from flask_socketio import SocketIO, emit, join_room, leave_room, \
-    close_room, rooms, disconnect
-async_mode = None
-
 #app.config['SECRET_KEY'] = 'secret!'
-thread = None
-thread_lock = Lock()
 
 
 logger = get_module_logger(__name__)
 
 app = Flask(__name__)
-socketio = SocketIO(app, async_mode=async_mode, cors_allowed_origins="*")
 
 
 
@@ -475,147 +463,8 @@ def page_not_found(e):
 
 
 
-@socketio.event
-def my_event(message):
-    logger.debug('in socketio, function my_event, message: '+str(message))
-    print('in socketio, function my_event, message: '+str(message))
-    session['receive_count'] = session.get('receive_count', 0) + 1
-    emit('my_response',
-         {'data': message['data'], 'count': session['receive_count']})
 
 
-@socketio.event
-def my_broadcast_event(message):
-    print('in my_broadcast_event')
-    session['receive_count'] = session.get('receive_count', 0) + 1
-    emit('my_response',
-         {'data': message['data'], 'count': session['receive_count']},
-         broadcast=True)
-
-
-@socketio.event
-def join(message):
-    print('# in join')
-    join_room(message['room'])
-    session['receive_count'] = session.get('receive_count', 0) + 1
-    emit('my_response',
-         {'data': 'In rooms: ' + ', '.join(rooms()),
-          'count': session['receive_count']})
-
-
-@socketio.event
-def leave(message):
-    print('in message')
-    leave_room(message['room'])
-    session['receive_count'] = session.get('receive_count', 0) + 1
-    emit('my_response',
-         {'data': 'In rooms: ' + ', '.join(rooms()),
-          'count': session['receive_count']})
-
-
-@socketio.on('close_room')
-def on_close_room(message):
-    print('# in on_close_room')
-    session['receive_count'] = session.get('receive_count', 0) + 1
-    emit('my_response', {'data': 'Room ' + message['room'] + ' is closing.',
-                         'count': session['receive_count']},
-         to=message['room'])
-    close_room(message['room'])
-
-
-@socketio.event
-def my_room_event(message):
-    print('# in my_room_event')
-    session['receive_count'] = session.get('receive_count', 0) + 1
-    emit('my_response',
-         {'data': message['data'], 'count': session['receive_count']},
-         to=message['room'])
-
-
-@socketio.event
-def disconnect_request():
-    print('in my_disconnect_requestping')
-
-    @copy_current_request_context
-    def can_disconnect():
-        disconnect()
-
-    session['receive_count'] = session.get('receive_count', 0) + 1
-    # for this emit we use a callback function
-    # when the callback function is invoked we know that the message has been
-    # received and it is safe to disconnect
-    print('# going to callback')
-    emit('my_response',
-         {'data': 'Disconnected!', 'count': session['receive_count']},
-         callback=can_disconnect)
-
-
-@socketio.event
-def my_ping():
-    print('in my_ping')
-    emit('my_pong')
-
-
-
-def background_thread(username=''):
-    """Example of how to send server generated events to clients."""
-    count = 0
-    
-    print('# before loop, the username is: '+str(username))
-    while True:
-        socketio.sleep(1)
-        count += 1
-        
-        #logger.debug('# in background_thread, going to emit: '+username+'_'+str(count))
-        #param_value = ''
-        
-        #socketio.emit('my_response',
-        #              {'data': 'Server generated event', 'count': count, 'user_specific_info':username+'_'+str(count)}, to=username)
-        
-        #msg=kafka_consumer.poll(1.0)
-        
-        #if msg is None:
-        #    logger.debug('# fetching Kafka resulted in None')
-        #    continue
-        
-        #if msg.error():
-        #    logger.debug('Error: {}'.format(msg.error()))
-        #    continue
-        
-        #data=msg.value()#.decode('utf-8')
-        logger.debug('going to send websocket data to user: '+str(username))
-        
-        socketio.emit('my_response', {'data': 'Server generated event', 'count': count, 'user_specific_info':'some message to a1 - '+str(count)}, to='a@a.a')
-        socketio.emit('my_response', {'data': 'Server generated event', 'count': count, 'user_specific_info':'some message to a2 - '+str(count)}, to='a2@a.a')
-
-
-@socketio.event
-def connect(data):
-    page_data = request.args.get('page_data')
-    logger.debug('in connect, data is: '+str(data))
-    logger.debug('in connect, page_data is: '+str(page_data))
-    
-    try:
-        username = current_user.name
-        join_room(username)
-        logger.debug('# in rooms: '+str('In rooms: ' + ', '.join(rooms())))
-        logger.debug('# in connect, the username is: '+str(username))
-    except Exception as e:
-        logger.debug('# exception: '+str(e)+'   username is: '+str(current_user))
-        username = 'NO_USERNAME'
-
-    global thread
-    with thread_lock:
-        if thread is None:
-            thread = socketio.start_background_task(
-                background_thread, username)
-    print('in connect, going to emit my_response')
-    emit('my_response', {'data': 'Connected to server!', 'count': 0})
-
-
-@socketio.on('disconnect')
-def test_disconnect():
-    logger.debug('Client disconnected') #, request.sid)
 
 
 if __name__ == "__main__":

@@ -97,7 +97,7 @@ $(document).ready(function () {
                 chart2.series[0].setData(chartdata2)
                 document.getElementById('ts_registered').innerHTML = data.meta_data.ts_registered;
                 document.getElementById('ts_first_message').innerHTML = data.meta_data.ts_first_message;
-                //document.getElementById('ts_last_message').innerHTML = data.meta_data.ts_last_message;
+                document.getElementById('ts_last_message').innerHTML = data.meta_data.ts_last_message;
             }
         });
     }
