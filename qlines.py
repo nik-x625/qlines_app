@@ -583,7 +583,7 @@ def background_thread(username=''):
         #    continue
         
         #data=msg.value()#.decode('utf-8')
-        #logger.debug('data is: '+str(data))#['user_name']))
+        logger.debug('going to send websocket data to user: '+str(username))
         
         socketio.emit('my_response', {'data': 'Server generated event', 'count': count, 'user_specific_info':'some message to a1 - '+str(count)}, to='a@a.a')
         socketio.emit('my_response', {'data': 'Server generated event', 'count': count, 'user_specific_info':'some message to a2 - '+str(count)}, to='a2@a.a')
@@ -592,8 +592,8 @@ def background_thread(username=''):
 @socketio.event
 def connect(data):
     page_data = request.args.get('page_data')
-    print('in connect, data is: '+str(data))
-    print('in connect, page_data is: '+str(page_data))
+    logger.debug('in connect, data is: '+str(data))
+    logger.debug('in connect, page_data is: '+str(page_data))
     
     try:
         username = current_user.name
@@ -615,7 +615,7 @@ def connect(data):
 
 @socketio.on('disconnect')
 def test_disconnect():
-    print('Client disconnected', request.sid)
+    logger.debug('Client disconnected') #, request.sid)
 
 
 if __name__ == "__main__":
