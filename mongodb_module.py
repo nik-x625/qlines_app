@@ -178,6 +178,13 @@ def create_new_device(client_name, user_name, device_token, ts_registered):
                            'user_name': user_name, 'device_token': device_token,'ts_registered':ts_registered})
         return True
 
+def read_device_info(client_name, user_name):
+    devices = db['devices']
+    device_info = devices.find_one({'client_name': client_name, 'user_name':user_name})
+    if not device_info:
+        return False
+    else:
+        return device_info
 
 def read_users_collection():
     return db['users'].find()
@@ -211,6 +218,10 @@ if __name__ == '__main__':
     for i in read_users_collection():
         print
         "Items from users collection: ", i
-    '''
+    
     #update_sensor_data({'aa': 10, 'bb': 20})
     create_new_device('fff')
+    '''
+    
+    res = read_device_info('mx','a@a.a')
+    print(res)

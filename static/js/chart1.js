@@ -95,13 +95,45 @@ $(document).ready(function () {
 
                 chart1.series[0].setData(chartdata1)
                 chart2.series[0].setData(chartdata2)
-                document.getElementById('ts_registered').innerHTML = data.meta_data.ts_registered;
-                document.getElementById('ts_first_message').innerHTML = data.meta_data.ts_first_message;
-                document.getElementById('ts_last_message').innerHTML = data.meta_data.ts_last_message;
+                //document.getElementById('ts_registered').innerHTML = data.meta_data.ts_registered;
+                //document.getElementById('ts_first_message').innerHTML = data.meta_data.ts_first_message;
+                //document.getElementById('ts_last_message').innerHTML = data.meta_data.ts_last_message;
             }
         });
     }
 
+
+
+
 });
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    const sendMessageButton = document.getElementById("cli_button");
+    const messageInput = document.getElementById("cli_input");
+    const resultDiv = document.getElementById("cli_result");
+
+    sendMessageButton.addEventListener("click", function() {
+        const message = messageInput.value;
+        const urlParams_initial = window.location.href;
+
+        // Send the message to the Flask backend
+        fetch("/send_cli", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ message, urlParams_initial })
+        })
+        .then(response => response.json())
+        .then(data => {
+            resultDiv.textContent = data.result;
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            resultDiv.textContent = "An error occurred.";
+        });
+    });
+});  
 
 

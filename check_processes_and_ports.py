@@ -18,10 +18,9 @@ def check_process_cmdline(process_name, expected_cmdline):
             if (expected_cmdline.strip() in actual_cmdline.strip()):
                 return (True, '')
             else:
-                
-                print('# expected_cmdline: '+str(expected_cmdline))
-                print('# actual_cmdline: '+str(actual_cmdline))
-                return (False, actual_cmdline.strip())
+                print('# expected_cmdline in my list: '+str(expected_cmdline))
+                print('# actual_cmdline in psutil: '+str(actual_cmdline))
+                #return (False, actual_cmdline.strip())
             
     return False, ''
                 

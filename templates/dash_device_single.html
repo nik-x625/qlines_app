@@ -2,7 +2,7 @@
 {% block header_content %}
 
 <script type="text/javascript">
-    var client_name_from_flask = '{{ client_name }}'
+    var client_name_from_flask = '{{ device_info_to_render.client_name }}'
 </script>
 
 <script src="/static/js/chart1.js"></script>
@@ -20,8 +20,7 @@
 
 {% block page_content %}
 
-<p>Username: {{current_username}}</p>
-<p>Client ID: {{client_name}}</p>
+<p></p>
 
 <div class="container-fluid">
 
@@ -32,67 +31,73 @@
             <div class="col-md-10">
                 <table class="table table-bordered table-hover table-sm">
                     <thead>
-                        <tr>
+                        <tr style="background-color: #0074e4; color: white;">
                             <th>
-                                Parameter Name
+                                Parameter
                             </th>
                             <th>
-                                Parameter Value
+                                Value
                             </th>
                         </tr>
                     </thead>
                     <tbody>
+
+                        <tr class="table-success">
+                            <td>
+                                Client name
+                            </td>
+                            <td>
+                                <p id="client_name">{{device_info_to_render.client_name}}</p>
+                            </td>
+                        </tr>
+
+
+                        <tr class="table-success">
+                            <td>
+                                User name
+                            </td>
+                            <td>
+                                <p id="user_name">{{device_info_to_render.user_name}}</p>
+                            </td>
+                        </tr>                        
+
+                        <tr class="table-success">
+                            <td>
+                                Access token
+                            </td>
+                            <td>
+                                <p id="device_token">{{device_info_to_render.device_token}}</p>
+                            </td>
+                        </tr>
                         <tr class="table-success">
                             <td>
                                 Registered on
                             </td>
                             <td>
-                                <p id="ts_registered"></p>
+                                <p id="ts_registered">{{device_info_to_render.ts_registered}}</p>
                             </td>
                         </tr>
-                        <tr class="table-success">
 
-                            <td>
-                                First message
-                            </td>
-                            <td>
-                                <p id="ts_first_message"></p>
-                            </td>
-                        </tr>
-                        <tr class="table-success">
-
-                            <td>
-                                Last message
-                            </td>
-                            <td>
-                                <p id="ts_last_message"></p>
-                            </td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
 
             <div class="col-md-10 pt-5">
-                <form role="form">
-                    <div class="form-group">
-    
-                        <label for="exampleInputEmail1">
-                            CLI command
-                        </label>
-                        <input type="email" class="form-control" id="exampleInputEmail1">
-                    </div>
-                    <br>
-                    <button type="submit" class="btn btn-primary">
-                        Send
-                    </button>
-                </form>
+                <div class="form-group">
+
+                    <label for="exampleInputEmail1">
+                        CLI command
+                    </label>
+                    <input id="cli_input" type="input" class="form-control" id="input_id">
+                </div>
                 <br>
-                <label for="exampleInputEmail1">
-                    CLI result
-                </label>
+                <button id="cli_button" class="btn btn-primary" style="margin-bottom: 20px;">
+                    Send
+                </button>
+
                 <br>
-                <br>
-                <p>
+                <p>Result</p>
+                <p id="cli_result">
                     Lorem ipsum dolor sit amet,in massa magna, adssdf sdf dsf ds
                     vulputate nec bibendum nec, posuere nec laculiquam mi erat, aliquam vel luctus eu,
                     pharetra quis elit. Nulla euismod ultrices massa, et feugiat ipsum consequat eu.

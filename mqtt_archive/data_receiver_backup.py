@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 import asyncio
 import json
 import clickhouse_connect
@@ -46,12 +47,13 @@ def on_message(client, userdata, msg):
         print('# error in processing the recevied mqtt message: ', e)
 
 
-client = mqtt.Client('xxx_receiver1')
+client = mqtt.Client('xxx_receiver2')
 client.connect(mqttBroker, 1883, 60)
 
 client.on_connect = on_connect
 client.on_message = on_message
 
 print('# before loop_forever')
-client.loop_start()
+client.loop_forever()
 print('# after loop_forever')
+

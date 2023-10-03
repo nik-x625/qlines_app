@@ -9,12 +9,12 @@ import os
 from datetime import datetime as dt
 import logging
 
-from email_module import *
+from email_module import send_general_text_email
 
 # MongoDB handlers and methods
-from mongodb_module import create_new_user, timezone_write, create_new_device, read_user_doc
+from mongodb_module import create_new_user, timezone_write, timezone_read, create_new_device, read_device_info, read_user_doc
 
-from clickhouse_module import fetch_ts_data_per_param, fetch_device_overview_clickhouse
+from clickhouse_module import fetch_ts_data_per_param, fetch_device_overview_clickhouse, tz_converter
 from token_creator import build_token
 from logger_custom import get_module_logger
 from flask_login import (LoginManager, UserMixin, login_required, login_user,
@@ -22,6 +22,9 @@ from flask_login import (LoginManager, UserMixin, login_required, login_user,
 from flask import (Flask, Response, abort, current_app, json, jsonify,
                    make_response, redirect, render_template, request, session,
                    url_for)
+
+from mqtt_manager import connect_to_mqtt_broker
+client = connect_to_mqtt_broker()
 
 
 # Kafka interface to produce/consume the messages
@@ -37,14 +40,12 @@ from flask import (Flask, Response, abort, current_app, json, jsonify,
 # logger.debug('passed the kafka section')
 
 
-
-#app.config['SECRET_KEY'] = 'secret!'
+# app.config['SECRET_KEY'] = 'secret!'
 
 
 logger = get_module_logger(__name__)
 
 app = Flask(__name__)
-
 
 
 app.secret_key = os.urandom(42)
@@ -136,8 +137,20 @@ def index():
 @login_required
 def device_single(client_name):
     # TODO: to filter if the user has access to this device
+    user_name = current_user.name
 
-    return render_template('dash_device_single.html', current_username=current_user.name, client_name=client_name)
+    device_info = read_device_info(client_name, user_name)
+
+    logger.debug('# device_info result: '+str(device_info))
+
+    device_info_to_render = {'user_name': user_name,
+                             'client_name': client_name,
+                             'device_token': device_info.get('device_token', ''),
+                             'ts_registered': tz_converter(device_info.get('ts_registered', ''), timezone_read(user_name))}
+
+    logger.debug('# device_info_to_render: '+str(device_info_to_render))
+
+    return render_template('dash_device_single.html', device_info_to_render=device_info_to_render)
 
 
 @app.route('/dashboard', methods=['GET', 'POST'])
@@ -178,9 +191,9 @@ def device_add():
         if len(missing_params_list) > 0:
             return render_template('missing_params.html', missing_params=missing_params_list)
 
-        #timestr = time.strftime("%Y%m%d_%H%M%S")
-        #rand_str = str(random.randint(1000000, 9999999))
-        #file_name = timestr + '_' + rand_str + '.pdf'
+        # timestr = time.strftime("%Y%m%d_%H%M%S")
+        # rand_str = str(random.randint(1000000, 9999999))
+        # file_name = timestr + '_' + rand_str + '.pdf'
 
         client_name = params_dict['client_name']
         device_token = build_token(20)
@@ -203,7 +216,7 @@ def getTime():
     username = current_user.name
     browsertz = request.args.get("browsertz")
     logger.debug("browser time: %s" % (browsertz))
-    #logger.debug("server time : %s" % (time.strftime('%A %B, %d %Y %H:%M:%S')))
+    # logger.debug("server time : %s" % (time.strftime('%A %B, %d %Y %H:%M:%S')))
     timezone_write(username, browsertz)
     return "Done"
 
@@ -214,7 +227,7 @@ def getTime():
 def table_data():
 
     username = current_user.name
-    #username = 'a@b.c'
+    # username = 'a@b.c'
     search_like = request.args.get('search[value]')
 
     # sorting
@@ -296,13 +309,31 @@ def fetchdata():
                  'ts_first_message': dt.now(),
                  'ts_last_message': dt.now()}
 
+    logger.debug('# the fetchdata is called, to provide the data to browser for user  {}  and client  {} '.format(
+        current_user.name, client_name))
+
     return {'name': 'some name here', 'data': {'meta_data': meta_data, 'ts_data': ts_data}}
 
 
-@app.route('/cli', methods=['GET', 'POST'])
+@app.route('/send_cli', methods=['POST'])
 @login_required
 def cli():
-    return render_template('dash_cli.html')
+
+    try:
+        data = request.get_json()
+        message = data["message"]
+        current_url = data["urlParams_initial"]
+        client_id = current_url.split('/')[-1]
+        #current_url = request.url
+        logger.debug('# client_id: '+str(client_id))
+
+        client_topic = str(current_user.name) + '_' + client_id + '_' + 'ds'
+        #client_topic = 'ppp'
+        client.publish(client_topic, message)
+        return jsonify({"result": "Message '{}' sent to MQTT client successfully. Wait for the result :)".format(message)})
+    except Exception as e:
+        logger.debug('# error: '+str(e))
+        return jsonify({"error": str(e)})
 
 
 @app.route('/settings', methods=['GET', 'POST'])
@@ -432,7 +463,7 @@ def contact():
             'message': message,
             'datetime': dt.now().strftime("%Y-%m-%d %H:%M:%S")}
 
-        #email_result = q.enqueue(send_email_contact, message_dict)
+        # email_result = q.enqueue(send_email_contact, message_dict)
         email_result = enqueue_long_running_function(
             send_email_contact, message_dict)
         logger.debug(
@@ -447,24 +478,6 @@ def contact():
 @app.errorhandler(401)
 def page_not_found(e):
     return Response('<p>Login failed</p>')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 if __name__ == "__main__":
