@@ -1,3 +1,7 @@
+#!/usr/bin/python
+'''
+module doc bla bla
+'''
 import time
 import datetime
 import json
@@ -6,10 +10,11 @@ import getopt
 import paho.mqtt.client as mqtt
 import numpy as np
 
-mqttBroker = "127.0.0.1"
-response_to_us = None
-last_data_sent_time = None
 
+mqttBroker = "127.0.0.1"
+# mqttBroker = "broker.hivemq.com"
+# mqttBroker = "mqtt.eclipseprojects.io"
+response_to_us = None
 
 def getargs(argv):
     arg_username = ""
@@ -56,51 +61,29 @@ def mqtt_establish(clientname):
     return client
 
 
-def send_data_to_broker(client):
-    global last_data_sent_time
-
-    if last_data_sent_time is None or time.time() - last_data_sent_time >= 5:
-        try:
-            data1 = create_random_data(username, clientname, 'param1', 20, 5)
-            data2 = create_random_data(username, clientname, 'param2', 100, 5)
-            res1 = client.publish(topic_us, json.dumps(data1))
-            res2 = client.publish(topic_us, json.dumps(data2))
-
-            last_data_sent_time = time.time()
-
-            time.sleep(0.2)
-
-            print('The sending attempt has for data1 result:',
-                  (res1.is_published()), ' and data is: ', data1)
-            print('The sending attempt has for data2 result:',
-                  (res2.is_published()), ' and data is: ', data2)
-
-        except Exception as e:
-            print('The error occurred: {}, skipping this data point...'.format(e))
-
-
 def on_message(client, userdata, message_initial):
+    #message = json.loads(str(message_initial.payload.decode()))
+    print('# message received: '+str(message_initial.payload.decode()))
     message = message_initial.payload.decode()
     message = message.replace("'", "\"")
     message = json.loads(message)
-    print('# message received in client is: ' + str(message))
+    global response_to_us
+    print('# the response_to_us initial is: '+str(response_to_us))
+    message['read'] = 1 
+    response_to_us = message
+    print('# message: '+str(message))
+    #print('# message type: '+str(type(message_initial.payload.decode())))
+    #print(
+    #    f"Received message in the client:   '{message}' on topic '{message_initial.topic}'")
 
-    message['message_type'] = 'cli_response'
 
-    # Send a response back to the broker immediately
-    try:
-        response = client.publish(topic_us, json.dumps(message))
-        time.sleep(1)
-        print('Sending response to the broker:', response.is_published())
-    except Exception as e:
-        print('Error sending response to the broker: {}'.format(e))
-
+client = None
 
 if __name__ == "__main__":
+
     commands = getargs(sys.argv)
     username = commands['username']
     clientname = commands['clientname']
-    client = None
     # topic = commands['topic']
 
     # to send data from client to server
@@ -112,8 +95,11 @@ if __name__ == "__main__":
     topic_ds = username + '_' + clientname + '_' + 'ds'
 
     while True:
-        if (not client):
+
+        # Establishing the mqtt connection if not exists
+        if (not client):  # or (client._state != 0):
             try:
+
                 print('# no client is defined, going to create the handler.')
                 client = mqtt_establish(clientname)
                 time.sleep(0.5)
@@ -131,11 +117,38 @@ if __name__ == "__main__":
 
             except Exception as e:
                 print('the initial connection attempt failed, error: '+str(e))
-                time.sleep(0.5)
+                time.sleep(1)
+                print()
                 continue
 
-        else:
-            # Move data publishing logic here
-            send_data_to_broker(client)
+        try:
+            if 0:  # client._state != 0:
+                print(
+                    '# connection attempt failed, skipping data point..client._state is: '+str(client._state))
+                time.sleep(1)
+                continue
+            else:
 
-        time.sleep(0.5)
+                # print('# good!, state is 0 and going to publish some messages')
+                data1 = create_random_data(
+                    username, clientname, 'param1', 20, 5)
+                data2 = create_random_data(
+                    username, clientname, 'param2', 100, 5)
+                res1 = client.publish(topic_us, json.dumps(data1))
+                res2 = client.publish(topic_us, json.dumps(data2))
+                
+
+                    
+                time.sleep(0.2)
+                print('The sending attempt has for data1 result: ',
+                      (res1.is_published()), ' and data is: ', data1)
+                print('The sending attempt has for data1 result: ',
+                      (res2.is_published()), ' and data is: ', data2)
+                
+
+        except Exception as e:
+            print('The error occured: {}, skipping this data point...'.format(e))
+            client = None
+
+        print()
+        time.sleep(5)

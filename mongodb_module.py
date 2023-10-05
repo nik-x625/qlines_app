@@ -185,6 +185,38 @@ def read_device_info(client_name, user_name):
         return False
     else:
         return device_info
+    
+def update_device_info(client_name, user_name, keyvalue):
+    devices = db['devices']
+
+    # Check if the user_name and client_name exist
+    filter_criteria = {"client_name": client_name, "user_name": user_name}
+    existing_document = devices.find_one(filter_criteria)
+
+    if existing_document is None:
+        return False  # User or client not found
+
+    # Construct the filter to identify the specific document to update
+    filter_criteria["_id"] = existing_document["_id"]
+
+    # Update only the specified keyvalue
+    update_data = {
+        "$set": keyvalue,
+        "$currentDate": {"lastModified": True}
+    }
+
+    # Perform the update
+    result = devices.update_one(filter_criteria, update_data)
+
+    if result.modified_count == 1:
+        return True  # Update successful
+    else:
+        return False  # Update not successful
+    
+    
+
+
+    
 
 def read_users_collection():
     return db['users'].find()

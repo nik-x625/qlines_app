@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 from datetime import datetime
 import paho.mqtt.client as mqtt
-from logger_custom import get_module_logger
-
 import json
-import time
 import clickhouse_connect
 from datetime import datetime
 import paho.mqtt.client as mqtt
 import threading
+from logger_custom import get_module_logger
+from mongodb_module import update_device_info
 logger = get_module_logger(__name__)
 
 
@@ -21,7 +20,7 @@ dbclient.command(
 
 MQTT_BROKER_HOST = '127.0.0.1'  # Replace with your broker's hostname or IP
 MQTT_BROKER_PORT = 1883  # Replace with your broker's port
-MQTT_TOPIC = 'ser_to_cl_topic1'  # Replace with the desired MQTT topic
+#MQTT_TOPIC = 'ser_to_cl_topic1'  # Replace with the desired MQTT topic
 
 client = mqtt.Client()
 
@@ -32,30 +31,44 @@ client = mqtt.Client()
 
 def on_message(client, userdata, msg):
 
-    print('# in on_message function')
-
     data = []
 
     # print('# mqtt received: ', msg.payload)
-    print('# mqtt received: ', msg.payload.decode())
+    #logger.debug('# mqtt received: '+str(msg.payload.decode()))
     # print('# mqtt received - type: ', type(msg.payload.decode()))
 
     try:
         data = msg.payload.decode()
         data = json.loads(data)
-        data[0] = datetime.fromtimestamp(data[0])
-
-        print('# going to update db with: ', data)
-
-        dbclient.insert('table1', [data], column_names=[
-            'ts', 'user_name', 'client_name', 'param_name', 'param_value'])
-        print()
+        
+        logger.debug('# json of the data arrived in mqtt is: '+str(data))
+        
+        if isinstance(data, dict):
+            if data.get('message_type', None) == 'cli_response':
+                
+                client_name = data.get('client_name', '')
+                user_name = data.get('user_name', '')
+                last_cli_response = data.get('message_body')
+                
+                logger.debug('# cli response arrived..........................')
+                keyvalue = {'last_cli_response':last_cli_response}
+                update_result = update_device_info(client_name, user_name, keyvalue)
+                if update_result:
+                    logger.debug('# the mongo update for cli_response was successful!')
+                else:
+                    logger.debug('# the mongo update for cli_response failed!')
+        
+        else:
+            data[0] = datetime.fromtimestamp(data[0])
+            logger.debug('# going to update db with: '+str(data))
+            dbclient.insert('table1', [data], column_names=[
+                'ts', 'user_name', 'client_name', 'param_name', 'param_value'])
 
     except Exception as e:
-        print('# error in processing the recevied mqtt message: ', e)
+        logger.debug('# error in processing the recevied mqtt message: '+str(e))
 
 
-client = mqtt.Client('receiver_clickhouse')
+client = mqtt.Client('qlines_mqtt_manager')
 client.connect(MQTT_BROKER_HOST, MQTT_BROKER_PORT, 60)
 
 # client.on_connect = on_connect

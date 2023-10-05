@@ -1,10 +1,9 @@
 import clickhouse_connect
 from logger_custom import get_module_logger
 from datetime_converter import datetime_to_elapsed
-from mongodb_module import timezone_read
-from mongodb_module import verify_and_notify, verify_and_notify_v2
+from mongodb_module import timezone_read, verify_and_notify
 from zoneinfo import ZoneInfo
-#from datetime import datetime
+
 from flask import session
 # for timezone management, ref: https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-xiii-dates-and-times
 from momentjs import momentjs

@@ -98,6 +98,7 @@ $(document).ready(function () {
                 //document.getElementById('ts_registered').innerHTML = data.meta_data.ts_registered;
                 //document.getElementById('ts_first_message').innerHTML = data.meta_data.ts_first_message;
                 //document.getElementById('ts_last_message').innerHTML = data.meta_data.ts_last_message;
+                document.getElementById('cli_result').innerHTML = data.meta_data.last_cli_response;
             }
         });
     }
@@ -127,9 +128,9 @@ document.addEventListener("DOMContentLoaded", function () {
             body: JSON.stringify({ message, urlParams_initial })
         })
             .then(response => response.json())
-            .then(data => {
-                resultDiv.textContent = data.result;
-            })
+            // .then(data => {
+            //     resultDiv.textContent = data.result;
+            // })
             .catch(error => {
                 console.error("Error:", error);
                 resultDiv.textContent = "An error occurred.";

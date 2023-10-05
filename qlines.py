@@ -12,7 +12,7 @@ import logging
 from email_module import send_general_text_email
 
 # MongoDB handlers and methods
-from mongodb_module import create_new_user, timezone_write, timezone_read, create_new_device, read_device_info, read_user_doc
+from mongodb_module import create_new_user, timezone_write, timezone_read, create_new_device, read_device_info, update_device_info, read_user_doc
 
 from clickhouse_module import fetch_ts_data_per_param, fetch_device_overview_clickhouse, tz_converter
 from token_creator import build_token
@@ -24,7 +24,7 @@ from flask import (Flask, Response, abort, current_app, json, jsonify,
                    url_for)
 
 from mqtt_manager import connect_to_mqtt_broker
-client = connect_to_mqtt_broker()
+mqtt_client = connect_to_mqtt_broker()
 
 
 # Kafka interface to produce/consume the messages
@@ -286,17 +286,18 @@ def sortFn(tpl):
 @app.route('/fetchdata', methods=["GET", "POST"])
 @login_required
 def fetchdata():
-
     client_name = request.args.get('client_name', None)
-
     ts_param_list = ['param1', 'param2']
 
-    # the "current_user.name" identifies the user. This way the data for only this user is reverted back to js code in browser to render.
-    limit = 30
+    # Fetch device info, including 'last_cli_response'
+    device_info = read_device_info(client_name, str(current_user.name))
+    
+    if not device_info:
+        return {'error': 'Device info not found.'}
+
     ts_data = {}
     for param_name in ts_param_list:
-        res = fetch_ts_data_per_param(user_name=str(
-            current_user.name), client_name=client_name, param_name=param_name, limit=limit)
+        res = fetch_ts_data_per_param(user_name=str(current_user.name), client_name=client_name, param_name=param_name, limit=30)
 
         if res:
             res = res.result_set
@@ -305,9 +306,12 @@ def fetchdata():
         else:
             pass
 
-    meta_data = {'ts_registered': dt.now(),
-                 'ts_first_message': dt.now(),
-                 'ts_last_message': dt.now()}
+    meta_data = {
+        'ts_registered': device_info.get('ts_registered'),
+        'ts_first_message': device_info.get('ts_first_message', dt.now()),
+        'ts_last_message': device_info.get('ts_last_message', dt.now()),
+        'last_cli_response': device_info.get('last_cli_response', '')
+    }
 
     logger.debug('# the fetchdata is called, to provide the data to browser for user  {}  and client  {} '.format(
         current_user.name, client_name))
@@ -320,19 +324,25 @@ def fetchdata():
 def cli():
 
     try:
+        
         data = request.get_json()
-        message = data["message"]
         current_url = data["urlParams_initial"]
         client_id = current_url.split('/')[-1]
-        # current_url = request.url
-        logger.debug('# client_id: '+str(client_id))
+        
+        message_body = data["message"]
+        message_type = 'cli_request'
+        
+        message = {'message_body':message_body,
+                   'message_type':message_type,
+                   'user_name':current_user.name,
+                   'client_name':client_id}
 
         client_topic = str(current_user.name) + '_' + client_id + '_' + 'ds'
-        # client_topic = 'ppp'
-        client.publish(client_topic, message)
+        
+        mqtt_client.publish(client_topic, str(message))
         return jsonify({"result": "Message '{}' sent to MQTT client successfully. Wait for the result :)".format(message)})
     except Exception as e:
-        logger.debug('# error: '+str(e))
+        logger.debug('# error in qlines, the route /send_cli: '+str(e))
         return jsonify({"error": str(e)})
 
 
