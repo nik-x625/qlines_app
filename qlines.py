@@ -324,11 +324,11 @@ def cli():
         message = data["message"]
         current_url = data["urlParams_initial"]
         client_id = current_url.split('/')[-1]
-        #current_url = request.url
+        # current_url = request.url
         logger.debug('# client_id: '+str(client_id))
 
         client_topic = str(current_user.name) + '_' + client_id + '_' + 'ds'
-        #client_topic = 'ppp'
+        # client_topic = 'ppp'
         client.publish(client_topic, message)
         return jsonify({"result": "Message '{}' sent to MQTT client successfully. Wait for the result :)".format(message)})
     except Exception as e:

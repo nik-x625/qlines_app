@@ -12,8 +12,8 @@ import numpy as np
 
 
 mqttBroker = "127.0.0.1"
-#mqttBroker = "broker.hivemq.com"
-#mqttBroker = "mqtt.eclipseprojects.io"
+# mqttBroker = "broker.hivemq.com"
+# mqttBroker = "mqtt.eclipseprojects.io"
 
 
 def getargs(argv):
@@ -41,9 +41,10 @@ def getargs(argv):
             arg_username = arg
         elif opt in ("-c", "--clientname"):
             arg_clientname = arg
-        #elif opt in ("-t", "--topic"):
+        # elif opt in ("-t", "--topic"):
         #    arg_topic = arg
-    return {'username': arg_username, 'clientname': arg_clientname} #, 'topic': arg_topic}
+    # , 'topic': arg_topic}
+    return {'username': arg_username, 'clientname': arg_clientname}
 
 
 def create_random_data(user_name, client_name, param_name, u, sigma):
@@ -59,8 +60,10 @@ def mqtt_establish(clientname):
     client.connect(mqttBroker)
     return client
 
+
 def on_message(client, userdata, message):
-    print(f"Received message in the client:   '{message.payload.decode()}' on topic '{message.topic}'")
+    print(
+        f"Received message in the client:   '{message.payload.decode()}' on topic '{message.topic}'")
 
 
 client = None
@@ -70,32 +73,32 @@ if __name__ == "__main__":
     commands = getargs(sys.argv)
     username = commands['username']
     clientname = commands['clientname']
-    #topic = commands['topic']
-    
+    # topic = commands['topic']
+
     # to send data from client to server
-    #username = 'a@a.a'
-    #clientname = 'mx' #'g_4334_6gre' #'mx'
-    topic_us = 'us_topic_for_all'#username + '_' + clientname + '_' + 'us'
-    
+    # username = 'a@a.a'
+    # clientname = 'mx' #'g_4334_6gre' #'mx'
+    topic_us = 'us_topic_for_all'  # username + '_' + clientname + '_' + 'us'
+
     # to receive data from the server
     topic_ds = username + '_' + clientname + '_' + 'ds'
-    
+
     while True:
 
         # Establishing the mqtt connection if not exists
-        if (not client):# or (client._state != 0):
+        if (not client):  # or (client._state != 0):
             try:
-                
+
                 print('# no client is defined, going to create the handler.')
                 client = mqtt_establish(clientname)
                 time.sleep(0.5)
-                
+
                 # subscribe to the topic, to receive messages from server
                 client.on_message = on_message
                 client.subscribe(topic_ds)
-                
+
                 print('just after subscribe')
-            
+
                 # to receive messages from server
                 time.sleep(0.5)
                 client.loop_start()
@@ -108,13 +111,14 @@ if __name__ == "__main__":
                 continue
 
         try:
-            if 0:#client._state != 0:
-                print('# connection attempt failed, skipping data point..client._state is: '+str(client._state))
+            if 0:  # client._state != 0:
+                print(
+                    '# connection attempt failed, skipping data point..client._state is: '+str(client._state))
                 time.sleep(1)
                 continue
             else:
-                
-                #print('# good!, state is 0 and going to publish some messages')
+
+                # print('# good!, state is 0 and going to publish some messages')
                 data1 = create_random_data(
                     username, clientname, 'param1', 20, 5)
                 data2 = create_random_data(
@@ -126,13 +130,12 @@ if __name__ == "__main__":
                       (res1.is_published()), ' and data is: ', data1)
                 print('The sending attempt has for data1 result: ',
                       (res2.is_published()), ' and data is: ', data2)
-                #print("Just published " + str(data) + " to broker")
-                #print('client obj: '+str(dir(client)))
+                # print("Just published " + str(data) + " to broker")
+                # print('client obj: '+str(dir(client)))
 
         except Exception as e:
             print('The error occured: {}, skipping this data point...'.format(e))
             client = None
 
         print()
-        time.sleep(1)
-
+        time.sleep(5)

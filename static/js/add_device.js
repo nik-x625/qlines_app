@@ -63,7 +63,7 @@ $(function () {
 				});
 		});
 	});
-	*/ 
+	*/
 
 	$(document).ready(function () {
 		$("#add_device_submit").click(function () {

@@ -66,10 +66,10 @@ mqtt_thread.start()
 
 
 
-while True:
-    # Publish data to a topic
-    message = "Hello from Server!!"
-    client.publish("ser_to_cl_topic1", message)
+# while True:
+#     # Publish data to a topic
+#     message = "Hello from Server!!"
+#     client.publish("ser_to_cl_topic1", message)
     
-    # Wait for a while before publishing again
-    time.sleep(3)
+#     # Wait for a while before publishing again
+#     time.sleep(3)

@@ -72,7 +72,7 @@ $(document).ready(function () {
         $.getJSON('/fetchdata', request_params, function (data_received) {
             if (data_received.data.ts_data) { // check if data_received is not empty
 
-                console.log(typeof(data_received.data))
+                console.log(typeof (data_received.data))
 
                 var data = data_received.data
                 var data1 = data.ts_data.param1;
@@ -108,12 +108,13 @@ $(document).ready(function () {
 });
 
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     const sendMessageButton = document.getElementById("cli_button");
     const messageInput = document.getElementById("cli_input");
     const resultDiv = document.getElementById("cli_result");
 
-    sendMessageButton.addEventListener("click", function() {
+    // Function to send a message
+    function sendMessage() {
         const message = messageInput.value;
         const urlParams_initial = window.location.href;
 
@@ -125,15 +126,26 @@ document.addEventListener("DOMContentLoaded", function() {
             },
             body: JSON.stringify({ message, urlParams_initial })
         })
-        .then(response => response.json())
-        .then(data => {
-            resultDiv.textContent = data.result;
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            resultDiv.textContent = "An error occurred.";
-        });
+            .then(response => response.json())
+            .then(data => {
+                resultDiv.textContent = data.result;
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                resultDiv.textContent = "An error occurred.";
+            });
+    }
+
+    sendMessageButton.addEventListener("click", function () {
+        sendMessage();
     });
-});  
+
+    // Listen for Enter key press in the input field
+    messageInput.addEventListener("keyup", function (event) {
+        if (event.key === "Enter") {
+            sendMessage();
+        }
+    });
+});
 
 
