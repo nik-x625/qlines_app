@@ -99,6 +99,7 @@ $(document).ready(function () {
                 //document.getElementById('ts_first_message').innerHTML = data.meta_data.ts_first_message;
                 //document.getElementById('ts_last_message').innerHTML = data.meta_data.ts_last_message;
                 document.getElementById('cli_result').innerHTML = data.meta_data.last_cli_response;
+                document.getElementById('ts_lastmessage').innerHTML = data.meta_data.ts_last_message;
             }
         });
     }

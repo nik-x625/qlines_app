@@ -17,9 +17,13 @@ client_handler = clickhouse_connect.get_client(
 
 
 def tz_converter(time, browser_timezone):
-    utc_time = time.replace(tzinfo=ZoneInfo('UTC'))
-    tz_time = utc_time.astimezone(ZoneInfo(browser_timezone))
-    return tz_time.strftime("%Y-%m-%d %H:%M:%S %Z")
+
+    ### not sure why I added this line, but was giving wrong time zone that's why I skipped it
+    #utc_time = time.replace(tzinfo=ZoneInfo('UTC'))
+    tz_time = time.astimezone(ZoneInfo(browser_timezone))
+    
+    res = tz_time.strftime("%Y-%m-%d %H:%M:%S %Z")
+    return res
 
 
 def fetch_ts_data_per_param(user_name, client_name, param_name, limit, table_name='table1'):

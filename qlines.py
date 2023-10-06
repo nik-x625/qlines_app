@@ -9,7 +9,7 @@ import os
 from datetime import datetime as dt
 import logging
 
-from email_module import send_general_text_email
+from email_module import send_general_text_email, send_email_contact
 
 # MongoDB handlers and methods
 from mongodb_module import create_new_user, timezone_write, timezone_read, create_new_device, read_device_info, update_device_info, read_user_doc
@@ -292,6 +292,8 @@ def fetchdata():
     # Fetch device info, including 'last_cli_response'
     device_info = read_device_info(client_name, str(current_user.name))
     
+    logger.debug('# device_info: '+str(device_info))
+    
     if not device_info:
         return {'error': 'Device info not found.'}
 
@@ -309,12 +311,16 @@ def fetchdata():
     meta_data = {
         'ts_registered': device_info.get('ts_registered'),
         'ts_first_message': device_info.get('ts_first_message', dt.now()),
-        'ts_last_message': device_info.get('ts_last_message', dt.now()),
+        #'ts_last_message': tz_converter(device_info.get('ts_last_message', ''),timezone_read(current_user.name)),
+        
+        #'ts_registered': tz_converter(device_info.get('ts_registered', ''), timezone_read(user_name))}
+        
         'last_cli_response': device_info.get('last_cli_response', '')
     }
 
     logger.debug('# the fetchdata is called, to provide the data to browser for user  {}  and client  {} '.format(
         current_user.name, client_name))
+    logger.debug('# meta data to revert to browser is: '+str(meta_data))
 
     return {'name': 'some name here', 'data': {'meta_data': meta_data, 'ts_data': ts_data}}
 
