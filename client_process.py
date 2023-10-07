@@ -1,141 +1,155 @@
 import time
-import datetime
+from datetime import datetime
 import json
 import sys
 import getopt
 import paho.mqtt.client as mqtt
 import numpy as np
+import logging
+import subprocess
 
-mqttBroker = "127.0.0.1"
-response_to_us = None
-last_data_sent_time = None
+# Constants
+MQTT_BROKER = "127.0.0.1"
+TOPIC_US = 'us_topic_for_all'
+SLEEP_INTERVAL = 0.3
+COLLECTION_INTERVAL = 3 # in seconds
 
+class MqttClient:
+    def __init__(self, user_name, client_name):
+        self.user_name = user_name
+        self.client_name = client_name
+        self.topic_ds = f'{user_name}_{client_name}_ds'
+        self.client = None
+        self.last_data_sent_time = None
 
-def getargs(argv):
-    arg_username = ""
-    arg_clientname = ""
-    arg_help = "{0} -u <username> -c <clientname>".format(argv[0])
+    def create_param_subtree(self):
+        param_val1 = str(np.random.normal(20, 5, 1)[0])
+        param_val2 = str(np.random.normal(100, 10, 1)[0])
+        param_subtree = {'param1': param_val1, 'param2': param_val2}
+        return param_subtree
 
-    try:
-        opts, args = getopt.getopt(argv[1:], "hu:c:t:", [
-                                   "help", "username=", "clientname="])
-    except:
-        print(arg_help)
-        sys.exit(2)
+    def mqtt_establish(self):
+        client = mqtt.Client(self.client_name)
+        client.connect(MQTT_BROKER)
+        return client
 
-    if not opts:
-        print(arg_help)
-        sys.exit(2)
-
-    for opt, arg in opts:
-
-        if opt in ("-h", "--help"):
-            print(arg_help)  # print the help message
-            sys.exit(2)
-        elif opt in ("-u", "--username"):
-            arg_username = arg
-        elif opt in ("-c", "--clientname"):
-            arg_clientname = arg
-        # elif opt in ("-t", "--topic"):
-        #    arg_topic = arg
-    # , 'topic': arg_topic}
-    return {'username': arg_username, 'clientname': arg_clientname}
-
-
-def create_random_data(user_name, client_name, param_name, u, sigma):
-    ms = datetime.datetime.now()
-    now = time.mktime(ms.timetuple())
-    s = np.random.normal(u, sigma, 1)
-    data = [now, user_name, client_name, param_name, s[0]]
-    return data
-
-
-def mqtt_establish(clientname):
-    client = mqtt.Client(clientname)
-    client.connect(mqttBroker)
-    return client
-
-
-def send_data_to_broker(client):
-    global last_data_sent_time
-
-    if last_data_sent_time is None or time.time() - last_data_sent_time >= 5:
-        try:
-            data1 = create_random_data(username, clientname, 'param1', 20, 5)
-            data2 = create_random_data(username, clientname, 'param2', 100, 5)
-            res1 = client.publish(topic_us, json.dumps(data1))
-            res2 = client.publish(topic_us, json.dumps(data2))
-
-            last_data_sent_time = time.time()
-
-            time.sleep(0.2)
-
-            print('The sending attempt has for data1 result:',
-                  (res1.is_published()), ' and data is: ', data1)
-            print('The sending attempt has for data2 result:',
-                  (res2.is_published()), ' and data is: ', data2)
-
-        except Exception as e:
-            print('The error occurred: {}, skipping this data point...'.format(e))
-
-
-def on_message(client, userdata, message_initial):
-    message = message_initial.payload.decode()
-    message = message.replace("'", "\"")
-    message = json.loads(message)
-    print('# message received in client is: ' + str(message))
-
-    message['message_type'] = 'cli_response'
-
-    # Send a response back to the broker immediately
-    try:
-        response = client.publish(topic_us, json.dumps(message))
-        time.sleep(1)
-        print('Sending response to the broker:', response.is_published())
-    except Exception as e:
-        print('Error sending response to the broker: {}'.format(e))
-
-
-if __name__ == "__main__":
-    commands = getargs(sys.argv)
-    username = commands['username']
-    clientname = commands['clientname']
-    client = None
-    # topic = commands['topic']
-
-    # to send data from client to server
-    # username = 'a@a.a'
-    # clientname = 'mx' #'g_4334_6gre' #'mx'
-    topic_us = 'us_topic_for_all'  # username + '_' + clientname + '_' + 'us'
-
-    # to receive data from the server
-    topic_ds = username + '_' + clientname + '_' + 'ds'
-
-    while True:
-        if (not client):
+    def send_data_to_broker(self):
+        if self.last_data_sent_time is None or time.time() - self.last_data_sent_time >= COLLECTION_INTERVAL:
             try:
-                print('# no client is defined, going to create the handler.')
-                client = mqtt_establish(clientname)
-                time.sleep(0.5)
-
-                # subscribe to the topic, to receive messages from server
-                client.on_message = on_message
-                client.subscribe(topic_ds)
-
-                print('just after subscribe')
-
-                # to receive messages from server
-                time.sleep(0.5)
-                client.loop_start()
-                time.sleep(0.5)
+                param_subtree = self.create_param_subtree()
+                message = {
+                    'ts': time.mktime(datetime.now().timetuple()),
+                    'user_name': self.user_name,
+                    'client_name': self.client_name,
+                    'param_subtree': param_subtree,
+                    'message_type': 'periodic',
+                }
+                res = self.client.publish(TOPIC_US, json.dumps(message))
+                self.last_data_sent_time = time.time()
+                time.sleep(0.3)
+                logging.info('Sending data1 result: %s, message: %s', res.is_published(), message)
 
             except Exception as e:
-                print('the initial connection attempt failed, error: '+str(e))
-                time.sleep(0.5)
-                continue
+                logging.error('An error occurred: %s, skipping this data point...', e)
 
-        else:
-            # Move data publishing logic here
-            send_data_to_broker(client)
+    def run_cli_command(self, command):
+        try:
+            # Run the command in the shell, capture the output
+            result = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT, universal_newlines=True)
 
-        time.sleep(0.5)
+            # Return the result
+            return result.strip()
+        except subprocess.CalledProcessError as e:
+            # Handle command execution errors
+            return f"Error: {e}"
+
+    
+    def on_message(self, client, userdata, message_initial):
+        message = message_initial.payload.decode()
+        message = message.replace("'", "\"")
+        message = json.loads(message)
+        logging.info('Message received in client: %s', message)
+        
+        if message['message_type'] == 'cli_request':
+            cli_res = self.run_cli_command(message['message_body'])
+
+        response_message = {
+            'ts': time.mktime(datetime.now().timetuple()),
+            'user_name': self.user_name,
+            'client_name': self.client_name,
+            'param_subtree': {'cli_response_body': str(cli_res)},
+            'message_type': 'cli_response',
+        }
+
+        try:
+            response = self.client.publish(TOPIC_US, json.dumps(response_message))
+            time.sleep(1)
+            logging.info('Sending response to the broker: %s', response.is_published())
+        except Exception as e:
+            logging.error('Error sending response to the broker: %s', e)
+
+
+
+    def run(self):
+        while True:
+            if not self.client:
+                try:
+                    logging.info('No client is defined, going to create the handler.')
+                    self.client = self.mqtt_establish()
+                    time.sleep(SLEEP_INTERVAL)
+                    self.client.on_message = self.on_message
+                    self.client.subscribe(self.topic_ds)
+                    logging.info('Just after subscribe')
+                    time.sleep(SLEEP_INTERVAL)
+                    self.client.loop_start()
+                    time.sleep(SLEEP_INTERVAL)
+                except Exception as e:
+                    logging.error('The initial connection attempt failed, error: %s', e)
+                    time.sleep(SLEEP_INTERVAL)
+                    continue
+            else:
+                self.send_data_to_broker()
+            time.sleep(SLEEP_INTERVAL)
+
+def get_args(argv):
+    arg_user_name = ""
+    arg_client_name = ""
+    arg_help = f"{argv[0]} -u <user_name> -c <client_name>"
+
+    try:
+        opts, args = getopt.getopt(argv[1:], "hu:c:t:", ["help", "user_name=", "client_name="])
+    except Exception:
+        logging.error("Error parsing command line arguments.")
+        print(arg_help)
+        sys.exit(1)
+
+    if not opts:
+        logging.error("Missing required arguments.")
+        print(arg_help)
+        sys.exit(1)
+
+    for opt, arg in opts:
+        if opt in ("-h", "--help"):
+            print(arg_help)
+            sys.exit(1)
+        elif opt in ("-u", "--user_name"):
+            arg_user_name = arg
+        elif opt in ("-c", "--client_name"):
+            arg_client_name = arg
+
+    return {'user_name': arg_user_name, 'client_name': arg_client_name}
+
+if __name__ == "__main__":
+    commands = get_args(sys.argv)
+    user_name = commands['user_name']
+    client_name = commands['client_name']
+
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+    mqtt_client = MqttClient(user_name, client_name)
+    
+    try:
+        mqtt_client.run()
+    except KeyboardInterrupt:
+        logging.info("Script terminated by user.")
+    except Exception as e:
+        logging.error(f"An error occurred: {e}")

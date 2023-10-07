@@ -111,41 +111,69 @@ $(document).ready(function () {
 
 
 document.addEventListener("DOMContentLoaded", function () {
-    const sendMessageButton = document.getElementById("cli_button");
-    const messageInput = document.getElementById("cli_input");
+
+    // Buttons
+    const buttonCliSend = document.getElementById("button_cli_send");
+    const buttonIntervalSend = document.getElementById("button_interval_send");
+
+    // Inputs
+    const inputContentCli = document.getElementById("input_cli");
+    const inputContentInterval = document.getElementById("input_interval");
+
+    // Result element
     const resultDiv = document.getElementById("cli_result");
 
     // Function to send a message
-    function sendMessage() {
-        const message = messageInput.value;
-        const urlParams_initial = window.location.href;
+    function sendMessage(inputType) {
 
+        let message_body, message_type;
+
+        if (inputType === 'cli') {
+            message_body = inputContentCli.value;
+            message_type = 'cli_request';
+        } else if (inputType === 'interval') {
+            message_body = inputContentInterval.value;
+            message_type = 'interval_request';
+        }
+    
+        const urlParams_initial = window.location.href;
+    
         // Send the message to the Flask backend
-        fetch("/send_cli", {
+        fetch("/send_to_device", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ message, urlParams_initial })
+            body: JSON.stringify({ message_body, message_type, urlParams_initial })
         })
-            .then(response => response.json())
-            // .then(data => {
-            //     resultDiv.textContent = data.result;
-            // })
-            .catch(error => {
-                console.error("Error:", error);
-                resultDiv.textContent = "An error occurred.";
-            });
+        .then(response => response.json())
+        //.then(data => {
+        //    resultDiv.textContent = data.result;
+        //})
+        .catch(error => {
+            console.error("Error:", error);
+            resultDiv.textContent = "An error occurred.";
+        });
     }
 
-    sendMessageButton.addEventListener("click", function () {
-        sendMessage();
+    buttonCliSend.addEventListener("click", function () {
+        sendMessage('cli'); // Pass 'cli' as the input type
     });
 
-    // Listen for Enter key press in the input field
-    messageInput.addEventListener("keyup", function (event) {
+    buttonIntervalSend.addEventListener("click", function () {
+        sendMessage('interval'); // Pass 'interval' as the input type
+    });
+
+    // Listen for Enter key press in the input fields
+    inputContentCli.addEventListener("keyup", function (event) {
         if (event.key === "Enter") {
-            sendMessage();
+            sendMessage('cli'); // Pass 'cli' as the input type
+        }
+    });
+
+    inputContentInterval.addEventListener("keyup", function (event) {
+        if (event.key === "Enter") {
+            sendMessage('interval'); // Pass 'interval' as the input type
         }
     });
 });

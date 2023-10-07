@@ -291,15 +291,16 @@ def fetchdata():
 
     # Fetch device info, including 'last_cli_response'
     device_info = read_device_info(client_name, str(current_user.name))
-    
+
     logger.debug('# device_info: '+str(device_info))
-    
+
     if not device_info:
         return {'error': 'Device info not found.'}
 
     ts_data = {}
     for param_name in ts_param_list:
-        res = fetch_ts_data_per_param(user_name=str(current_user.name), client_name=client_name, param_name=param_name, limit=30)
+        res = fetch_ts_data_per_param(user_name=str(
+            current_user.name), client_name=client_name, param_name=param_name, limit=30)
 
         if res:
             res = res.result_set
@@ -311,10 +312,10 @@ def fetchdata():
     meta_data = {
         'ts_registered': device_info.get('ts_registered'),
         'ts_first_message': device_info.get('ts_first_message', dt.now()),
-        #'ts_last_message': tz_converter(device_info.get('ts_last_message', ''),timezone_read(current_user.name)),
-        
-        #'ts_registered': tz_converter(device_info.get('ts_registered', ''), timezone_read(user_name))}
-        
+        'ts_last_message': tz_converter(device_info.get('ts_last_message', ''), timezone_read(current_user.name)),
+
+        # 'ts_registered': tz_converter(device_info.get('ts_registered', ''), timezone_read(user_name))}
+
         'last_cli_response': device_info.get('last_cli_response', '')
     }
 
@@ -325,30 +326,36 @@ def fetchdata():
     return {'name': 'some name here', 'data': {'meta_data': meta_data, 'ts_data': ts_data}}
 
 
-@app.route('/send_cli', methods=['POST'])
+@app.route('/send_to_device', methods=['POST'])
 @login_required
 def cli():
 
     try:
-        
+
         data = request.get_json()
+        message_type = data["message_type"]
+        message_body = data["message_body"]
+        
+        logger.debug('# in route send_to_device, data: '+str(data))
+        logger.debug('# in route send_to_device, message_type: '+str(message_type))
+        logger.debug('# in route send_to_device, message_body: '+str(message_body))
+        
         current_url = data["urlParams_initial"]
         client_id = current_url.split('/')[-1]
-        
-        message_body = data["message"]
-        message_type = 'cli_request'
-        
-        message = {'message_body':message_body,
-                   'message_type':message_type,
-                   'user_name':current_user.name,
-                   'client_name':client_id}
+
+        message = {'message_body': message_body,
+                   'message_type': message_type,
+                   'user_name': current_user.name,
+                   'client_name': client_id}
 
         client_topic = str(current_user.name) + '_' + client_id + '_' + 'ds'
         
+        logger.debug('# in route send_to_device, sending to device: '+str(message))
+
         mqtt_client.publish(client_topic, str(message))
         return jsonify({"result": "Message '{}' sent to MQTT client successfully. Wait for the result :)".format(message)})
     except Exception as e:
-        logger.debug('# error in qlines, the route /send_cli: '+str(e))
+        logger.debug('# error in qlines, the route /send_to_device: '+str(e))
         return jsonify({"error": str(e)})
 
 

@@ -32,6 +32,7 @@ client = mqtt.Client()
 def on_message(client, userdata, msg):
 
     data = []
+    keyvalue = {}
 
     # print('# mqtt received: ', msg.payload)
     #logger.debug('# mqtt received: '+str(msg.payload.decode()))
@@ -39,30 +40,50 @@ def on_message(client, userdata, msg):
 
     try:
         data = msg.payload.decode()
-        data = json.loads(data)
+        message = json.loads(data)
+        logger.debug('# json of the data arrived in mqtt is: '+str(message))
         
-        logger.debug('# json of the data arrived in mqtt is: '+str(data))
         
-        if isinstance(data, dict):
-            if data.get('message_type', None) == 'cli_response':
+        
+        client_name = message.get('client_name', '')
+        user_name = message.get('user_name', '')
+        
+        keyvalue = {'ts_last_message': datetime.now() }
+        
+        if message['message_type'] == 'cli_response':
+            
+            
+            last_cli_response = message['param_subtree']['cli_response_body']
+            
+            # to store in mongodb
+            keyvalue['last_cli_response']  = last_cli_response
+            
+            logger.debug('# cli response arrived, response message is: '+str(message))
+            
+            
+                    
+        elif message['message_type'] == 'periodic':
+
+            timestamp = datetime.utcfromtimestamp(message.get('ts'))
+            param_subtree = message.get('param_subtree', {})
+
+            for param_name, param_value in param_subtree.items():
+                clickhouse_data = [timestamp, user_name, client_name, param_name, param_value]
                 
-                client_name = data.get('client_name', '')
-                user_name = data.get('user_name', '')
-                last_cli_response = data.get('message_body')
-                
-                logger.debug('# cli response arrived..........................')
-                keyvalue = {'last_cli_response':last_cli_response}
-                update_result = update_device_info(client_name, user_name, keyvalue)
-                if update_result:
-                    logger.debug('# the mongo update for cli_response was successful!')
-                else:
-                    logger.debug('# the mongo update for cli_response failed!')
-        
-        else:
-            data[0] = datetime.fromtimestamp(data[0])
-            logger.debug('# going to update db with: '+str(data))
-            dbclient.insert('table1', [data], column_names=[
+                logger.debug('# clickhouse_data to store: '+str(clickhouse_data))
+                                
+                dbclient.insert('table1', [clickhouse_data], column_names=[
                 'ts', 'user_name', 'client_name', 'param_name', 'param_value'])
+                
+                
+                
+                
+        
+        update_result = update_device_info(client_name, user_name, keyvalue)
+        if update_result:
+            logger.debug('# the mongo update for cli_response was successful!')
+        else:
+            logger.debug('# the mongo update for cli_response failed!')            
 
     except Exception as e:
         logger.debug('# error in processing the recevied mqtt message: '+str(e))

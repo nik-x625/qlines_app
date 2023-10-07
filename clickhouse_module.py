@@ -7,21 +7,35 @@ from zoneinfo import ZoneInfo
 from flask import session
 # for timezone management, ref: https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-xiii-dates-and-times
 from momentjs import momentjs
-#from qlines import app
+# from qlines import app
 from pprint import pprint
-
 logger = get_module_logger(__name__)
 
-client_handler = clickhouse_connect.get_client(
-    host='localhost', port='7010', username='default', query_limit=0)
+CLICKHOUSE_SERVER = "127.0.0.1"
+CLICKHOUSE_PORT = "7010"
 
+client_handler = clickhouse_connect.get_client(
+    host=CLICKHOUSE_SERVER,
+    port=CLICKHOUSE_PORT,
+    username='default',
+    query_limit=0
+    )
+
+def update_clickhouse(data):
+    try:
+        client = ClickhouseClient(CLICKHOUSE_SERVER)
+        query = f"INSERT INTO table1 VALUES (%s, %s, %s, %s, %s)"
+        client.execute(query, data)
+        logger.debug('Inserted data into ClickHouse: %s', data)
+    except Exception as e:
+        logger.error('Error inserting data into ClickHouse: %s', e)
 
 def tz_converter(time, browser_timezone):
 
-    ### not sure why I added this line, but was giving wrong time zone that's why I skipped it
-    #utc_time = time.replace(tzinfo=ZoneInfo('UTC'))
+    # not sure why I added this line, but was giving wrong time zone that's why I skipped it
+    # utc_time = time.replace(tzinfo=ZoneInfo('UTC'))
     tz_time = time.astimezone(ZoneInfo(browser_timezone))
-    
+
     res = tz_time.strftime("%Y-%m-%d %H:%M:%S %Z")
     return res
 
@@ -31,12 +45,12 @@ def fetch_ts_data_per_param(user_name, client_name, param_name, limit, table_nam
         query_string = "SELECT param_name, ts, param_value FROM {} WHERE user_name='{}' and client_name='{}' and param_name='{}' ORDER BY ts DESC LIMIT {}".format(
             table_name, user_name, client_name, param_name, limit)
 
-        #logger.debug('# query string: '+str(query_string))
+        # logger.debug('# query string: '+str(query_string))
         res = client_handler.query(query_string)
-        #logger.debug('# query res: '+str(res.result_set))
-        
+        # logger.debug('# query res: '+str(res.result_set))
+
         return res
-    
+
     except Exception as e:
         logger.debug('# fetch_ts_data_per_param error: '+str(e))
         return ''

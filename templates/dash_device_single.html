@@ -9,7 +9,9 @@
 
 
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script> -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js" integrity="sha512-aMGMvNYu8Ue4G+fHa359jcPb1u+ytAF+P2SCb+PxrjCdO3n3ZTxJ30zuH39rimUggmTwmh2u7wvQsDTHESnmfQ==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"
+    integrity="sha512-aMGMvNYu8Ue4G+fHa359jcPb1u+ytAF+P2SCb+PxrjCdO3n3ZTxJ30zuH39rimUggmTwmh2u7wvQsDTHESnmfQ=="
+    crossorigin="anonymous"></script>
 
 <!-- The scripts for websocket (socketio) -->
 <!-- <script src="/static/js/websocket_updates.js"></script> -->
@@ -28,7 +30,8 @@
 
         <!-- first column on page-->
         <div class="col-md-6 p-1 bg-light">
-            <div class="col-md-10">
+
+            <div class="col-md-12">
                 <table class="table table-bordered table-hover table-sm">
                     <thead>
                         <tr style="background-color: #0074e4; color: white;">
@@ -59,7 +62,7 @@
                             <td>
                                 <p id="user_name">{{device_info_to_render.user_name}}</p>
                             </td>
-                        </tr>                        
+                        </tr>
 
                         <tr class="table-success">
                             <td>
@@ -92,22 +95,43 @@
                 </table>
             </div>
 
-            <div class="col-md-10 pt-5">
-                <div class="form-group">
 
-                    <label for="exampleInputEmail1">
-                        CLI command
-                    </label>
-                    <input id="cli_input" type="input" class="form-control" id="input_id">
+            <div class="row">
+                <div class="col-md-6">
+
+                    <div class="mt-2">
+                        <label for="cli_input">CLI command</label>
+                        <div class="input-group">
+                            <input id="input_cli" type="text" class="form-control">
+                            <div class="input-group-append">
+                                <button id="button_cli_send" class="btn btn-primary" type="button"
+                                    style="margin-left: 10px;">Send</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-2">
+                        <label for="interval_input">Monitoring interval</label>
+                        <div class="input-group">
+                            <input id="input_interval" type="text" class="form-control">
+                            <div class="input-group-append">
+                                <button id="button_interval_send" class="btn btn-primary" type="button"
+                                    style="margin-left: 10px;">Send</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <br>
-                <button id="cli_button" class="btn btn-primary" style="margin-bottom: 20px;">
-                    Send
-                </button>
+            </div>
 
-                <br>
-                <p>Result</p>
-                <p id="cli_result"></p>
+
+            <div class="row mt-3">
+                <div class="col-md-9">
+                    <label>Interaction Result</label>
+                    <div class="input-group">
+                        <textarea id="cli_result" rows="4" cols="150" readonly>
+                    </textarea>
+                    </div>
+                </div>
             </div>
         </div>
 
