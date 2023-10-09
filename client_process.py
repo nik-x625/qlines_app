@@ -12,7 +12,9 @@ import subprocess
 MQTT_BROKER = "127.0.0.1"
 TOPIC_US = 'us_topic_for_all'
 SLEEP_INTERVAL = 0.3
-COLLECTION_INTERVAL = 3 # in seconds
+
+# variable to be controlled by the server
+collection_interval = 1
 
 class MqttClient:
     def __init__(self, user_name, client_name):
@@ -34,7 +36,7 @@ class MqttClient:
         return client
 
     def send_data_to_broker(self):
-        if self.last_data_sent_time is None or time.time() - self.last_data_sent_time >= COLLECTION_INTERVAL:
+        if self.last_data_sent_time is None or time.time() - self.last_data_sent_time >= collection_interval:
             try:
                 param_subtree = self.create_param_subtree()
                 message = {
@@ -47,7 +49,7 @@ class MqttClient:
                 res = self.client.publish(TOPIC_US, json.dumps(message))
                 self.last_data_sent_time = time.time()
                 time.sleep(0.3)
-                logging.info('Sending data1 result: %s, message: %s', res.is_published(), message)
+                logging.info('Sending data result: %s, message: %s', res.is_published(), message)
 
             except Exception as e:
                 logging.error('An error occurred: %s, skipping this data point...', e)
@@ -58,6 +60,7 @@ class MqttClient:
             result = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT, universal_newlines=True)
 
             # Return the result
+            print('# cli command result: '+str(result))
             return result.strip()
         except subprocess.CalledProcessError as e:
             # Handle command execution errors
@@ -72,6 +75,21 @@ class MqttClient:
         
         if message['message_type'] == 'cli_request':
             cli_res = self.run_cli_command(message['message_body'])
+        elif message['message_type'] == 'interval_update':
+            try:
+                new_interval = float(message['message_body'])
+                if new_interval:
+                    global collection_interval
+                    collection_interval = new_interval
+                    
+                cli_res = 'inverval_updated'
+            except Exception as e: 
+                print('# error: '+str(e))
+            
+        else:
+            cli_res = ''
+            
+            
 
         response_message = {
             'ts': time.mktime(datetime.now().timetuple()),
@@ -82,6 +100,7 @@ class MqttClient:
         }
 
         try:
+            print('# going to send response: '+str(response_message))
             response = self.client.publish(TOPIC_US, json.dumps(response_message))
             time.sleep(1)
             logging.info('Sending response to the broker: %s', response.is_published())

@@ -229,11 +229,11 @@ def send_email_contact__old(message_dict):
     msg.attach(MIMEText(message_html, 'plain'))
 
     try:
-        email_result = q.enqueue(send_email_async, msg)
-        # logger.debug('# enqueueing result: '+str(email_result))
+        send_email_async(msg)
     except Exception as e:
         logger.debug('# email enqueue error: '+str(e))
         return False
+    return "The message sent successfully!"
 
     return "The message sent successfully!"
 

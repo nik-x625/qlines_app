@@ -1,22 +1,34 @@
-from pymongo import MongoClient
+from pymongo import MongoClient, DESCENDING, ASCENDING
+
 import datetime
 from logger_custom import get_module_logger
 from email_module import send_general_text_email
 from redis_utils import enqueue_long_running_function
+from zoneinfo import ZoneInfo
+
 
 logger = get_module_logger(__name__)
 
 client = MongoClient('127.0.0.1')
 db = client['platform']
-#sensor_collection = db['sensor_data']
-#contact_submission = db['contact_submission']
+# sensor_collection = db['sensor_data']
+# contact_submission = db['contact_submission']
 
+
+def tz_converter(time, browser_timezone):
+
+    # not sure why I added this line, but was giving wrong time zone that's why I skipped it
+    # utc_time = time.replace(tzinfo=ZoneInfo('UTC'))
+    tz_time = time.astimezone(ZoneInfo(browser_timezone))
+
+    res = tz_time.strftime("%Y-%m-%d %H:%M:%S %Z")
+    return res
 
 def update_profile_in_db(key, doc):
-    #client = MongoClient('127.0.0.1', 22022)
-    #db = client.platform
+    # client = MongoClient('127.0.0.1', 22022)
+    # db = client.platform
     coll = db.pages
-    #contact_submission = db['contact_submission']
+    # contact_submission = db['contact_submission']
 
     doc['ts'] = datetime.datetime.now()
     coll.update(key, doc, upsert=True)
@@ -47,7 +59,6 @@ def timezone_write(username, tz):
 
 
 def timezone_read(username):
-    logger.debug('# in timezone_read, username: '+str(username))
     try:
         user_doc = read_user_doc(username)
         if user_doc:
@@ -56,7 +67,7 @@ def timezone_read(username):
         else:
             return ''
     except Exception as e:
-        logger.debug('# in timezone_read, exception: '+str(timezone_read))
+        logger.debug('# error: '+str(e))
         return
 
 
@@ -65,15 +76,15 @@ def update_sensor_data(doc):
 
 
 def contact_submission_update(doc):
-    #logit('going to write in db')
+    # logit('going to write in db')
     contact_submission.insert_one(doc)
-    #logit('db writing is done')
+    # logit('db writing is done')
     return True
 
 
 def create_new_user(doc):
     # todo: don't keep the whole doc received from form submission, this is security threat
-    users = db['users']
+    users = db["users"]
     if users.find_one({'email': doc['email']}):
         return False
     else:
@@ -81,15 +92,82 @@ def create_new_user(doc):
         return True
 
 
+def fetch_device_overview_mongodb(user_name, search_like, start, length, order):
+    logger.debug('# user_name: '+str(user_name))
+    logger.debug('# search_like: '+str(search_like))
+    logger.debug('# order: '+str(order))
+    logger.debug('# start: '+str(start))
+    logger.debug('# length: '+str(length))
+    
+    collection = db['devices']
+    try:
+        # Construct the query for MongoDB
+        query = {
+            "user_name": user_name,
+            "client_name": {"$regex": search_like}
+        }
+        
+        start = int(start)
+        length = int(length)
+        
+
+        # Sort the results
+        sort_field = order[0]['column_name']
+        sort_direction = 1 if order[0]['direction'] == 'asc' else -1
+        sort = [(sort_field, sort_direction)]
+
+        # Perform the query
+        logger.debug('# query: '+str(query))
+        logger.debug('# sort: '+str(sort))
+        query_res = collection.find(query, projection={"_id": 0}).sort(sort).skip(start).limit(length)
+        
+        logger.debug('# query_res: '+str(query_res))
+
+        # Count the total records
+        total_records = collection.count_documents(query)
+
+        data = []
+        browser_timezone = timezone_read(user_name)
+
+        for row in query_res:
+            data_row = {}
+            data_row['user_name'] = row['user_name']
+            data_row['client_name'] = "<a href='/device/{}'>{}</a>".format(
+                row['client_name'], row['client_name'])
+            data_row['first_message'] = tz_converter(
+                row['ts_registered'], browser_timezone) if 'ts_registered' in row else 'No contact yet'
+            data_row['last_message'] = tz_converter(
+                row['ts_last_message'], browser_timezone) if 'ts_last_message' in row else 'No contact yet'
+
+            data.append(data_row)
+
+        res = {
+            'data': data,
+            'recordsFiltered': len(data),
+            'recordsTotal': total_records,
+        }
+
+    except Exception as e:
+        res = {
+            'data': [],
+            'recordsFiltered': 0,
+            'recordsTotal': 0,
+        }
+        
+        logger.debug('# error: '+str(e))
+
+    return res
+
+
 def verify_and_notify(clickhouse_data, user_name, search_like):
-    #logger.debug('# in verify_and_notify, clickhouse_data: ' +
+    # logger.debug('# in verify_and_notify, clickhouse_data: ' +
     #             str(clickhouse_data))
     device_collection = db['devices']
     unregistered_devices = []
 
     # Go through the found devices in clickhouse and check if it is registered in MongoDB
     for data in clickhouse_data:
-        #user_name = data[1]
+        # user_name = data[1]
         client_name = data[2]
         existing_device = device_collection.find_one(
             {'client_name': client_name, 'user_name': user_name})
@@ -111,7 +189,8 @@ def verify_and_notify(clickhouse_data, user_name, search_like):
     devices = device_collection.find({'user_name': user_name})
 
     clickhouse_client_names = set([row[2] for row in clickhouse_data])
-    device_client_names = [device['client_name'] for device in devices if search_like in device['client_name']]
+    device_client_names = [device['client_name']
+                           for device in devices if search_like in device['client_name']]
     logger.debug('# in verify_and_notify, devices: '+str(device_client_names))
 
     new_rows = []
@@ -134,9 +213,9 @@ def verify_and_notify(clickhouse_data, user_name, search_like):
     return clickhouse_data
 
 
-
 def verify_and_notify_v2(clickhouse_data):
-    logger.debug('# in verify_and_notify, clickhouse_data: ' + str(clickhouse_data))
+    logger.debug('# in verify_and_notify, clickhouse_data: ' +
+                 str(clickhouse_data))
     device_collection = db['devices']
     unregistered_devices = []
 
@@ -144,29 +223,34 @@ def verify_and_notify_v2(clickhouse_data):
     for data in clickhouse_data:
         user_name = data[1]
         client_name = data[2]
-        existing_device = device_collection.find_one({'client_name': client_name, 'user_name': user_name})
+        existing_device = device_collection.find_one(
+            {'client_name': client_name, 'user_name': user_name})
         if existing_device is None:
-            logger.debug('# in verify_and_notify, client_name: ' + str(client_name) + ' is missing in MongoDB for user: ' + str(user_name))
+            logger.debug('# in verify_and_notify, client_name: ' + str(client_name) +
+                         ' is missing in MongoDB for user: ' + str(user_name))
             # Device not found in MongoDB, add to list of unregistered devices
             unregistered_devices.append(client_name)
 
     # Remove any unregistered devices from the clickhouse_data list
-    clickhouse_data = [data for data in clickhouse_data if data[2] not in unregistered_devices]
+    clickhouse_data = [
+        data for data in clickhouse_data if data[2] not in unregistered_devices]
 
     # Add devices in the `devices` collection that aren't in `clickhouse_data` yet
     user_name = clickhouse_data[0][1]
-    device_client_names = [device['client_name'] for device in device_collection.find({'user_name': user_name})]
-    new_rows = [(None, user_name, name, None, None) for name in set(device_client_names) - set(clickhouse_data)]
+    device_client_names = [device['client_name']
+                           for device in device_collection.find({'user_name': user_name})]
+    new_rows = [(None, user_name, name, None, None)
+                for name in set(device_client_names) - set(clickhouse_data)]
     clickhouse_data.extend(new_rows)
 
     # Notify the admin about the unregistered devices
     if unregistered_devices:
         email_message_text = f"clients: {str(unregistered_devices)} user_name: {user_name} is not registered in MongoDB"
-        enqueue_long_running_function(send_general_text_email, email_message_text, 'Unregistered devices found in ClickHouse')
+        enqueue_long_running_function(
+            send_general_text_email, email_message_text, 'Unregistered devices found in ClickHouse')
 
     # Return the shortened list of clickhouse_data
     return clickhouse_data
-
 
 
 def create_new_device(client_name, user_name, device_token, ts_registered):
@@ -175,17 +259,20 @@ def create_new_device(client_name, user_name, device_token, ts_registered):
         return False
     else:
         devices.insert_one({'client_name': client_name,
-                           'user_name': user_name, 'device_token': device_token,'ts_registered':ts_registered})
+                           'user_name': user_name, 'device_token': device_token, 'ts_registered': ts_registered})
         return True
+
 
 def read_device_info(client_name, user_name):
     devices = db['devices']
-    device_info = devices.find_one({'client_name': client_name, 'user_name':user_name})
+    device_info = devices.find_one(
+        {'client_name': client_name, 'user_name': user_name})
     if not device_info:
         return False
     else:
         return device_info
-    
+
+
 def update_device_info(client_name, user_name, keyvalue):
     devices = db['devices']
 
@@ -212,11 +299,60 @@ def update_device_info(client_name, user_name, keyvalue):
         return True  # Update successful
     else:
         return False  # Update not successful
-    
-    
 
 
-    
+def update_device_params(user_name, client_name, timestamp, param_subtree):
+
+    try:
+        collection = db['device_params']
+        data = {
+            'user_name': user_name,
+            'client_name': client_name,
+            'timestamp': timestamp,
+            'param_subtree': param_subtree
+        }
+        collection.insert_one(data)
+        return True
+    except Exception as e:
+        logger.debug('# in update_device_parameter, exception: '+str(e))
+        return False
+
+
+def get_device_params(user_name, client_name, limit=30):
+    try:
+        collection = db['device_params']
+
+        # Define the query to filter data based on user_name and client_name
+        query = {
+            'user_name': user_name,
+            'client_name': client_name
+        }
+
+        # Optionally, add a filter for a specific param_name if provided
+        # if param_name:
+        #    query['param_subtree.' + param_name] = {'$exists': True}
+
+        # Define the projection to retrieve only the required fields
+        projection = {
+            '_id': 0,  # Exclude the default MongoDB _id field
+            'timestamp': 1,
+            'param_subtree': 1
+        }
+
+        # Sort by timestamp in descending order (latest first)
+        sort = [('timestamp', DESCENDING)]
+
+        # Limit the number of results if limit is specified
+        result = collection.find(query, projection).sort(sort).limit(limit)
+
+        # Convert the cursor result to a list of documents
+        device_params = list(result)
+
+        return device_params
+    except Exception as e:
+        logger.debug('# in get_device_params, exception: ' + str(e))
+        return None
+
 
 def read_users_collection():
     return db['users'].find()
@@ -250,10 +386,10 @@ if __name__ == '__main__':
     for i in read_users_collection():
         print
         "Items from users collection: ", i
-    
+
     #update_sensor_data({'aa': 10, 'bb': 20})
     create_new_device('fff')
     '''
-    
-    res = read_device_info('mx','a@a.a')
+
+    res = read_device_info('mx', 'a@a.a')
     print(res)

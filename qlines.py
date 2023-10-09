@@ -9,12 +9,14 @@ import os
 from datetime import datetime as dt
 import logging
 
+
 from email_module import send_general_text_email, send_email_contact
 
 # MongoDB handlers and methods
 from mongodb_module import create_new_user, timezone_write, timezone_read, create_new_device, read_device_info, update_device_info, read_user_doc
+from mongodb_module import get_device_params, fetch_device_overview_mongodb, tz_converter
 
-from clickhouse_module import fetch_ts_data_per_param, fetch_device_overview_clickhouse, tz_converter
+
 from token_creator import build_token
 from logger_custom import get_module_logger
 from flask_login import (LoginManager, UserMixin, login_required, login_user,
@@ -82,6 +84,9 @@ class User(UserMixin):
 # current_user = User()
 # current_user.name = 'a@a.a'
 # temporary - for prod remove this
+
+
+
 
 
 # route to handle the /update_user route, to get 4 parameters from the user and update it in mongodb
@@ -222,7 +227,7 @@ def getTime():
 
 
 # Devices overview table - data fetcher
-@app.route('/api/data')
+@app.route('/fetch_device_overview', methods=['GET', 'POST'])
 # @login_required
 def table_data():
 
@@ -262,11 +267,11 @@ def table_data():
     length = request.args.get('length')
     start = request.args.get('start')
 
+    res = None
     # res = fetch_device_overview_clickhouse(
     #    'table1', username, search_like, start, length, order)
 
-    res = fetch_device_overview_clickhouse(
-        'table1', username, search_like, start, length, order
+    res = fetch_device_overview_mongodb(username, search_like, start, length, order
     )
 
     res['draw'] = request.args.get('draw', type=int)
@@ -298,16 +303,17 @@ def fetchdata():
         return {'error': 'Device info not found.'}
 
     ts_data = {}
-    for param_name in ts_param_list:
-        res = fetch_ts_data_per_param(user_name=str(
-            current_user.name), client_name=client_name, param_name=param_name, limit=30)
+    # for param_name in ts_param_list:
+    get_device_params_res = get_device_params(user_name=current_user.name, client_name=client_name, limit=30)
 
-        if res:
-            res = res.result_set
-            res.sort(key=sortFn)
-            ts_data[param_name] = res
-        else:
-            pass
+    #logger.debug('# mongo res: '+str(get_device_params_res))
+
+    # if res:
+    #     res = res.result_set
+    #     res.sort(key=sortFn)
+    #     ts_data[param_name] = res
+    # else:
+    #     pass
 
     meta_data = {
         'ts_registered': device_info.get('ts_registered'),
@@ -321,25 +327,34 @@ def fetchdata():
 
     logger.debug('# the fetchdata is called, to provide the data to browser for user  {}  and client  {} '.format(
         current_user.name, client_name))
+
     logger.debug('# meta data to revert to browser is: '+str(meta_data))
 
-    return {'name': 'some name here', 'data': {'meta_data': meta_data, 'ts_data': ts_data}}
+    return {'name': 'some name here', 'data': {'meta_data': meta_data, 'ts_data': get_device_params_res}}
 
 
 @app.route('/send_to_device', methods=['POST'])
 @login_required
 def cli():
+    """
+    This function sends a message to a device via MQTT client.
 
+    Returns:
+    - If successful, returns a JSON object with a success message.
+    - If unsuccessful, returns a JSON object with an error message.
+    """
     try:
 
         data = request.get_json()
         message_type = data["message_type"]
         message_body = data["message_body"]
-        
+
         logger.debug('# in route send_to_device, data: '+str(data))
-        logger.debug('# in route send_to_device, message_type: '+str(message_type))
-        logger.debug('# in route send_to_device, message_body: '+str(message_body))
-        
+        logger.debug(
+            '# in route send_to_device, message_type: '+str(message_type))
+        logger.debug(
+            '# in route send_to_device, message_body: '+str(message_body))
+
         current_url = data["urlParams_initial"]
         client_id = current_url.split('/')[-1]
 
@@ -349,8 +364,9 @@ def cli():
                    'client_name': client_id}
 
         client_topic = str(current_user.name) + '_' + client_id + '_' + 'ds'
-        
-        logger.debug('# in route send_to_device, sending to device: '+str(message))
+
+        logger.debug(
+            '# in route send_to_device, sending to device: '+str(message))
 
         mqtt_client.publish(client_topic, str(message))
         return jsonify({"result": "Message '{}' sent to MQTT client successfully. Wait for the result :)".format(message)})
@@ -503,18 +519,18 @@ def page_not_found(e):
     return Response('<p>Login failed</p>')
 
 
-if __name__ == "__main__":
-    app.logger.setLevel(logging.DEBUG)
+# if __name__ == "__main__":
+#     app.logger.setLevel(logging.DEBUG)
 
-    # to restart the flask when template htmls or static files are changed
-    from os import path, walk
-    extra_dirs = ['./templates/', './static/']
-    extra_files = extra_dirs[:]
-    for extra_dir in extra_dirs:
-        for dirname, dirs, files in walk(extra_dir):
-            for filename in files:
-                filename = path.join(dirname, filename)
-                if path.isfile(filename):
-                    extra_files.append(filename)
+#     # to restart the flask when template htmls or static files are changed
+#     from os import path, walk
+#     extra_dirs = ['./templates/', './static/']
+#     extra_files = extra_dirs[:]
+#     for extra_dir in extra_dirs:
+#         for dirname, dirs, files in walk(extra_dir):
+#             for filename in files:
+#                 filename = path.join(dirname, filename)
+#                 if path.isfile(filename):
+#                     extra_files.append(filename)
 
-    app.run(extra_files=extra_files, host='0.0.0.0', port=5000, debug=True)
+#     app.run(extra_files=extra_files, host='0.0.0.0', port=5000, debug=True)

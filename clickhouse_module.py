@@ -2,7 +2,6 @@ import clickhouse_connect
 from logger_custom import get_module_logger
 from datetime_converter import datetime_to_elapsed
 from mongodb_module import timezone_read, verify_and_notify
-from zoneinfo import ZoneInfo
 
 from flask import session
 # for timezone management, ref: https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-xiii-dates-and-times
@@ -29,15 +28,6 @@ def update_clickhouse(data):
         logger.debug('Inserted data into ClickHouse: %s', data)
     except Exception as e:
         logger.error('Error inserting data into ClickHouse: %s', e)
-
-def tz_converter(time, browser_timezone):
-
-    # not sure why I added this line, but was giving wrong time zone that's why I skipped it
-    # utc_time = time.replace(tzinfo=ZoneInfo('UTC'))
-    tz_time = time.astimezone(ZoneInfo(browser_timezone))
-
-    res = tz_time.strftime("%Y-%m-%d %H:%M:%S %Z")
-    return res
 
 
 def fetch_ts_data_per_param(user_name, client_name, param_name, limit, table_name='table1'):

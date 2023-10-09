@@ -71,41 +71,29 @@ $(document).ready(function () {
     function fetch_new_data() {
         $.getJSON('/fetchdata', request_params, function (data_received) {
             if (data_received.data.ts_data) { // check if data_received is not empty
+                const param1Data = extractParameterData('param1', data_received.data.ts_data);
+                const param2Data = extractParameterData('param2', data_received.data.ts_data);
 
-                console.log(typeof (data_received.data))
+                console.log('aaa');
 
-                var data = data_received.data
-                var data1 = data.ts_data.param1;
-                var data2 = data.ts_data.param2;
-
-                var chartdata1 = [];
-                var chartdata2 = [];
-
-                for (var i = 0; i < data1.length; i++) {
-                    chartdata1.push([
-                        Date.parse(data1[i][1]), data1[i][2]
-                    ])
-                }
-
-                for (var i = 0; i < data2.length; i++) {
-                    chartdata2.push([
-                        Date.parse(data2[i][1]), data2[i][2]
-                    ])
-                }
-
-                chart1.series[0].setData(chartdata1)
-                chart2.series[0].setData(chartdata2)
-                //document.getElementById('ts_registered').innerHTML = data.meta_data.ts_registered;
-                //document.getElementById('ts_first_message').innerHTML = data.meta_data.ts_first_message;
-                //document.getElementById('ts_last_message').innerHTML = data.meta_data.ts_last_message;
-                document.getElementById('cli_result').innerHTML = data.meta_data.last_cli_response;
-                document.getElementById('ts_lastmessage').innerHTML = data.meta_data.ts_last_message;
+                // Update chart1 and chart2 with the new data
+                chart1.series[0].setData(param1Data);
+                chart2.series[0].setData(param2Data);
+                
+                // Update other elements as needed
+                document.getElementById('cli_result').innerHTML = data_received.data.meta_data.last_cli_response;
+                document.getElementById('ts_lastmessage').innerHTML = data_received.data.meta_data.ts_last_message;
             }
         });
     }
-
-
-
+    
+    // Function to extract and format the data for a specific parameter
+    function extractParameterData(parameterName, data) {
+        return data.map((item) => ({
+            x: new Date(item.timestamp).getTime(),
+            y: parseFloat(item.param_subtree[parameterName]),
+        }));
+    }
 
 });
 
@@ -133,11 +121,11 @@ document.addEventListener("DOMContentLoaded", function () {
             message_type = 'cli_request';
         } else if (inputType === 'interval') {
             message_body = inputContentInterval.value;
-            message_type = 'interval_request';
+            message_type = 'interval_update';
         }
-    
+
         const urlParams_initial = window.location.href;
-    
+
         // Send the message to the Flask backend
         fetch("/send_to_device", {
             method: "POST",
@@ -146,14 +134,14 @@ document.addEventListener("DOMContentLoaded", function () {
             },
             body: JSON.stringify({ message_body, message_type, urlParams_initial })
         })
-        .then(response => response.json())
-        //.then(data => {
-        //    resultDiv.textContent = data.result;
-        //})
-        .catch(error => {
-            console.error("Error:", error);
-            resultDiv.textContent = "An error occurred.";
-        });
+            .then(response => response.json())
+            //.then(data => {
+            //    resultDiv.textContent = data.result;
+            //})
+            .catch(error => {
+                console.error("Error:", error);
+                resultDiv.textContent = "An error occurred.";
+            });
     }
 
     buttonCliSend.addEventListener("click", function () {

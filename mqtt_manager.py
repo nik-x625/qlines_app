@@ -7,15 +7,15 @@ from datetime import datetime
 import paho.mqtt.client as mqtt
 import threading
 from logger_custom import get_module_logger
-from mongodb_module import update_device_info
+from mongodb_module import update_device_info, update_device_params
 logger = get_module_logger(__name__)
 
 
-dbclient = clickhouse_connect.get_client(
-    host='localhost', port='7010', username='default')
+# dbclient = clickhouse_connect.get_client(
+#     host='localhost', port='7010', username='default')
 
-dbclient.command(
-    'CREATE TABLE IF NOT EXISTS table1 (ts DATETIME, user_name String, client_name String, param_name String, param_value Float64) ENGINE MergeTree ORDER BY client_name')
+# dbclient.command(
+#     'CREATE TABLE IF NOT EXISTS table1 (ts DATETIME, user_name String, client_name String, param_name String, param_value Float64) ENGINE MergeTree ORDER BY client_name')
 
 
 MQTT_BROKER_HOST = '127.0.0.1'  # Replace with your broker's hostname or IP
@@ -66,14 +66,18 @@ def on_message(client, userdata, msg):
 
             timestamp = datetime.utcfromtimestamp(message.get('ts'))
             param_subtree = message.get('param_subtree', {})
+            
+            mongo_update_res = update_device_params(user_name, client_name, timestamp, param_subtree)
+            
+            logger.debug('# mongo_update_res: '+str(mongo_update_res))
 
-            for param_name, param_value in param_subtree.items():
-                clickhouse_data = [timestamp, user_name, client_name, param_name, param_value]
+            #for param_name, param_value in param_subtree.items():
+            #    time_series_doc = [timestamp, user_name, client_name, param_name, param_value]
                 
-                logger.debug('# clickhouse_data to store: '+str(clickhouse_data))
+            #    logger.debug('# time series data to store in mongodb: '+str(time_series_doc))
                                 
-                dbclient.insert('table1', [clickhouse_data], column_names=[
-                'ts', 'user_name', 'client_name', 'param_name', 'param_value'])
+                #dbclient.insert('table1', [clickhouse_data], column_names=[
+                #'ts', 'user_name', 'client_name', 'param_name', 'param_value'])
                 
                 
                 

@@ -1,6 +1,6 @@
 $(document).ready(function () {
     $('#data').DataTable({
-        ajax: '/api/data',
+        ajax: '/fetch_device_overview',
         serverSide: true,
         columns: [
             { data: 'user_name' },
