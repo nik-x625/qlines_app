@@ -37,6 +37,7 @@ NC='\[\033[0m\]'
 #PS1="$yellow[$BLUE\t$yellow][LAB-$red\H$yellow][$blue\w$grey$yellow]$NC# "
 PS1="$yellow[$BLUE\t$yellow][PROD-$red\H$yellow][$blue\w$grey$yellow]$NC# "
 
+
 export LC_ALL=C LANG=C
 export HISTTIMEFORMAT="%d/%m/%y %T "
 export PYTHONPATH='/opt/source'
@@ -53,7 +54,7 @@ alias res='/etc/init.d/gunicorn restart'
 # Miscel
 alias p='/opt/qlines_app/check_processes_and_ports.py' #'ps -ef | egrep '\''nginx|sql|mongo|python|rqworker'\'''
 #alias log='tail /var/log/nginx/*.log /var/log/redis/redis-server.log /opt/blog/mylogs.log /opt/qlines/mylogs.log -f'
-alias log='tail /opt/qlines_app/mylogs.log -f'
+alias log='tail /opt/qlines_app/mylogs.log /var/log/gunicorn.log -f'
 
 alias mongo='mongo platform'
 alias pip='pip3'
@@ -63,7 +64,7 @@ alias ql='cd /opt/qlines_app'
 # Git shortcuts
 alias gitall='git add .;git commit -m \"update\";git push origin master'
 alias gitl='git log --graph --format="%C(red)%h%Creset %cr %C(blue)%<(7,trunc)%cn%Creset -%C(auto)%d%Creset %<(80,trunc)%s" --all'
-
-# Data sender/receiver - client side via mqtt
 alias send='python /opt/qlines_app/data_sender_single.py -u a@a.a -c mx -t topic1'
 alias receive='python /opt/qlines_app/data_collector.py'
+
+
