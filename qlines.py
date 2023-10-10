@@ -138,7 +138,7 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/device/<client_name>', methods=['GET', 'POST'])
+@app.route('/devices/<client_name>', methods=['GET', 'POST'])
 @login_required
 def device_single(client_name):
     # TODO: to filter if the user has access to this device
@@ -287,7 +287,7 @@ def sortFn(tpl):
     return tpl[1]
 
 
-# the api call in single device page, for e.g., http://www.../device/mydevice01
+# the api call in single device page, for e.g., http://www.../devices/mydevice01
 @app.route('/fetchdata', methods=["GET", "POST"])
 @login_required
 def fetchdata():

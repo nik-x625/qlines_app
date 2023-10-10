@@ -132,7 +132,7 @@ def fetch_device_overview_mongodb(user_name, search_like, start, length, order):
         for row in query_res:
             data_row = {}
             data_row['user_name'] = row['user_name']
-            data_row['client_name'] = "<a href='/device/{}'>{}</a>".format(
+            data_row['client_name'] = "<a href='/devices/{}'>{}</a>".format(
                 row['client_name'], row['client_name'])
             data_row['first_message'] = tz_converter(
                 row['ts_registered'], browser_timezone) if 'ts_registered' in row else 'No contact yet'

@@ -99,7 +99,7 @@ def fetch_device_overview_clickhouse(table_name, user_name, search_like, start, 
         for row in query_res:
             data_row = {}
             data_row['user_name'] = row[1]
-            data_row['client_name'] = "<a href='/device/{}'>{}</a>".format(
+            data_row['client_name'] = "<a href='/devices/{}'>{}</a>".format(
                 row[2], row[2])
             data_row['first_message'] = tz_converter(
                 row[3], browser_timezone) if row[3] is not '' else 'No contact yet'
