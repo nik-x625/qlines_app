@@ -1,8 +1,8 @@
 $(document).ready(function() {
-    const urlParams_initial = window.location.href;
+    const urlParamsInitial = window.location.href;
     var socket = io({
         transports: ["websocket"],
-        query: { page_data: urlParams_initial }
+        query: { page_data: urlParamsInitial }
         });
 
     socket.on('connect', function() {

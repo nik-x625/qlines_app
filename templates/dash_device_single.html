@@ -5,8 +5,8 @@
     var client_name_from_flask = '{{ device_info_to_render.client_name }}'
 </script>
 
-<script src="/static/js/chart1.js"></script>
-
+<script src="/static/js/charts_manager.js"></script>
+<script src="/static/js/add_chart.js"></script>
 
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"
@@ -134,17 +134,87 @@
         </div>
 
         <!-- second column on page-->
-        <div class="col-md-6 p-1 bg-light text-white">
+        <div class="col-md-6 p-1 ">
             <figure class="highcharts-figure">
                 <div id="chart-div1"></div>
             </figure>
             <figure class="highcharts-figure">
                 <div id="chart-div2"></div>
             </figure>
+
+
+            <!-- Container to display charts -->
+            <div id="chartContainer"></div>
+
+
+            <div>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ModalAddChart">
+                    Add Chart
+                </button>
+
+                <!-- <button type="button" class="btn btn-primary" id="add_device_submit2">Submit</button> -->
+            </div>
+
+
+
+            <!-- The Modal -->
+            <div class="modal" id="ModalAddChart">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">Add chart</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+
+                            <div class="container">
+                                <div class="form-group row">
+                                    <div class="col-xs-2">
+                                        <label for="ex1">Enter chart name:</label>
+                                        <input name='chart_name' class="form-control" id="chart_name_id" type="text">
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <label for="ex1">Enter chart config:</label>
+                                        <input name='chart_config' class="form-control" id="chart_config_id"
+                                            type="text">
+                                    </div>
+                                </div>
+
+                                <img id="wait_add_chart" style="display:none;padding:3px"
+                                    src='/static/images/loading.gif' width="25" height="25" />
+                                <br>
+                                <br>
+                                <span id=result_add_chart></span>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" id="add_chart_submit">Submit</button>
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
         </div>
+
     </div>
 
 </div>
+
+</div>
+
+
+
+
 
 
 

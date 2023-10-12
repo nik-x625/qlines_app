@@ -5,9 +5,7 @@
 <script src="static/js/add_device.js"></script>
 <script src="/static/js/device_overview_table.js"></script>
 
-<script>
-    $SCRIPT_ROOT = {{ request.script_root | tojson }};
-</script>
+
 {% endblock %}
 
 
@@ -32,7 +30,7 @@
 <div>
     <p>To manage and monitor a client, it must be added first to the platform.</p>
 
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ModalAddDevice">
         Add client
     </button>
 
@@ -40,7 +38,7 @@
 </div>
 
 <!-- The Modal -->
-<div class="modal" id="myModal">
+<div class="modal" id="ModalAddDevice">
     <div class="modal-dialog">
         <div class="modal-content">
 
@@ -61,7 +59,7 @@
                         </div>
                     </div>
 
-                    <img id="wait" style="display:none;padding:3px" src='static/images/loading.gif' width="25"
+                    <img id="wait" style="display:none;padding:3px" src='/static/images/loading.gif' width="25"
                         height="25" />
                     <br>
                     <br>

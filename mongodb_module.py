@@ -15,6 +15,22 @@ db = client['platform']
 # contact_submission = db['contact_submission']
 
 
+class ChartSettings:
+    def __init__(self, collection, user_name, client_name):
+        self.collection = db[collection]
+
+    def save(self, chart_name, chart_config):
+        data = {'chart_name': chart_name, 'chart_config': chart_config}
+        self.collection.insert_one(data)
+
+    def get_all(self):
+        return list(self.collection.find({}))
+
+    def get_by_id(self, chart_id):
+        return self.collection.find_one({'_id': ObjectId(chart_id)})
+
+
+
 def tz_converter(time, browser_timezone):
 
     # not sure why I added this line, but was giving wrong time zone that's why I skipped it
@@ -299,6 +315,65 @@ def update_device_info(client_name, user_name, keyvalue):
         return True  # Update successful
     else:
         return False  # Update not successful
+    
+
+
+def add_chart_to_db(client_name, user_name, chart_name, chart_config):
+    # Connect to the MongoDB server
+    # client = MongoClient('mongodb://localhost:27017')  # Replace with your MongoDB connection string
+    # db = client.your_database_name  # Replace with your database name
+    devices = db.devices
+
+    # Find the device with the given client_name and user_name
+    device = devices.find_one({"client_name": client_name, "user_name": user_name})
+
+    if device:
+        # Device exists, retrieve the current highest position_id or set to 0 if no charts yet
+        position_id = device.get("highest_position_id", 0)
+
+        # Create a new chart with the next position_id
+        new_chart = {
+            "chart_name" : chart_name,
+            "chart_config": chart_config,
+            "position_id": position_id
+        }
+
+        # Append the new chart to the device's charts list
+        devices.update_one(
+            {"_id": device["_id"]},
+            {
+                "$push": {"charts": new_chart},
+                "$set": {"highest_position_id": position_id + 1}
+            }
+        )
+
+        return True
+    else:
+        return False
+    
+    
+
+def get_chart_from_db(client_name, user_name):
+    # Connect to the MongoDB server
+    # client = MongoClient('mongodb://localhost:27017')  # Replace with your MongoDB connection string
+    # db = client.your_database_name  # Replace with your database name
+    devices = db.devices
+
+    # Find the device with the given client_name and user_name
+    device = devices.find_one({"client_name": client_name, "user_name": user_name})
+    
+    if device:
+        # Find the chart with the specified position_id
+        charts = device.get("charts", [])
+        
+        return charts
+        # for chart in charts:
+        #     if chart.get("position_id") == position_id:
+        #         chart_config = chart.get("chart_config")
+                
+        #         return chart_config
+    
+    return None
 
 
 def update_device_params(user_name, client_name, timestamp, param_subtree):

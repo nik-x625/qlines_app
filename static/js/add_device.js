@@ -72,7 +72,7 @@ $(function () {
 				'type': "POST",
 				'global': false,
 				'dataType': 'html',
-				'url': $SCRIPT_ROOT + "/device_add",
+				'url': $SCRIPT_ROOT + "/add_device",
 				'data': {
 					client_name: $('input[name="client_name"]').val(),
 					//username: $('input[name="username"]').val(),

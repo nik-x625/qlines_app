@@ -1,7 +1,9 @@
 var chartdata1 = [];
 var chartname1 = '';
 var series2 = [];
-
+var chart_test;
+var highchart_object_list = [];
+const urlParamsInitial = window.location.href;
 
 
 $(document).ready(function () {
@@ -24,11 +26,11 @@ $(document).ready(function () {
         },
 
         series: [{
-            name: 'CPU usage',
+            name: 'CPU usage - chart1',
             data: []
         }],
         title: {
-            text: 'CPU'
+            text: 'CPU - chart1'
         }
     });
 
@@ -52,11 +54,11 @@ $(document).ready(function () {
         },
 
         series: [{
-            name: 'Memory usage',
+            name: 'Memory usage - chart 2',
             data: []
         }],
         title: {
-            text: 'Memory'
+            text: 'Memory - chart 2'
         }
     });
 
@@ -64,29 +66,54 @@ $(document).ready(function () {
         client_name: client_name_from_flask,
     };
 
-    // commented out to be replaced by the websocket (socket.io)
-    fetch_new_data();
-    setInterval(fetch_new_data, 1000);
 
-    function fetch_new_data() {
-        $.getJSON('/fetchdata', request_params, function (data_received) {
+    
+
+
+    function fetchAndRenderCharts() {
+        $.get('/get_charts', { urlParamsInitial: urlParamsInitial }, function (chart_list) {
+            chart_list.forEach(function (chart) {
+
+                const chartDiv = document.createElement('div');
+                chartDiv.id = chart.chart_name;
+                document.getElementById('chartContainer').appendChild(chartDiv);
+
+                // Convert the JSON string back to a JavaScript object for the chart configuration
+                const chartConfig = JSON.parse(chart.chart_config);
+
+                //chart_test = Highcharts.chart(chart.chart_name, chartConfig);
+                
+                const highchart = Highcharts.chart(chart.chart_name, chartConfig);
+                highchart_object_list.push(highchart);
+                
+            });
+            console.log(highchart_object_list)
+        });
+    };
+
+    fetchAndRenderCharts();
+
+
+
+    function fetch_chart_data() {
+        $.getJSON('/fetch_chart_data', request_params, function (data_received) {
             if (data_received.data.ts_data) { // check if data_received is not empty
                 const param1Data = extractParameterData('param1', data_received.data.ts_data);
                 const param2Data = extractParameterData('param2', data_received.data.ts_data);
 
-                console.log('aaa');
-
                 // Update chart1 and chart2 with the new data
                 chart1.series[0].setData(param1Data);
-                chart2.series[0].setData(param2Data);
-                
+                chart2.series[0].setData(param1Data);
+                //chart_test.series[0].setData(param1Data);
+                //chart2.series[0].setData(param2Data);
+
                 // Update other elements as needed
                 document.getElementById('cli_result').innerHTML = data_received.data.meta_data.last_cli_response;
                 document.getElementById('ts_lastmessage').innerHTML = data_received.data.meta_data.ts_last_message;
             }
         });
     }
-    
+
     // Function to extract and format the data for a specific parameter
     function extractParameterData(parameterName, data) {
         return data.map((item) => ({
@@ -95,9 +122,21 @@ $(document).ready(function () {
         }));
     }
 
+    fetch_chart_data();
+    setInterval(fetch_chart_data, 1000);
+
+
+
+
 });
 
 
+
+
+
+
+
+// about CLI commands and PII change
 document.addEventListener("DOMContentLoaded", function () {
 
     // Buttons
@@ -124,7 +163,7 @@ document.addEventListener("DOMContentLoaded", function () {
             message_type = 'interval_update';
         }
 
-        const urlParams_initial = window.location.href;
+        //const urlParamsInitial = window.location.href;
 
         // Send the message to the Flask backend
         fetch("/send_to_device", {
@@ -132,7 +171,7 @@ document.addEventListener("DOMContentLoaded", function () {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ message_body, message_type, urlParams_initial })
+            body: JSON.stringify({ message_body, message_type, urlParamsInitial })
         })
             .then(response => response.json())
             //.then(data => {
