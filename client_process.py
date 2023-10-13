@@ -27,7 +27,8 @@ class MqttClient:
     def create_param_subtree(self):
         param_val1 = str(np.random.normal(20, 5, 1)[0])
         param_val2 = str(np.random.normal(100, 10, 1)[0])
-        param_subtree = {'param1': param_val1, 'param2': param_val2}
+        param_val3 = str(np.random.normal(50, 5, 1)[0])
+        param_subtree = {'temperature': param_val1, 'diskusage': param_val2, 'cpuusage': param_val3}
         return param_subtree
 
     def mqtt_establish(self):

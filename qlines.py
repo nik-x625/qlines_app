@@ -10,12 +10,15 @@ import os
 from datetime import datetime as dt
 import logging
 
+import random
+import string
+
 
 from email_module import send_general_text_email, send_email_contact
 
 # MongoDB handlers and methods
 from mongodb_module import create_new_user, timezone_write, timezone_read, create_new_device, read_device_info, update_device_info, read_user_doc
-from mongodb_module import get_device_params, fetch_device_overview_mongodb, tz_converter, add_chart_to_db, get_chart_from_db
+from mongodb_module import fetch_device_overview_mongodb, tz_converter, add_chart_to_db, get_chart_from_db, get_chart_data
 
 from token_creator import build_token
 from logger_custom import get_module_logger
@@ -75,6 +78,13 @@ class User(UserMixin):
 
     def __repr__(self):
         return "%d/%s/%s" % (self.id, self.name, self.password)
+
+
+def generate_unique_id(length=10):
+    characters = string.ascii_uppercase + \
+        string.digits  # Uppercase letters and digits
+    unique_id = ''.join(random.choice(characters) for _ in range(length))
+    return unique_id
 
 # temporary - for prod remove this
 # and change '#@login_required' to '@login_required' in the routes below
@@ -217,66 +227,23 @@ def add_device():
 def add_chart():
 
     try:
-        missing_params_list = []
-
-        params_to_fetch = ['chart_name', 'chart_config', 'urlParamsInitial']
-
         chart_name = request.form.get('chart_name', 0)
         chart_config = request.form.get('chart_config', 0)
         urlParamsInitial = request.form.get('urlParamsInitial', 0)
 
-        # params_dict = {}
-        # for param in params_to_fetch:
+        
+        params = []
+        
+        param1 = request.form.get('param1', 0)
+        param2 = request.form.get('param2', 0)
+        
+        if param1:
+            params.append(param1)
+            
+        if param2:
+            params.append(param2)
 
-        #     param_val = request.form.get(param, 0)
-
-        #     if not param_val:
-        #         missing_params_list.append(param)
-
-        #     else:
-        #         params_dict[param] = param_val
-
-        # logger.debug('# params_dict: '+str(params_dict) +
-        #              '  missing_params_list: '+str(missing_params_list))
-
-        # if len(missing_params_list) > 0:
-        #     return render_template('missing_params.html', missing_params=missing_params_list)
-
-        # # timestr = time.strftime("%Y%m%d_%H%M%S")
-        # # rand_str = str(random.randint(1000000, 9999999))
-        # # file_name = timestr + '_' + rand_str + '.pdf'
-
-        # current_url = params_dict["urlParamsInitial"]
         client_name = urlParamsInitial.split('/')[-1]
-
-        # chart_name = params_dict['chart_name']
-        # chart_config = {'a':1,'b':'ff'}#params_dict['chart_config']
-
-        # chart_config = """{
-        # time: {
-        #     useUTC: false
-        # },
-
-        # xAxis: {
-        #     type: 'datetime',
-        #     dateTimeLabelFormats: {
-        #         minute: '%H:%M',
-        #         hour: '%H:%M',
-        #         day: '%e. %b',
-        #         week: '%e. %b',
-        #         month: '%b \'%y',
-        #         year: '%Y'
-        #     }
-        # },
-
-        # series: [{
-        #     name: 'CPU usage',
-        #     data: []
-        # }],
-        # title: {
-        #     text: 'CPU'
-        # }
-        # }"""
 
         chart_config = {
             'time': {
@@ -293,10 +260,16 @@ def add_chart():
                     'year': '%Y'
                 }
             },
-            'series': [{
-                'name': 'CPU series - custom',
-                'data': []
-            }],
+            'series': [
+                {
+                    'name': param1,
+                    'data': []
+                },
+                {
+                    'name': param2,
+                    'data': []
+                },
+            ],
             'title': {
                 'text': chart_name
             }
@@ -305,11 +278,15 @@ def add_chart():
         chart_config = json.dumps(chart_config)
         logger.debug('chart_config: '+str(chart_config))
 
-        # chart_config = {'chart_name': chart_name,
-        #                'chart_config': chart_config}
+        logger.debug('before add_chart_to_db')
+
+        # unique id for each chart. Each device could have multiple charts/unique ids
+        chart_unique_id = generate_unique_id()
+
+        logger.debug('# chart_unique_id: '+str(chart_unique_id))
 
         chart_addition_result = add_chart_to_db(
-            client_name, current_user.name, chart_name, chart_config)
+            client_name, current_user.name, chart_name, chart_config, chart_unique_id, params)
         if chart_addition_result:
             return "Chart settings saved successfully"
         else:
@@ -421,48 +398,36 @@ def sortFn(tpl):
 # the api call in single device page, for e.g., http://www.../devices/mydevice01
 @app.route('/fetch_chart_data', methods=["GET", "POST"])
 @login_required
-def fetchdata():
-    client_name = request.args.get('client_name', None)
-    ts_param_list = ['param1', 'param2']
+def fetch_chart_data():
+    
+    #logger.debug('# in fetch_chart_data, request.args: '+str(request.args))
+        
+    urlParamsInitial = request.args.get('urlParamsInitial', None)
+    client_name = urlParamsInitial.split('/')[-1]
 
-    # Fetch device info, including 'last_cli_response'
-    device_info = read_device_info(client_name, str(current_user.name))
+    chart_unique_ids = request.args.getlist('chart_unique_ids[]', None)  
+    #logger.debug('# in fetch_chart_data, chart_unique_ids: '+str(chart_unique_ids))
+    #logger.debug('# in fetch_chart_data, chart_unique_id 1: '+str(chart_unique_ids[0]))
 
-    # logger.debug('# device_info: '+str(device_info))
-
+    device_info = read_device_info(client_name, str(current_user.name))    
     if not device_info:
+        logger.debug('Device info not found.')
         return {'error': 'Device info not found.'}
 
-    ts_data = {}
-    # for param_name in ts_param_list:
-    get_device_params_res = get_device_params(
-        user_name=current_user.name, client_name=client_name, limit=30)
-
-    # logger.debug('# mongo res: '+str(get_device_params_res))
-
-    # if res:
-    #     res = res.result_set
-    #     res.sort(key=sortFn)
-    #     ts_data[param_name] = res
-    # else:
-    #     pass
+    get_chart_data_res = get_chart_data(
+        user_name=current_user.name, client_name=client_name, chart_unique_ids=chart_unique_ids, limit=30)
+    
+    
+    #logger.debug('# get_chart_data_res: '+str(get_chart_data_res))
 
     meta_data = {
         'ts_registered': device_info.get('ts_registered'),
         'ts_first_message': device_info.get('ts_first_message', dt.now()),
         'ts_last_message': tz_converter(device_info.get('ts_last_message', ''), timezone_read(current_user.name)),
-
-        # 'ts_registered': tz_converter(device_info.get('ts_registered', ''), timezone_read(user_name))}
-
         'last_cli_response': device_info.get('last_cli_response', '')
     }
 
-    # logger.debug('# the fetchdata is called, to provide the data to browser for user  {}  and client  {} '.format(
-    #    current_user.name, client_name))
-
-    # logger.debug('# meta data to revert to browser is: '+str(meta_data))
-
-    return {'name': 'some name here', 'data': {'meta_data': meta_data, 'ts_data': get_device_params_res}}
+    return {'name': 'some name here', 'meta_data': meta_data, 'ts_data': get_chart_data_res}
 
 
 @app.route('/send_to_device', methods=['POST'])

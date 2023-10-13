@@ -1,12 +1,12 @@
 {% extends 'dash_base_template.html' %}
 {% block header_content %}
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
     var client_name_from_flask = '{{ device_info_to_render.client_name }}'
-</script>
+</script> -->
 
 <script src="/static/js/charts_manager.js"></script>
-<script src="/static/js/add_chart.js"></script>
+<!-- <script src="/static/js/add_chart.js"></script> -->
 
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"
@@ -176,11 +176,13 @@
                                     <div class="col-xs-2">
                                         <label for="ex1">Enter chart name:</label>
                                         <input name='chart_name' class="form-control" id="chart_name_id" type="text">
+                                        <label for="ex1">Enter parameter name:</label>
+                                        <input name='chart_param1' class="form-control" id="chart_param1" type="text">
+                                        <input name='chart_param2' class="form-control" id="chart_param2" type="text">
                                     </div>
                                     <div class="col-xs-2">
                                         <label for="ex1">Enter chart config:</label>
-                                        <input name='chart_config' class="form-control" id="chart_config_id"
-                                            type="text">
+                                        <input name='chart_config' class="form-control" id="chart_config_id" type="text">
                                     </div>
                                 </div>
 

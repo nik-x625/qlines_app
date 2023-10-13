@@ -318,7 +318,7 @@ def update_device_info(client_name, user_name, keyvalue):
     
 
 
-def add_chart_to_db(client_name, user_name, chart_name, chart_config):
+def add_chart_to_db(client_name, user_name, chart_name, chart_config, chart_unique_id, params):
     # Connect to the MongoDB server
     # client = MongoClient('mongodb://localhost:27017')  # Replace with your MongoDB connection string
     # db = client.your_database_name  # Replace with your database name
@@ -334,8 +334,10 @@ def add_chart_to_db(client_name, user_name, chart_name, chart_config):
         # Create a new chart with the next position_id
         new_chart = {
             "chart_name" : chart_name,
+            "chart_unique_id" : chart_unique_id,
             "chart_config": chart_config,
-            "position_id": position_id
+            "position_id": position_id,
+            "params":params
         }
 
         # Append the new chart to the device's charts list
@@ -393,40 +395,48 @@ def update_device_params(user_name, client_name, timestamp, param_subtree):
         return False
 
 
-def get_device_params(user_name, client_name, limit=30):
-    try:
-        collection = db['device_params']
+def get_chart_data(user_name, client_name, chart_unique_ids, limit=30):
+    # Establish a connection to the MongoDB database
+    
+    
+    devices = db["devices"]
+    device_params = db["device_params"]
 
-        # Define the query to filter data based on user_name and client_name
-        query = {
-            'user_name': user_name,
-            'client_name': client_name
-        }
+    # Check if the user and client exist in the 'devices' collection
+    device = devices.find_one({"user_name": user_name, "client_name": client_name})
+    if not device:
+        return "User or client not found in 'devices' collection."
 
-        # Optionally, add a filter for a specific param_name if provided
-        # if param_name:
-        #    query['param_subtree.' + param_name] = {'$exists': True}
+    # Fetch the params list from the 'devices' collection
+    
+    params_list = device.get("params", [])
+    
+    logger.debug('params_list: '+str(params_list))
 
-        # Define the projection to retrieve only the required fields
-        projection = {
-            '_id': 0,  # Exclude the default MongoDB _id field
-            'timestamp': 1,
-            'param_subtree': 1
-        }
+    result = {}
 
-        # Sort by timestamp in descending order (latest first)
-        sort = [('timestamp', DESCENDING)]
+    for chart_unique_id in chart_unique_ids:
+        chart_data = []
+        for chart in device.get("charts", []):
+            if chart.get("chart_unique_id") == chart_unique_id:
+                params_list = chart.get("params", [])
+                for param in params_list:
+                    param_data = device_params.find({
+                        "user_name": user_name,
+                        "client_name": client_name,
+                        "param_subtree." + param: {"$exists": True}
+                    }).limit(limit).sort("timestamp", -1)
 
-        # Limit the number of results if limit is specified
-        result = collection.find(query, projection).sort(sort).limit(limit)
+                    chart_data.extend([{
+                        'timestamp': doc["timestamp"],
+                        'param_subtree': {
+                            param: doc["param_subtree"][param]
+                        }
+                    } for doc in param_data])
 
-        # Convert the cursor result to a list of documents
-        device_params = list(result)
+        result[chart_unique_id] = chart_data
 
-        return device_params
-    except Exception as e:
-        logger.debug('# in get_device_params, exception: ' + str(e))
-        return None
+    return result
 
 
 def read_users_collection():
