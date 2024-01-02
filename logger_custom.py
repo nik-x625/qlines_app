@@ -18,6 +18,20 @@ def get_module_logger(mod_name):
 
     return logger
 
+def get_module_logger_btc(mod_name):
+    
+    logger = logging.getLogger(mod_name)
+    logger.setLevel(logging.DEBUG)
+        
+    handler = logging.FileHandler('/opt/qlines_app/btc.log')
+    formatter = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+
+    return logger
+
+
 if __name__=='__main__':
     loggerx = get_module_logger(__name__)
     loggerx.debug('test')
