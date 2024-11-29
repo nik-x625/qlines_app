@@ -51,7 +51,7 @@ COPY DockerConfigFiles/_bashrc_append /root/.bashrc
 # Kafka requirements
 RUN apt-get -y install default-jre
 RUN apt-get -y install default-jdk
-RUN curl "https://downloads.apache.org/kafka/3.5.0/kafka_2.13-3.5.0.tgz" -o /opt/kafka.tgz
+RUN curl "https://downloads.apache.org/kafka/3.9.0/kafka-3.9.0-src.tgz" -o /opt/kafka.tgz
 RUN mkdir /opt/kafka
 RUN tar -xvzf /opt/kafka.tgz --directory /opt/kafka/ --strip 1
 COPY DockerConfigFiles/_init_script_kafka /etc/init.d/kafka
