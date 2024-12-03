@@ -32,7 +32,11 @@ class MqttClient:
         return param_subtree
 
     def mqtt_establish(self):
-        client = mqtt.Client(self.client_name)
+        logging.info('# going to make the client connection')
+        #client = mqtt.Client(self.client_name) #, mqtt.CallbackAPIVersion.VERSION2)
+        client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
+        logging.info('# after the client connection')
+
         client.connect(MQTT_BROKER)
         return client
 
@@ -116,6 +120,7 @@ class MqttClient:
                 try:
                     logging.info('No client is defined, going to create the handler.')
                     self.client = self.mqtt_establish()
+
                     time.sleep(SLEEP_INTERVAL)
                     self.client.on_message = self.on_message
                     self.client.subscribe(self.topic_ds)

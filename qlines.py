@@ -414,6 +414,8 @@ def fetch_chart_data():
         logger.debug('Device info not found.')
         return {'error': 'Device info not found.'}
 
+    logger.debug('device info: '+str(device_info))
+
     get_chart_data_res = get_chart_data(
         user_name=current_user.name, client_name=client_name, chart_unique_ids=chart_unique_ids, limit=30)
     

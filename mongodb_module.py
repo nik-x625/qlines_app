@@ -35,7 +35,13 @@ def tz_converter(time, browser_timezone):
 
     # not sure why I added this line, but was giving wrong time zone that's why I skipped it
     # utc_time = time.replace(tzinfo=ZoneInfo('UTC'))
+
+    if not time:
+      return ''
+    
+    logger.debug('time: '+str(time))
     tz_time = time.astimezone(ZoneInfo(browser_timezone))
+
 
     res = tz_time.strftime("%Y-%m-%d %H:%M:%S %Z")
     return res
