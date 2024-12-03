@@ -93,7 +93,10 @@ def on_message(client, userdata, msg):
         logger.debug('# error in processing the recevied mqtt message: '+str(e))
 
 
-client = mqtt.Client('qlines_mqtt_manager')
+#client = mqtt.Client('qlines_mqtt_manager')
+client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
+
+
 client.connect(MQTT_BROKER_HOST, MQTT_BROKER_PORT, 60)
 
 # client.on_connect = on_connect
