@@ -3,7 +3,7 @@ FROM debian:bullseye
 RUN apt-get update -y
 RUN apt-get -y install ntp ssh vim net-tools python3 python3-pip python3-dev wget tzdata git nodejs npm sudo
 RUN apt-get -y install tcpdump tcpflow pylint iputils-ping curl unzip telnet redis lsb-release snapd
-RUN apt-get -y install mosquitto
+RUN apt-get -y install mosquitto mosquitto-clients
 RUN apt-get -y install build-essential libssl-dev libffi-dev python3-setuptools python3-venv
 #RUN apt-get -y install nginx
 
