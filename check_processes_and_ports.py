@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/opt/qlines_venv/bin/python
 import psutil
 import subprocess
 
@@ -51,13 +51,13 @@ if __name__ == "__main__":
     # List of dictionaries containing process names and expected command lines
     process_list = [
         {"title":"rqworker", "name": "python", "cmdline": 'python /opt/qlines_app/rqworker.py'},
-        {"title":"mongodb", "name": "mongod", "cmdline": "/usr/bin/mongod --config /etc/mongod.conf"},
+        #{"title":"mongodb", "name": "mongod", "cmdline": "/usr/bin/mongod --config /etc/mongod.conf"},
         {"title":"mosquitto", "name": "mosquitto", "cmdline": "/usr/sbin/mosquitto -d"},
         #{"title":"clickhouse-server", "name": "clickhouse-server", "cmdline": "clickhouse-server --config-file /etc/clickhouse-server/config.xml --pid-file /var/run/clickhouse-server/clickhouse-server.pid --daemon"},
         #{"title":"clickhouse-watchd", "name": "clckhouse-watch", "cmdline": "clickhouse-watchd --config-file /etc/clickhouse-server/config.xml --pid-file /var/run/clickhouse-server/clickhouse-server.pid --daemon"},
         {"title":"redis", "name": "redis-server", "cmdline": "/usr/bin/redis-server 127.0.0.1:6379"},
         #{"title":"kafka", "name": "java", "cmdline": "XX:+UseG1GC"},
-        {"title":"gunicorn", "name": "gunicorn", "cmdline": "--worker-class eventlet -w 1"},
+        {"title":"gunicorn", "name": "gunicorn", "cmdline": "gunicorn"},
         
         #{"title":"kafka", "name": "java", "cmdline": "-Xmx1G -Xms1G -server -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35"},
         # Add more processes and expected command lines as needed
@@ -96,9 +96,10 @@ if __name__ == "__main__":
         #("0.0.0.0", 9004, 'clickhouse'),
         #("0.0.0.0", 9005, 'clickhouse'),
         #("0.0.0.0", 9009, 'clickhouse'),
-        ("127.0.0.1", 27017, 'mongodb'),
+        #("127.0.0.1", 27017, 'mongodb'),
         ("127.0.0.1", 6379, 'redis'),
         ("0.0.0.0", 5000, 'qlines'),
+        ("0.0.0.0", 80, 'qlines'),
         ("127.0.0.1", 1883, 'mosquitto'),
         
         #("8.8.8.8", 53),

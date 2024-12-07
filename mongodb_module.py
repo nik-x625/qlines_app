@@ -9,7 +9,7 @@ from zoneinfo import ZoneInfo
 
 logger = get_module_logger(__name__)
 
-client = MongoClient('127.0.0.1')
+client = MongoClient('mongo',username='root',password='example') # mongo container/service
 db = client['platform']
 # sensor_collection = db['sensor_data']
 # contact_submission = db['contact_submission']

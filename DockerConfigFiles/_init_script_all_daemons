@@ -5,8 +5,8 @@
 # Files with exactly that name (and executable flag set!) should be placed in
 # $SUBSERVICES_LOCATION (see below). By default, that should already be the
 # case.
-SUBSERVICES_START="mongodb mosquitto redis-server kafka rqworker gunicorn"
-SUBSERVICES_STOP="gunicorn rqworker kafka redis-server mosquitto mongodb"
+SUBSERVICES_START="mosquitto redis-server rqworker gunicorn"
+SUBSERVICES_STOP="gunicorn rqworker redis-server mosquitto"
 
 
 # This defines where this script looks for the other init-scripts. Must end

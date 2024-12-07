@@ -18,7 +18,7 @@ PATH=/sbin:/bin:/usr/sbin:/usr/bin #/bin:/usr/bin:/sbin:/usr/sbin
 #ACTIVATE=/home/www/project/env/bin/activate
 
 APP_PATH="/opt/qlines_app"
-DAEMON="/usr/local/bin/gunicorn"  # Adjust this to the path of your gunicorn executable
+DAEMON="/opt/qlines_venv/bin/gunicorn"  # Adjust this to the path of your gunicorn executable
 GUNICORN_ARGS="--worker-class eventlet -w 1 qlines:app --chdir $APP_PATH"
 
 #APPMODULE=yourproject.wsgi:application
