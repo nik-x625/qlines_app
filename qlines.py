@@ -624,18 +624,19 @@ def page_not_found(e):
     return Response('<p>Login failed</p>')
 
 
-# if __name__ == "__main__":
-#     app.logger.setLevel(logging.DEBUG)
+if __name__ == "__main__":
+    app.logger.setLevel(logging.DEBUG)
 
-#     # to restart the flask when template htmls or static files are changed
-#     from os import path, walk
-#     extra_dirs = ['./templates/', './static/']
-#     extra_files = extra_dirs[:]
-#     for extra_dir in extra_dirs:
-#         for dirname, dirs, files in walk(extra_dir):
-#             for filename in files:
-#                 filename = path.join(dirname, filename)
-#                 if path.isfile(filename):
-#                     extra_files.append(filename)
+    # # to restart the flask when template htmls or static files are changed
+    # from os import path, walk
+    # extra_dirs = ['./templates/', './static/']
+    # extra_files = extra_dirs[:]
+    # for extra_dir in extra_dirs:
+    #     for dirname, dirs, files in walk(extra_dir):
+    #         for filename in files:
+    #             filename = path.join(dirname, filename)
+    #             if path.isfile(filename):
+    #                 extra_files.append(filename)
 
-#     app.run(extra_files=extra_files, host='0.0.0.0', port=5000, debug=True)
+    #app.run(extra_files=extra_files, host='0.0.0.0', port=80, debug=True)
+    app.run(host='0.0.0.0', port=80, debug=True)
