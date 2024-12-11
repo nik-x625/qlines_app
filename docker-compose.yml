@@ -1,21 +1,23 @@
 services:
-  qlines_app_service:
+  qlines_service:
     build:
       context: ./
-      dockerfile: Dockerfile
-    image: qlines_app_image
-    container_name: qlines_app_container
-    privileged: true
-    restart: unless-stopped
+      dockerfile: Dockerfile_qlines
+    image: qlines_image
+    
+    container_name: qlines_container
+    command: gunicorn -w 4 -b 0.0.0.0:5000 qlines:app --chdir /opt/qlines_app
+    #privileged: true
+    #restart: unless-stopped
     ports:
     #  - "7000-7100:7000-7100" # for mqtt and dbs
-    #  - "5000:5000"  # gunicorn
-      - "127.0.0.1:8000:8000"
-      - "127.0.0.1:8001:8001"
-      - "0.0.0.0:80:80"
+      #- "80:5000"  # gunicorn
+      #- "127.0.0.1:8000:8000"
+      #- "127.0.0.1:8001:8001"
+      - "0.0.0.0:80:5000"
      
     volumes:
-      - ./:/opt/qlines_app/
+      - ./:/opt/qlines_app
 
 
   mongo:
@@ -25,16 +27,46 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
 
-  mongo-express:
-    image: mongo-express
-    restart: always
+  # mongo-express:
+  #   image: mongo-express
+  #   restart: always
+  #   ports:
+  #     - 8081:8081
+  #   environment:
+  #     ME_CONFIG_MONGODB_ADMINUSERNAME: root
+  #     ME_CONFIG_MONGODB_ADMINPASSWORD: example
+  #     ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+  #     ME_CONFIG_BASICAUTH: false
+
+  # rqworker:
+  #   build:
+  #     context: ./
+  #     dockerfile: Dockerfile_qlines
+  #   container_name: rq_worker
+  #   image: rqworker_image
+  #   command: rq worker
+  #   depends_on:
+  #     - redis
+  #   volumes:
+  #     - .:/app
+
+  redis:
+    image: redis:latest
+    container_name: redis_container
     ports:
-      - 8081:8081
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: example
-      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
-      ME_CONFIG_BASICAUTH: false
+      - "6379:6379"
+
+
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    container_name: mosquitto_broker
+    ports:
+      - "1883:1883"  # MQTT protocol port
+      - "9001:9001"  # WebSockets (optional, if needed)
+    volumes:
+      - ./mosquitto:/mosquitto/config
+    restart: unless-stopped      
+
 
 networks:
   qlines_net:

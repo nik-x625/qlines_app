@@ -18,7 +18,7 @@ logger = get_module_logger(__name__)
 #     'CREATE TABLE IF NOT EXISTS table1 (ts DATETIME, user_name String, client_name String, param_name String, param_value Float64) ENGINE MergeTree ORDER BY client_name')
 
 
-MQTT_BROKER_HOST = '127.0.0.1'  # Replace with your broker's hostname or IP
+MQTT_BROKER_HOST = 'mosquitto'  # Replace with your broker's hostname or IP
 MQTT_BROKER_PORT = 1883  # Replace with your broker's port
 #MQTT_TOPIC = 'ser_to_cl_topic1'  # Replace with the desired MQTT topic
 

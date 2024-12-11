@@ -5,7 +5,7 @@ RUN apt-get -y install ntp ssh vim net-tools python3 python3-pip python3-dev wge
 RUN apt-get -y install tcpdump tcpflow pylint iputils-ping curl unzip telnet redis lsb-release snapd
 RUN apt-get -y install mosquitto mosquitto-clients
 RUN apt-get -y install build-essential libssl-dev libffi-dev python3-setuptools python3-venv
-RUN apt-get -y install pipx
+#RUN apt-get -y install pipx
 #RUN apt-get -y install nginx
 
 # enable SSL/HTTPS on Apache
@@ -143,4 +143,4 @@ RUN chmod 777 mylogs.log
 
 
 # To keep container alive
-CMD /etc/init.d/all_daemons start;tail -f /dev/null
+#CMD /etc/init.d/all_daemons start;tail -f /dev/null
