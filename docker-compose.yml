@@ -1,20 +1,20 @@
 services:
-  qlines_app:
+  qlines_app_service:
     build:
       context: ./
       dockerfile: Dockerfile_qlines
     image: qlines_app_image
-    
+
     container_name: qlines_app_container
     command: gunicorn -w 4 -b 0.0.0.0:5000 qlines:app --chdir /opt/qlines_app
     #privileged: true
     #restart: unless-stopped
     ports:
     #  - "7000-7100:7000-7100" # for mqtt and dbs
-      #- "80:5000"  # gunicorn
-      #- "127.0.0.1:8000:8000"
-      #- "127.0.0.1:8001:8001"
-      - "0.0.0.0:80:5000"
+    #- "80:5000"  # gunicorn
+    #- "127.0.0.1:8000:8000"
+    #- "127.0.0.1:8001:8001"
+    - "0.0.0.0:5000:5000"
 
     volumes:
       - ./:/opt/qlines_app
@@ -50,9 +50,8 @@ services:
     volumes:
       - ./:/opt/qlines_app
     environment:
-      - REDIS_URL=redis://redis:6379  
-    command: 
-      ["python", "/opt/qlines_app/rqworker.py"]      
+      - REDIS_URL=redis://redis:6379
+    command: [ "python", "/opt/qlines_app/rqworker.py" ]
 
   redis:
     image: redis:latest
@@ -60,18 +59,22 @@ services:
     ports:
       - "6379:6379"
 
-
   mosquitto:
     image: eclipse-mosquitto:latest
     container_name: general_mosquitto_container
     ports:
-      - "1883:1883"  # MQTT protocol port
-      - "9001:9001"  # WebSockets (optional, if needed)
+      - "1883:1883" # MQTT protocol port
+      - "9001:9001" # WebSockets (optional, if needed)
     volumes:
       - ./mosquitto:/mosquitto/config
-    restart: unless-stopped      
-
+    restart: unless-stopped
 
 networks:
-  qlines_net:
-    name: custom_qlines_network
+  # The network is assumed to be created already by the command "docker network create custom_qlines_bridge_network"
+  # Define a custom network named 'default' to be used by all services.
+  # This avoids the need to specify a network for each service individually.
+  # Ensure the network name is 'default' and set 'external' to 'true'.
+  # This allows the use of an existing network named 'custom_qlines_bridge_network'.
+  default:
+    external: true
+    name: custom_qlines_bridge_network
