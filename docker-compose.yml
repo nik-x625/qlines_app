@@ -16,8 +16,22 @@ services:
     #- "127.0.0.1:8001:8001"
     - "0.0.0.0:5000:5000"
 
+    restart: unless-stopped
+
     volumes:
       - ./:/opt/qlines_app
+
+    depends_on:
+      - redis
+      - rqworker
+
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s      # Run the health check every 30 seconds
+      retries: 3         # Retry 3 times before marking the container as unhealthy
+      start_period: 10s  # Wait 10 seconds before starting health checks
+      timeout: 5s        # Timeout after 5 seconds if the request does not complete      
 
   mongo:
     image: mongo
@@ -52,12 +66,28 @@ services:
     environment:
       - REDIS_URL=redis://redis:6379
     command: [ "python", "/opt/qlines_app/rqworker.py" ]
+    restart: unless-stopped
+
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s      # Run the health check every 30 seconds
+      retries: 3         # Retry 3 times before marking the container as unhealthy
+      start_period: 10s  # Wait 10 seconds before starting health checks
+      timeout: 5s        # Timeout after 5 seconds if the command does not complete
 
   redis:
     image: redis:latest
     container_name: qlines_redis_container
     ports:
       - "6379:6379"
+    restart: unless-stopped
+
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s      # Run the health check every 30 seconds
+      retries: 3         # Retry 3 times before marking the container as unhealthy
+      start_period: 10s  # Wait 10 seconds before starting health checks
+      timeout: 5s        
 
   mosquitto:
     image: eclipse-mosquitto:latest
