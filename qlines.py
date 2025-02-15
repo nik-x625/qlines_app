@@ -618,6 +618,17 @@ def contact():
 
     return render_template('contact.html', result=result)
 
+#@app.route('/apps/utilitycontrol/privacy-policy')
+#def privacy_policy():
+#    return render_template('privacy_policy.html', last_updated="Feb 2025")
+
+
+@app.route('/apps/utilitycontrol/privacy-policy')
+def privacy_policy():
+    return render_template('privacy_policy.html', last_updated="April 2024")
+
+
+
 
 @app.errorhandler(401)
 def page_not_found(e):
