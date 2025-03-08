@@ -18,6 +18,7 @@
 # alias mv='mv -i'
 #
 alias plt="docker exec -it $(docker ps  | grep 'qlines_app_container' | awk '{print $1}') /bin/bash"
+alias mongo="docker exec -it $(docker ps  | grep 'qlines_mongo_container' | awk '{print $1}') mongosh -u root -p example --authenticationDatabase admin"
 alias p="ps -ef | egrep 'apache|sql|mongo|python'"
 alias s='netstat -tulpen | grep ssh'
 alias pip=pip3
