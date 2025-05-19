@@ -1,31 +1,182 @@
-The full documentation of QLines, including app+proxy+blog is available in Google doc: 
-https://docs.google.com/document/d/1RpFBwtAG9uG10FQ6VcyiW-3TbMRWepAfR2PxorEg0Eo/edit#
+# QLines: Scalable IoT Device Management Platform
 
+**QLines** is a modern, open, and extensible platform for managing, monitoring, and automating IoT devices at scale. Designed for easy deployment, robust data handling, and seamless integration, QLines empowers businesses and developers to connect, control, and analyze their devices with minimal friction.
 
-Main road-map for qlines
-MVP by myself, including all GUI stuff and so on => Start monetisation => hire GUI guy => More marketing by conservative actions => Hire sales and expand marketing => enjoy!
+---
 
-A package with easier deployment for simple IoT devices. Current IoT providers need development but the idea is to make life easier for the customers. This is the value we are selling.
-The idea is to be on shoulders of Giants and avoid developing stuff from scratch
-The idea is to monetize from beginning
-Could be expanded to Android/IOS apps later.
-Could be expanded to home security stuff later.
-Having consultation besides the main product is missed by bigger providers now.
-Good price compared to big providers
-Start with LoraWAN after basic MVP started
-Thingsborad and JFrog are my models to get inspired on which features I should develop next
+## Table of Contents
 
-Architecture and redundancy
-qlines_app
-qlines_proxy
-qlines_blog
+- [Features](#features)
+- [Architecture Overview](#architecture-overview)
+- [Technology Stack](#technology-stack)
+- [Quick Start (Docker)](#quick-start-docker)
+- [Production Deployment](#production-deployment)
+- [Core Components](#core-components)
+- [Device Data Flow](#device-data-flow)
+- [Health Checks & Monitoring](#health-checks--monitoring)
+- [Contributing & Roadmap](#contributing--roadmap)
+- [References](#references)
 
-The architecture doesn’t use any DNS fail-over. It’s complicated and not reliable however it seems new browsers (and clients) are capable of switching it.
-Both domains ‘www.qlines.net’ and ‘blog.qlines.net’ are resolved to same IP address (217.61.104.75 as of 2.4.2023)
-3 docker containers are in a single machine now. Think about upgrading machine. Later I will expand to multiple VMs for better availability. Now the goal is to make it easy to reproduce by docker-compose in case of failure.
-I need clear instructions for:
-Reproduce the apps, proxy, blog, etc.
-Quick restore of DBs in case of crash or VM wipe out
+---
+
+## Features
+
+- **Unified IoT Device Management:** Register, monitor, and control devices from a web dashboard.
+- **Real-Time Data Processing:** Integrates with Kafka, Redis, and MQTT for scalable, low-latency data flows.
+- **Multi-Database Support:** Uses MongoDB for device/user data and ClickHouse for high-performance analytics.
+- **User Authentication:** Secure login, registration, and user management.
+- **Extensible Architecture:** Easily add new device types, data sources, or integrations.
+- **Modern Web UI:** Responsive dashboard for device overview, analytics, and settings.
+- **Easy Deployment:** Docker-based setup for local development and production.
+- **Blog & Documentation:** Integrated WordPress blog for updates and guides.
+
+---
+
+## Architecture Overview
+
+QLines is composed of three main services, typically deployed as Docker containers:
+
+- **qlines_app:** The main Flask-based backend and web dashboard.
+- **qlines_blog:** A WordPress-based blog for documentation and news.
+- **qlines_proxy:** An NGINX-based reverse proxy for SSL termination and routing.
+
+**Typical deployment:**
+```
+[User] <---> [NGINX Proxy w/ SSL] <---> [Qlines App] <---> [MongoDB, ClickHouse, Redis, Kafka, Mosquitto]
+                                    \--> [Qlines Blog (WordPress + MySQL)]
+```
+
+- All services communicate over a custom Docker network.
+- Designed for high-availability: can be scaled across multiple VMs with redundant databases and proxies.
+
+---
+
+## Technology Stack
+
+- **Backend:** Python (Flask, Flask-Login, MongoEngine, RQ, Redis, Kafka, ClickHouse)
+- **Frontend:** Jinja2 templates, JavaScript, Bootstrap
+- **Messaging:** MQTT (Mosquitto), Kafka
+- **Databases:** MongoDB, ClickHouse, MySQL (for blog)
+- **Web Server:** Gunicorn (with eventlet for WebSockets)
+- **Proxy:** NGINX (with Certbot for SSL)
+- **Containerization:** Docker, Docker Compose
+
+---
+
+## Quick Start (Docker)
+
+### Prerequisites
+
+- Docker Engine & Docker Compose installed
+- (Optional) `docker network create custom_qlines_bridge_network` to create the shared network
+
+### Steps
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/mehdiabolfathi/qlines_app.git
+   cd qlines_app
+   ```
+
+2. **Build and start the stack:**
+   ```bash
+   docker compose up -d
+   ```
+
+3. **Access the dashboard:**
+   - Visit [http://localhost:5000](http://localhost:5000) in your browser.
+
+4. **Default services:**
+   - QLines App: `localhost:5000`
+   - MongoDB: `localhost:27017`
+   - Redis: `localhost:6379`
+   - Mosquitto MQTT: `localhost:1883`
+
+---
+
+## Production Deployment
+
+- **Upgrade your VPS to the latest Debian for best compatibility.**
+- **Clone and deploy each service (app, blog, proxy) on your production server.**
+- **Configure NGINX and SSL certificates using Certbot.**
+- **For multi-VM/high-availability, deploy redundant proxies and databases as described in the [Architecture Overview](#architecture-overview).**
+
+**See the [detailed deployment guide](#) for step-by-step instructions.**
+
+---
+
+## Core Components
+
+- **`qlines.py`:** Main Flask app, routes, and business logic.
+- **`docker-compose.yml`:** Orchestrates all services (app, Redis, MongoDB, RQ worker, Mosquitto).
+- **`Dockerfile_qlines`:** Build instructions for the main app container.
+- **`templates/`:** Jinja2 HTML templates for the web UI.
+- **`static/`:** JavaScript, CSS, and image assets.
+- **`check_processes_and_ports.py`:** Health check script for all core services.
+
+---
+
+## Device Data Flow
+
+1. **Device Registration:** Devices are registered via the dashboard and stored in MongoDB.
+2. **Data Ingestion:** Devices send data via MQTT or HTTP; backend verifies and stores data.
+3. **Analytics:** Data is processed and stored in ClickHouse for fast querying.
+4. **User Dashboard:** Users view device status, analytics, and send commands via the web UI.
+5. **Real-Time Updates:** WebSockets (via Flask-SocketIO) or polling for live data.
+
+---
+
+## Health Checks & Monitoring
+
+- Run `./check_processes_and_ports.py` to verify all services are running and listening on the correct ports.
+- Example healthy output:
+  ```
+  Process 'rqworker' is OK and running
+  Process 'mongodb' is OK and running
+  ...
+  Port 5000 is open on 0.0.0.0.    Process: qlines
+  ```
+
+---
+
+## Contributing & Roadmap
+
+- **MVP complete:** Core device management, dashboard, and blog.
+- **Planned:** Mobile apps, advanced analytics, more integrations, improved HA/DB sync, automated SSL renewal.
+- **Contributions welcome!** Please open issues or pull requests.
+
+---
+
+## References
+
+- [Flask-SocketIO Documentation](https://flask-socketio.readthedocs.io/en/latest/getting_started.html)
+- [Kafka & Python Guide](https://towardsdatascience.com/how-to-build-a-simple-kafka-producer-and-consumer-with-python-a967769c4742)
+- [System Design Guide](https://bit.ly/3SuUR0Y)
+
+---
+
+**For full documentation and advanced deployment, see the [Google Doc](https://docs.google.com/document/d/1RpFBwtAG9uG10FQ6VcyiW-3TbMRWepAfR2PxorEg0Eo/edit#).**
+
+---
+
+**SEO Keywords:** IoT device management, Flask IoT platform, Docker IoT stack, MQTT dashboard, scalable IoT backend, real-time device analytics, open source IoT, QLines
+
+## Infrastructure & VM Specifications
+
+Below are the VM specifications for the QLines deployment across multiple geographic sites. These specifications ensure that the platform can handle the expected load and provide redundancy.
+
+| Site        | VM Function | CPU (vCPU) | Mem (GB) | Disk (GB) | Description                |
+|-------------|-------------|------------|----------|-----------|----------------------------|
+| Geo site 1  | LB+Proxy    | 2          | 2        | 100       | Load balancing and proxy   |
+| Geo site 1  | App1        | 4          | 8        | 200       | Each could handle all load |
+| Geo site 1  | App2        | 4          | 8        | 200       | Each could handle all load |
+| Geo site 1  | App3        | 4          | 8        | 200       | Each could handle all load |
+| Geo site 1  | DB1         | 8          | 16       | 500       | Database server            |
+
+### Notes:
+- **Load Balancing:** The LB+Proxy VM distributes traffic across the application servers.
+- **Application Servers:** Each app server is capable of handling the full load, providing redundancy.
+- **Database Server:** The DB1 VM is dedicated to database operations, ensuring data integrity and performance.
 
 
 
@@ -170,7 +321,7 @@ DB3
 
 The application is running on 2 sites and DB on 3 sites
 The 3 sites must in same city, not far from each other with good QoS for DB sync
-Need to make sure that I have diverse VMs. For e.g., the networking issue inside the docker engine is a common problem. For the moment, it’s easier to manage it through multiple VMS. Remember the case when blog.qlines.net was not possible to launch (in Jul 2023).
+Need to make sure that I have diverse VMs. For e.g., the networking issue inside the docker engine is a common problem. For the moment, it's easier to manage it through multiple VMS. Remember the case when blog.qlines.net was not possible to launch (in Jul 2023).
 
 
 Problems still to be solved in above schematic:
@@ -208,35 +359,35 @@ NGINX
 To-be-completed
 
 Running multiple services in one container
-Each Docker container is supposed to carry only one process/service. This is understandable. But for MVP purpose, and making the product easy to launch and manage, we need to run multiple daemons in one container, even DBs! I realised that current init scripts could be run properly with —priviledged flag enabled. Current docker-compose doesn’t have this (previously I had it). Now I guess if I run it with priviledged enabled in docker-compose, I can convert all systemd to init script. I know init script is older than systemd but at least this is a good temporary solution to keep the Mac dev env without struggling to switch to VM or remote Linux env.
+Each Docker container is supposed to carry only one process/service. This is understandable. But for MVP purpose, and making the product easy to launch and manage, we need to run multiple daemons in one container, even DBs! I realised that current init scripts could be run properly with --priviledged flag enabled. Current docker-compose doesn't have this (previously I had it). Now I guess if I run it with priviledged enabled in docker-compose, I can convert all systemd to init script. I know init script is older than systemd but at least this is a good temporary solution to keep the Mac dev env without struggling to switch to VM or remote Linux env.
 Also some important points are discussed here: https://docs.docker.com/config/containers/multi-service_container/
 
 
-How is the “device overview” table rendered?
+How is the "device overview" table rendered?
 
-The main backend file is “qlines.py”
-Hitting the route “/devices” renders the template “dash_devices.html”
-The “device_overview_table.js” is executed and sends the request to the backend at “/api/data”
-The route “/api/data” is the main core of data fetch. The idea is to:
+The main backend file is "qlines.py"
+Hitting the route "/" renders the template "dash_devices.html"
+The "device_overview_table.js" is executed and sends the request to the backend at "/api/data"
+The route "/api/data" is the main core of data fetch. The idea is to:
 Fetch data from ClickHouse
 Verify it with Mongo to make sure that it is registered. Drop the unregistered devices.
 Log/Alert/Report to admin about unregistered devices.
 
-Device’s page interactions
-The data with associated user ID is pushed to Kafka and SocketIO under the Flask sends it to the client’s browser.
+Device's page interactions
+The data with associated user ID is pushed to Kafka and SocketIO under the Flask sends it to the client's browser.
 These scripts are important for this interaction:
 websocket_updates.js
 chart1.js
-Method of ‘background_thread’ in the ‘qlines.py’
+Method of 'background_thread' in the 'qlines.py'
 Removed the socketio with this commit: https://github.com/mehdiabolfathi/qlines_app/commit/4d22373f5f5b056ce7983a0a6b0a00a13f22f226
 
 Now all the data is being updated by the polling every 1sec here:
 chart1.js
 dash_device_single.html
 SocketIO
-Refer to docs about Miguel’s SocketIO. I use this in my Flask application. It needs eventlet (check gunicorn command) to run together with Flask and Gunicorn.
+Refer to docs about Miguel's SocketIO. I use this in my Flask application. It needs eventlet (check gunicorn command) to run together with Flask and Gunicorn.
 gunicorn --worker-class eventlet -w 1 qlines:app --bind 0.0.0.0:5000
-gunicorn is needed to enable the websocket. The websocket works only with eventlet. Check documentation for details which are saved in the notes ‘Websocket ‘ in the iNotes/Mac
+gunicorn is needed to enable the websocket. The websocket works only with eventlet. Check documentation for details which are saved in the notes 'Websocket ' in the iNotes/Mac
 The socket backend is in the main file qlines.py
 gunicorn is needed to enable the websocket. The websocket works only with eventlet. Check documentation for details.
 make sure to install the exact version. The evetlet 0.30.2 is necessary here. If not mentioned, the conflict happens
@@ -275,21 +426,21 @@ alias tmux_start='tmux new-session -t res -d;tmux new-session -t log -d;tmux new
 
 Installation of Docker engine
 install docker engine on the production linux server. Ref: https://docs.docker.com/engine/install/debian/, start from the step "Set up the repository"
-Run ‘docker network create qlines’ to create the necessary network for all containers
+Run 'docker network create qlines' to create the necessary network for all containers
 
 
 Installation of the QLines app
 cd /opt/
 git clone git@github.com:mehdiabolfathi/qlines_app.git
 cd /opt/qlines_app
-Clean up all the docker cash and images if needed by “docker system prune -a”
+Clean up all the docker cash and images if needed by "docker system prune -a"
 docker compose up -d
 Logout and login again
-Enter ‘plt’ and you should enter the qlines container.
-Enter ‘p’ inside the container to see the processes’ status.
+Enter 'plt' and you should enter the qlines container.
+Enter 'p' inside the container to see the processes' status.
 Vi ~/.bashrc and edit PS1 to show PROD in the prompt
 Logout and login to enable the bashrc
-Clean up the docker unused images with: “docker system prune”
+Clean up the docker unused images with: "docker system prune"
 Installation of the QLines blog
 The blog is built initially inspired by this guide: https://www.digitalocean.com/community/tutorials/how-to-install-wordpress-with-docker-compose In this doc, I try reuse the above structure and to summarise the steps to build a proxy in front of multiple apps (main app + blog).
 
@@ -327,7 +478,7 @@ Installation of the QLines proxy
 cd /opt/
 git clone git@github.com:mehdiabolfathi/qlines_proxy.git
 Make sure that qlines_app and qlines_blog are already up
-Use the “Remote SSH” feature of “VSCode” for easier remote editing the docker-compose.yml and also NGINX configuration files.
+Use the "Remote SSH" feature of "VSCode" for easier remote editing the docker-compose.yml and also NGINX configuration files.
 
 
 In the folder /opt/qlines_proxy, there are two nginx config files. First we need to let certbot to connect to port 80 and we need a minimal nginx config file.
@@ -339,29 +490,29 @@ Cp nginx_http.conf ./nginx-conf/nginx.conf
 
 Remove the old certificates that might be there, also pushed to Git:
 rm -rf certbot-certificates
-In the docker-compose.yml, uncomment the section for ‘certbot’, make sure the indentation is same as other items under “services”.
+In the docker-compose.yml, uncomment the section for 'certbot', make sure the indentation is same as other items under "services".
 for qlines.net => in 'docker-compose.yml' use '-d qlines.net -d www.qlines.net' run 'docker compose up' (not with -d option, to see the logs)
 Make sure that certificate files are produced in folder /opt/qlines_proxy/certbot-certificates/live
 Edit the docker-compose.yml and for blog.qlines.net => in 'docker-compose.yml' use '-d blog.qlines.net' run 'docker compose up' (not with -d option, to see the logs)
 Make sure that certificate files are produced in folder /opt/qlines_proxy/certbot-certificates/live
 
 
-After all certificates are produced, we don’t need the certbot anymore. Replace the nginx config file with the one with SSL settings:
+After all certificates are produced, we don't need the certbot anymore. Replace the nginx config file with the one with SSL settings:
 Cd /opt/qlines_proxy
 Cp nginx_http_and_https.conf ./nginx-conf/nginx.conf
 Edit the docker-compose.yml and comment out the certbot section
 Run docker compose up -d
-Test addresses ‘qlines.net’ and ‘blog.qlines.net’ to verify if the connection is fine.
-Clean up the docker unused images with: “docker system prune”
-Reboot the vps with ‘reboot’ command to make sure that all the containers and all sites (qlines.net, blog.qlines.net) are up and running.
+Test addresses 'qlines.net' and 'blog.qlines.net' to verify if the connection is fine.
+Clean up the docker unused images with: "docker system prune"
+Reboot the vps with 'reboot' command to make sure that all the containers and all sites (qlines.net, blog.qlines.net) are up and running.
 Renew the server certificates (Letsencrypt)
 While installing the qlines_proxy container, the certificates are installed. But to renew it do the following steps:
 Connect to vps through vscode
 Cd /opt/qlines_proxy/
-Edit the docker-compose.yml file and uncomment the part for ‘certbot’ service.
+Edit the docker-compose.yml file and uncomment the part for 'certbot' service.
 for qlines.net => in 'docker-compose.yml' use '-d qlines.net -d www.qlines.net' 
 docker compose up -d
-Ignore the warning like: “WARN[0000] a network with name custom_qlines_network exists”
+Ignore the warning like: "WARN[0000] a network with name custom_qlines_network exists"
 docker compose restart webserver
 Make sure that certificate files are produced in folder
 /opt/qlines_proxy/certbot-certificates/live
@@ -370,14 +521,14 @@ Verify the certificates are renewed by browsing the pages
 Comment again the certbot part in the docker-compose.yml file
 docker compose up -d
 The certbot container must be stopped. Remove it.
-Clean up the docker unused images with: “docker system prune”
+Clean up the docker unused images with: "docker system prune"
 Done!
 
 
 TODO later:
 The guide in this chapter probably is very amateur one. Make it better!
 Make it periodic like cronjob or so.
-I guess the image of ‘certbot’ has already some considerations for it. Check it later when free time.
+I guess the image of 'certbot' has already some considerations for it. Check it later when free time.
 
 
 Health-checks and monitoring the platform
@@ -415,8 +566,8 @@ References and Main Docs
 It is possible that most of the documents are in iNotes on Mac. Here is only the selected docs are mentioned.
 
 SocketIO
-Socketio, Miguel’s github repo for flask-socketio: https://github.com/miguelgrinberg/Flask-SocketIO
-Socketio, Miguel’s documentation: https://flask-socketio.readthedocs.io/en/latest/getting_started.html
+Socketio, Miguel's github repo for flask-socketio: https://github.com/miguelgrinberg/Flask-SocketIO
+Socketio, Miguel's documentation: https://flask-socketio.readthedocs.io/en/latest/getting_started.html
 General Web Samples
 Admin dashboard with flask and django: https://dev.to/sm0ke/admin-dashboard-dattaable-coded-in-two-python-flavors-2bj5
 
